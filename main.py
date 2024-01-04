@@ -7,6 +7,8 @@ import sql
 import alerting
 
 
+#TODO: create a Qsmacker Job Stopper
+
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
 ui = mainUI.Ui_MainWindow()
