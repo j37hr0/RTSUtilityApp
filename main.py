@@ -4,11 +4,15 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QInputDialog, QDialog
 from qsmackerpermissions import Ui_Dialog
 import sql
+import alerting
+
 
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
 ui = mainUI.Ui_MainWindow()
 ui.setupUi(MainWindow)
+
+
 
 class QsmackerDlg(QDialog):
     def __init__(self, parent=None):
@@ -33,7 +37,7 @@ def update_user_permissions(user_id):
 def get_user_compatibility(user_id):
     isValid = True
     sql_connection = sql.Connection()
-    email = sql_connection.find_user(dlg.ui.qsmacker_email.toPlainText())
+    use_email = sql_connection.find_user(dlg.ui.qsmacker_email.toPlainText())
     print("the value of emails is: " + dlg.ui.qsmacker_email.toPlainText())
     if dlg.ui.qsmacker_email.toPlainText() == "":
         isValid = False
@@ -43,7 +47,7 @@ def get_user_compatibility(user_id):
         popup.setIcon(QMessageBox.Critical)
         popup.setStandardButtons(QMessageBox.Ok)
         x = popup.exec_()
-    if email == "not employee":
+    if use_email == "not employee":
         isValid = False
         popup = QMessageBox()
         popup.setWindowTitle("Invalid email provided")
@@ -51,7 +55,16 @@ def get_user_compatibility(user_id):
         popup.setIcon(QMessageBox.Critical)
         popup.setStandardButtons(QMessageBox.Ok)
         x = popup.exec_()
-    elif isValid:    
+    if use_email == "no user":
+        isValid = False
+        popup = QMessageBox()
+        popup.setWindowTitle("No user found")
+        popup.setText("No user found with that email, please check the email and try again")
+        popup.setIcon(QMessageBox.Critical)
+        popup.setStandardButtons(QMessageBox.Ok)
+        x = popup.exec_()
+    elif isValid:
+        user_email = dlg.ui.qsmacker_email.toPlainText()    
         sql_connection = sql.Connection()
         dlg.ui.user_id_label.setText(str(sql_connection.find_user(dlg.ui.qsmacker_email.toPlainText())))
         user_id = dlg.ui.user_id_label.text()
@@ -76,6 +89,9 @@ def get_user_compatibility(user_id):
                     popup0.setIcon(QMessageBox.Information)
                     popup0.setStandardButtons(QMessageBox.Ok)
                     x = popup0.exec_()
+                    email = alerting.EmailAlerts()
+                    email.recieverEmail.append("jethro.cotton3@gmail.com")
+                    email.send_email("Qsmacker Permissions Updated", f"Qsmacker permissions updated for user with email {user_email} and user id {user_id}")
                 if not result:
                     print("didn't update permissions")
                     popup1 = QMessageBox()

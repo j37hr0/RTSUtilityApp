@@ -33,9 +33,13 @@ class Connection:
             self.make_connection()
             self.cursor.execute("SELECT * FROM tblusers WHERE email like %s", (email))
             user = self.cursor.fetchone()
-            user = user['ID']
-            self.close_connection()
-            return user
+            if user == None:
+                print("No user found")
+                return "no user"
+            else:
+                user = user['ID']
+                self.close_connection()
+                return user
     
     def find_permissions_by_user_id(self, id):
         if id == "":
