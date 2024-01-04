@@ -10,11 +10,6 @@ MainWindow = QtWidgets.QMainWindow()
 ui = mainUI.Ui_MainWindow()
 ui.setupUi(MainWindow)
 
-targetSet = False
-
-
-#TODO: add error handling for blank email field
-
 class QsmackerDlg(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -36,22 +31,32 @@ def update_user_permissions(user_id):
 
 
 def get_user_compatibility(user_id):
+    isValid = True
     sql_connection = sql.Connection()
     email = sql_connection.find_user(dlg.ui.qsmacker_email.toPlainText())
+    print("the value of emails is: " + dlg.ui.qsmacker_email.toPlainText())
+    if dlg.ui.qsmacker_email.toPlainText() == "":
+        isValid = False
+        popup = QMessageBox()
+        popup.setWindowTitle("No email provided")
+        popup.setText("No email provided, please enter an email")
+        popup.setIcon(QMessageBox.Critical)
+        popup.setStandardButtons(QMessageBox.Ok)
+        x = popup.exec_()
     if email == "not employee":
+        isValid = False
         popup = QMessageBox()
         popup.setWindowTitle("Invalid email provided")
         popup.setText("Invalid email provided, user must be a Real Telematics employee")
         popup.setIcon(QMessageBox.Critical)
         popup.setStandardButtons(QMessageBox.Ok)
         x = popup.exec_()
-    else:    
+    elif isValid:    
         sql_connection = sql.Connection()
         dlg.ui.user_id_label.setText(str(sql_connection.find_user(dlg.ui.qsmacker_email.toPlainText())))
         user_id = dlg.ui.user_id_label.text()
         print(user_id)
         permissions = sql_connection.find_permissions_by_user_id(user_id)
-        #sql_connection.close_connection()
         if not permissions:
             print(permissions)
             print("User is compatible, has no permissions")
