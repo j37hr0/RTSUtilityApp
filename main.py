@@ -13,6 +13,8 @@ ui.setupUi(MainWindow)
 targetSet = False
 
 
+#TODO: add error handling for blank email field
+
 class QsmackerDlg(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)

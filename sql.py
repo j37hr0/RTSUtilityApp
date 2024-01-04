@@ -61,7 +61,7 @@ class Connection:
                               Select 6380, {id}, AreaID, PermissionValue, [Description]
                               From tblUserPermissions Where UserID = 2157
                             """)
-        if self.cursor.rowcount == 15:
+        if self.cursor.rowcount == 18:
             print("Permissions updated")
             self.connection.commit()
             self.close_connection()
