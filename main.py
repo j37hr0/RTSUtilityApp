@@ -28,14 +28,10 @@ def openqsmackerwindow():
 
 def update_user_permissions(user_id):
     sql_connection = sql.Connection()
-    sql_connection.update_permissions(user_id)
-    sql_connection.close_connection()
-    popup = QMessageBox()
-    popup.setWindowTitle("Permissions Updated")
-    popup.setText("Permissions updated successfully")
-    popup.setIcon(QMessageBox.Information)
-    popup.setStandardButtons(QMessageBox.Ok)
-    x = popup.exec_()
+    result = sql_connection.update_permissions(user_id)
+    return result
+    
+
 
 def get_user_compatibility(user_id):
     sql_connection = sql.Connection()
@@ -64,9 +60,23 @@ def get_user_compatibility(user_id):
             popup.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
             x = popup.exec_()
             if x == QMessageBox.Yes:
-                update_user_permissions(user_id)
-            else:
-                print("didn't update permissions")
+                result = update_user_permissions(user_id)
+                if result:
+                    print("updated permissions")
+                    popup0 = QMessageBox()
+                    popup0.setWindowTitle("Permissions Updated")
+                    popup0.setText("Permissions updated successfully")
+                    popup0.setIcon(QMessageBox.Information)
+                    popup0.setStandardButtons(QMessageBox.Ok)
+                    x = popup0.exec_()
+                if not result:
+                    print("didn't update permissions")
+                    popup1 = QMessageBox()
+                    popup1.setWindowTitle("Permissions not updated")
+                    popup1.setText("Permissions not updated, some error. If it persists, please contact IT")
+                    popup1.setIcon(QMessageBox.Critical)
+                    popup1.setStandardButtons(QMessageBox.Ok)
+                    x = popup1.exec_()
         else:
             popup = QMessageBox()
             popup.setWindowTitle("User has permissions already")

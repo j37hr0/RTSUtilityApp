@@ -27,7 +27,7 @@ class Connection:
         if email == "":
             print("No email provided")
             return None
-        if "@realtelematics.co.za" not in email:
+        if ("@realtelematics.co.za" not in email) and ("@realtimesolutions.co.za" not in email):
             return "not employee"
         else:
             self.make_connection()
@@ -61,10 +61,12 @@ class Connection:
                               Select 6380, {id}, AreaID, PermissionValue, [Description]
                               From tblUserPermissions Where UserID = 2157
                             """)
-        if self.cursor.rowcount == 18:
+        if self.cursor.rowcount == 15:
             print("Permissions updated")
             self.connection.commit()
             self.close_connection()
+            return True
         else:
             self.close_connection()
             print("Permissions not updated")
+            return False
