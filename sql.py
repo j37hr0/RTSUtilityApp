@@ -16,8 +16,8 @@ class Connection:
         self.connection = None
         self.cursor = None
 
-    def make_connection(self):
-        self.connection = pymssql.connect(server, user, passwd, db)
+    def make_connection(self, database=db):
+        self.connection = pymssql.connect(server, user, passwd, database)
         self.cursor = self.connection.cursor(as_dict=True)
 
     def close_connection(self):
@@ -74,3 +74,21 @@ class Connection:
             self.close_connection()
             print("Permissions not updated")
             return False
+
+    def find_job(self, jobname):
+        if jobname == "":
+            print("No job name provided")
+            return None
+        else:
+            self.make_connection(database="Qsmacker")
+            self.cursor.execute(f"SELECT * FROM Job WHERE Description like '{jobname}'")
+            job = self.cursor.fetchone()
+            print(job)
+            if job == None:
+                print("No job found SQL")
+                return None
+            else:
+                job = [job['id'], job['Description']]
+                self.close_connection()
+                return job
+            

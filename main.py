@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QMessageBox, QInputDialog, QDialog
 from qsmackerpermissions import Ui_Dialog
 import sql
 import alerting
-
+from qsmackerJobsearch import Ui_Dialog as Ui_Dialog2
 
 #TODO: create a Qsmacker Job Stopper
 
@@ -22,19 +22,30 @@ class QsmackerDlg(QDialog):
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
 
+
+class QsmackerSearchDlg(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.ui = Ui_Dialog2()
+        self.ui.setupUi(self)
+
+
 dlg = QsmackerDlg()  # Create an instance of QsmackerDlg
+searchDlg = QsmackerSearchDlg() #Create an instance of QsmackerSearchDlg
 
 #sql_connection = sql.Connection()
 
 def openqsmackerwindow():
     dlg.exec_()
 
+def openqsmackersearchwindow():
+    searchDlg.exec_()
+
 def update_user_permissions(user_id):
     sql_connection = sql.Connection()
     result = sql_connection.update_permissions(user_id)
     return result
     
-
 
 def get_user_compatibility(user_id):
     isValid = True
@@ -111,10 +122,27 @@ def get_user_compatibility(user_id):
             x = popup.exec_()
 
 
+def get_qsmacker_job(job_name):
+    sql_connection = sql.Connection()
+    jobName = searchDlg.ui.qsmacker_jobname.toPlainText()
+    job = sql_connection.find_job(jobName)
+    print(job)
+    if job[0] == None:
+        popup = QMessageBox()
+        popup.setWindowTitle("No job found")
+        popup.setText("No job found with that name, please check the name and try again")
+        popup.setIcon(QMessageBox.Critical)
+        popup.setStandardButtons(QMessageBox.Ok)
+        x = popup.exec_()
+    else:
+        searchDlg.job_id_label.setText(str(job[0]))
+        searchDlg.qsmacker_jobname.setText(str(job[1]))
+
+
+searchDlg.ui.find_job_btn.clicked.connect(get_qsmacker_job)
 dlg.ui.find_id_btn.clicked.connect(get_user_compatibility)
-
 ui.permissions_btn.clicked.connect(openqsmackerwindow)
-
+ui.batch_status_btn.clicked.connect(openqsmackersearchwindow)
 
 
 MainWindow.show()
