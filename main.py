@@ -135,8 +135,8 @@ def get_qsmacker_job(job_name):
         popup.setStandardButtons(QMessageBox.Ok)
         x = popup.exec_()
     else:
-        searchDlg.job_id_label.setText(str(job[0]))
-        searchDlg.qsmacker_jobname.setText(str(job[1]))
+        searchDlg.ui.job_id.setText(str(job[0]))
+        searchDlg.ui.qsmacker_jobname.setText(str(job[1]))
 
 
 searchDlg.ui.find_job_btn.clicked.connect(get_qsmacker_job)
