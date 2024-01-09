@@ -7,13 +7,13 @@ import sql
 import alerting
 from qsmackerJobsearch import Ui_Dialog as Ui_Dialog2
 
-#TODO: create a Qsmacker Job Stopper
+#TODO: create a Qsmacker Job Stopper - do input validation on the job to be cancelled 
+#T
 
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
 ui = mainUI.Ui_MainWindow()
 ui.setupUi(MainWindow)
-
 
 
 class QsmackerDlg(QDialog):
@@ -133,17 +133,44 @@ def get_qsmacker_job(job_name):
         searchDlg.ui.job_id.setText(str(job[0]))
         searchDlg.ui.qsmacker_jobname.setText(str(job[1]))
         searchDlg.ui.batch_list.clear()
-        for number in range(len(job[2])):
-            searchDlg.ui.batch_list.addItem(str(job[2][number])) 
+        for number in range(len(job[3])):
+            row = f"ID: {job[3][number]['JobId']} - SerialNo: {job[3][number]['serialNumber']} - Description: {job[3][number]['Description']} - InsertDate: {job[3][number]['insertDate']} - BatchStatusId: {job[3][number]['BatchStatusId']} -']))"
+            searchDlg.ui.batch_list.addItem(row)
         searchDlg.ui.mac_total.setText(str(counts[0]['Machines']))
         searchDlg.ui.com_total.setText(str(counts[1]['Commands'])) 
+
+
+def kill_qsmacker_job():
+    sql_connection = sql.Connection()
+    job = sql_connection.find_job(searchDlg.ui.qsmacker_jobname.toPlainText())
+    job_id = job[0]
+    emailAddresses = job[2]
+    job_id = searchDlg.ui.job_id.text()
+    popup = QMessageBox()
+    popup.setWindowTitle("Confirm Job Kill")
+    popup.setText(f"Are you sure you want to kill job with id {job_id}?")
+    popup.setIcon(QMessageBox.Warning)
+    popup.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
+    x = popup.exec_()
+    if x == QMessageBox.Ok:
+        result = sql_connection.kill_job(job_id)
+        if result:
+            popup = QMessageBox()
+            popup.setWindowTitle("Job killed")
+            popup.setText(f"Job with id {job_id} has been killed")
+            popup.setIcon(QMessageBox.Information)
+            popup.setStandardButtons(QMessageBox.Ok)
+            x = popup.exec_()
+            email = alerting.EmailAlerts()
+            email.recieverEmail.append(emailAddresses)
+            print(email.recieverEmail)
 
 
 searchDlg.ui.find_job_btn.clicked.connect(get_qsmacker_job)
 dlg.ui.find_id_btn.clicked.connect(get_user_compatibility)
 ui.permissions_btn.clicked.connect(openqsmackerwindow)
 ui.batch_status_btn.clicked.connect(openqsmackersearchwindow)
-
+searchDlg.ui.kill_job_btn.clicked.connect(kill_qsmacker_job)
 
 MainWindow.show()
 sys.exit(app.exec_())

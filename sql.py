@@ -133,7 +133,7 @@ class Connection:
                 print("No job found SQL")
                 return "no job"
             else:
-                job = [job['id'], job['Description']]
+                job = [job['id'], job['Description'], job['Email']]
                 print(job)
                 batches = self.get_batches(job[0])
                 removeKeys = ['id', 'jobid', 'BatchTypeId', 'currentBatch', 'removedFromQueue','userId', 'hasChildBatch','parentBatchId'] 
@@ -148,3 +148,45 @@ class Connection:
                 self.close_connection()
                 return job
             
+
+            #Failed codes order: Command, Batch, Job
+    def fail_job(self, job_id, CommandFail = 4, BatchFail = 4, JobFail = 3):
+        if job_id == "":
+            print("No job id provided")
+            return None
+        else:
+            self.make_connection(database="Qsmacker")
+            self.cursor.execute(f"""
+                                declare @FailedCommandStatusID int = {CommandFail}
+                                declare @FailedBatchStatusID int = {BatchFail}
+                                declare @FailedJobStatusID int = {JobFail}
+                                declare @JobID int = {job_id}
+                                
+                                select j.id JobID, b.id BatchID, c.id CommandID
+                                into #JobsRTUsBatches
+                                from job j
+                                join RTUBatch b on b.JobId = j.id
+                                join Command c on c.RTUBatchId = b.id
+                                join CommandStatus cs on cs.id = c.CommandStatusId
+                                where j.id = @JobID
+
+                                update Job
+                                set Job.JobStatusId = @FailedJobStatusID
+                                from Job
+                                join #JobsRTUsBatches on job.id = #JobsRTUsBatches.JobID
+
+                                update RTUBatch
+                                Set RTUBatch.BatchStatusId = @FailedBatchStatusID
+                                From RTUBatch
+                                join #JobsRTUsBatches on RTUBatch.id = #JobsRTUsBatches.BatchID
+
+                                update Command
+                                Set Command.CommandStatusId = @FailedCommandStatusID
+                                From Command
+                                Join #JobsRTUsBatches b on b.CommandID = Command.id
+
+                                drop table #JobsRTUsBatches
+                                """)
+            self.connection.commit()
+            self.close_connection()
+            return True
