@@ -24,7 +24,7 @@ class Ui_Dialog(object):
         self.label_job = QtWidgets.QLabel(Dialog)
         self.label_job.setGeometry(QtCore.QRect(20, 40, 111, 16))
         self.label_job.setObjectName("label_job")
-        self.batch_list = QtWidgets.QListView(Dialog)
+        self.batch_list = QtWidgets.QListWidget(Dialog)
         self.batch_list.setGeometry(QtCore.QRect(250, 110, 341, 201))
         self.batch_list.setObjectName("batch_list")
         self.label_2 = QtWidgets.QLabel(Dialog)
@@ -46,8 +46,11 @@ class Ui_Dialog(object):
         self.label_7.setGeometry(QtCore.QRect(440, 40, 91, 16))
         self.label_7.setObjectName("label_7")
         self.kill_job_btn = QtWidgets.QPushButton(Dialog)
-        self.kill_job_btn.setGeometry(QtCore.QRect(250, 330, 75, 23))
+        self.kill_job_btn.setGeometry(QtCore.QRect(114, 140, 91, 23))
         self.kill_job_btn.setObjectName("kill_job_btn")
+        self.pushButton = QtWidgets.QPushButton(Dialog)
+        self.pushButton.setGeometry(QtCore.QRect(250, 320, 75, 23))
+        self.pushButton.setObjectName("pushButton")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -64,6 +67,7 @@ class Ui_Dialog(object):
         self.com_total.setText(_translate("Dialog", "COM"))
         self.label_7.setText(_translate("Dialog", "Total Commands:"))
         self.kill_job_btn.setText(_translate("Dialog", "Kill Job"))
+        self.pushButton.setText(_translate("Dialog", "Kill Batch"))
 
 
 if __name__ == "__main__":

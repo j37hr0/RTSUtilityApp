@@ -81,11 +81,8 @@ def get_user_compatibility(user_id):
         sql_connection = sql.Connection()
         dlg.ui.user_id_label.setText(str(sql_connection.find_user(dlg.ui.qsmacker_email.toPlainText())))
         user_id = dlg.ui.user_id_label.text()
-        print(user_id)
         permissions = sql_connection.find_permissions_by_user_id(user_id)
         if not permissions:
-            print(permissions)
-            print("User is compatible, has no permissions")
             popup = QMessageBox()
             popup.setWindowTitle("User is compatible")
             popup.setText("User is compatible, has no permissions. Update permissions now?")
@@ -95,7 +92,6 @@ def get_user_compatibility(user_id):
             if x == QMessageBox.Yes:
                 result = update_user_permissions(user_id)
                 if result:
-                    print("updated permissions")
                     popup0 = QMessageBox()
                     popup0.setWindowTitle("Permissions Updated")
                     popup0.setText("Permissions updated successfully")
@@ -106,7 +102,6 @@ def get_user_compatibility(user_id):
                     email.recieverEmail.append("jethro.cotton3@gmail.com")
                     email.send_email("Qsmacker Permissions Updated", f"Qsmacker permissions updated for user with email {user_email} and user id {user_id}")
                 if not result:
-                    print("didn't update permissions")
                     popup1 = QMessageBox()
                     popup1.setWindowTitle("Permissions not updated")
                     popup1.setText("Permissions not updated, some error. If it persists, please contact IT")
@@ -126,8 +121,7 @@ def get_qsmacker_job(job_name):
     sql_connection = sql.Connection()
     jobName = searchDlg.ui.qsmacker_jobname.toPlainText()
     job = sql_connection.find_job(jobName)
-    print(job)
-    if job[0] == None:
+    if job == "no job":
         popup = QMessageBox()
         popup.setWindowTitle("No job found")
         popup.setText("No job found with that name, please check the name and try again")
@@ -135,8 +129,14 @@ def get_qsmacker_job(job_name):
         popup.setStandardButtons(QMessageBox.Ok)
         x = popup.exec_()
     else:
+        counts = sql_connection.get_totals(job[0])
         searchDlg.ui.job_id.setText(str(job[0]))
         searchDlg.ui.qsmacker_jobname.setText(str(job[1]))
+        searchDlg.ui.batch_list.clear()
+        for number in range(len(job[2])):
+            searchDlg.ui.batch_list.addItem(str(job[2][number])) 
+        searchDlg.ui.mac_total.setText(str(counts[0]['Machines']))
+        searchDlg.ui.com_total.setText(str(counts[1]['Commands'])) 
 
 
 searchDlg.ui.find_job_btn.clicked.connect(get_qsmacker_job)

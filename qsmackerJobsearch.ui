@@ -49,7 +49,7 @@
     <string>Job Name (exact):</string>
    </property>
   </widget>
-  <widget class="QListView" name="batch_list">
+  <widget class="QListWidget" name="batch_list">
    <property name="geometry">
     <rect>
      <x>250</x>
@@ -140,14 +140,27 @@
   <widget class="QPushButton" name="kill_job_btn">
    <property name="geometry">
     <rect>
-     <x>250</x>
-     <y>330</y>
-     <width>75</width>
+     <x>114</x>
+     <y>140</y>
+     <width>91</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
     <string>Kill Job</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>320</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Kill Batch</string>
    </property>
   </widget>
  </widget>

@@ -75,6 +75,51 @@ class Connection:
             print("Permissions not updated")
             return False
 
+    def get_batches(self, job_id):
+        if job_id == "":
+            print("No job id provided")
+            return None
+        else:
+            self.make_connection(database="Qsmacker")
+            self.cursor.execute(f"SELECT * FROM RTUBatch WHERE JobID = {job_id} ORDER BY insertDate DESC")
+            batches = self.cursor.fetchall()
+            if batches == None:
+                print("No batches found")
+                return None
+            else:
+                self.close_connection()
+                return batches
+
+    def get_totals(self, job_id):
+        if job_id == "":
+            print("No job id provided")
+            return None
+        else:
+            self.make_connection(database="Qsmacker")
+            self.cursor.execute(f"SELECT distinct count(*) as 'Machines' FROM RTUBatch WHERE JobID = {job_id}")
+            machineCount = self.cursor.fetchall()
+            self.close_connection()
+            self.make_connection(database="Qsmacker")
+            self.cursor.execute(f"""
+                                select count(j.Description) as 'Commands'
+                                from QSmacker..Job j
+                                inner join QSmacker..RTUBatch b on j.ID = b.JobId
+                                inner join QSmacker..Command c on b.ID = c.RTUBatchId
+                                where c.CommandStatusId = 7
+                                and j.JobStatusId = 1
+                                and b.BatchStatusId = 1
+                                and j.id = {job_id}
+                                """)
+            commandCount = self.cursor.fetchall()
+            if machineCount == None:
+                print("No batches found")
+                return None
+            else:
+                self.close_connection()
+                machineCount.append(commandCount[0])
+                print(machineCount)
+                return machineCount
+
     def find_job(self, jobname):
         if jobname == "":
             print("No job name provided")
@@ -86,9 +131,20 @@ class Connection:
             print(job)
             if job == None:
                 print("No job found SQL")
-                return None
+                return "no job"
             else:
                 job = [job['id'], job['Description']]
+                print(job)
+                batches = self.get_batches(job[0])
+                removeKeys = ['id', 'jobid', 'BatchTypeId', 'currentBatch', 'removedFromQueue','userId', 'hasChildBatch','parentBatchId'] 
+                for key in removeKeys:
+                    for batch in batches:
+                        batch.pop(key, None)
+                if batches == None:
+                    print("No batches found SQL")
+                    return None
+                else:
+                    job.append(batches)
                 self.close_connection()
                 return job
             
