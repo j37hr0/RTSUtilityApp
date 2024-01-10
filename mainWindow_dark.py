@@ -70,7 +70,11 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.leftMenuSubContainer.sizePolicy().hasHeightForWidth())
         self.leftMenuSubContainer.setSizePolicy(sizePolicy)
-        self.leftMenuSubContainer.setStyleSheet("background-color: #16191d;")
+        self.leftMenuSubContainer.setStyleSheet("*{background-color: #16191d;}\n"
+"\n"
+"QPushButton:hover {    \n"
+"    background-color: #343b47;\n"
+"}")
         self.leftMenuSubContainer.setObjectName("leftMenuSubContainer")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.leftMenuSubContainer)
         self.verticalLayout_2.setContentsMargins(0, 45, 0, 0)
@@ -89,7 +93,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setContentsMargins(5, 0, -1, 0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.menuBtn = QtWidgets.QPushButton(self.frame)
-        self.menuBtn.setStyleSheet("background-color: #2c313c;")
+        self.menuBtn.setStyleSheet("*{background-color: #2c313c;}\n"
+":hover {    \n"
+"    background-color: #343b47;\n"
+"}")
         self.menuBtn.setText("")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/icons/icons/align-justify.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -112,7 +119,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setContentsMargins(5, -1, -1, -1)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.homeBtn = QtWidgets.QPushButton(self.frame_2)
-        self.homeBtn.setStyleSheet("background-color: #2c313c;")
+        self.homeBtn.setStyleSheet("*{background-color: #2c313c;}\n"
+":hover {    \n"
+"    background-color: #343b47;\n"
+"}")
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(":/icons/icons/home.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.homeBtn.setIcon(icon1)
@@ -120,7 +130,10 @@ class Ui_MainWindow(object):
         self.homeBtn.setObjectName("homeBtn")
         self.verticalLayout_3.addWidget(self.homeBtn)
         self.qsmackerBtn = QtWidgets.QPushButton(self.frame_2)
-        self.qsmackerBtn.setStyleSheet("background-color: #2c313c;")
+        self.qsmackerBtn.setStyleSheet("*{background-color: #2c313c;}\n"
+":hover {    \n"
+"    background-color: #343b47;\n"
+"}")
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap(":/icons/icons/download.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.qsmackerBtn.setIcon(icon2)
@@ -128,7 +141,10 @@ class Ui_MainWindow(object):
         self.qsmackerBtn.setObjectName("qsmackerBtn")
         self.verticalLayout_3.addWidget(self.qsmackerBtn)
         self.realcontrolBtn = QtWidgets.QPushButton(self.frame_2)
-        self.realcontrolBtn.setStyleSheet("background-color: #2c313c;")
+        self.realcontrolBtn.setStyleSheet("*{background-color: #2c313c;}\n"
+":hover {    \n"
+"    background-color: #343b47;\n"
+"}")
         icon3 = QtGui.QIcon()
         icon3.addPixmap(QtGui.QPixmap(":/icons/icons/tool.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.realcontrolBtn.setIcon(icon3)
@@ -156,7 +172,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.setContentsMargins(5, -1, -1, 9)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.settingsBtn = QtWidgets.QPushButton(self.frame_3)
-        self.settingsBtn.setStyleSheet("background-color: #2c313c;")
+        self.settingsBtn.setStyleSheet("*{background-color: #2c313c;}\n"
+":hover {    \n"
+"    background-color: #343b47;\n"
+"}")
         icon4 = QtGui.QIcon()
         icon4.addPixmap(QtGui.QPixmap(":/icons/icons/settings.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.settingsBtn.setIcon(icon4)
@@ -164,7 +183,10 @@ class Ui_MainWindow(object):
         self.settingsBtn.setObjectName("settingsBtn")
         self.verticalLayout_4.addWidget(self.settingsBtn)
         self.helpBtn = QtWidgets.QPushButton(self.frame_3)
-        self.helpBtn.setStyleSheet("background-color: #2c313c;")
+        self.helpBtn.setStyleSheet("*{background-color: #2c313c;}\n"
+":hover {    \n"
+"    background-color: #343b47;\n"
+"}")
         icon5 = QtGui.QIcon()
         icon5.addPixmap(QtGui.QPixmap(":/icons/icons/help-circle.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.helpBtn.setIcon(icon5)
@@ -172,7 +194,10 @@ class Ui_MainWindow(object):
         self.helpBtn.setObjectName("helpBtn")
         self.verticalLayout_4.addWidget(self.helpBtn)
         self.signinBtn = QtWidgets.QPushButton(self.frame_3)
-        self.signinBtn.setStyleSheet("background-color: #2c313c;")
+        self.signinBtn.setStyleSheet("*{background-color: #2c313c;}\n"
+":hover {    \n"
+"    background-color: #343b47;\n"
+"}")
         icon6 = QtGui.QIcon()
         icon6.addPixmap(QtGui.QPixmap(":/icons/icons/log-in.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.signinBtn.setIcon(icon6)
@@ -213,6 +238,12 @@ class Ui_MainWindow(object):
         self.label.setObjectName("label")
         self.horizontalLayout_3.addWidget(self.label)
         self.pushButton = QtWidgets.QPushButton(self.frame_5)
+        self.pushButton.setStyleSheet(":hover {    \n"
+"    background-color:  #2c313c;\n"
+"    border-radius: 10px;\n"
+"}\n"
+"\n"
+"")
         self.pushButton.setText("")
         icon7 = QtGui.QIcon()
         icon7.addPixmap(QtGui.QPixmap(":/icons/icons/x-circle.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -302,6 +333,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout(self.frame_6)
         self.horizontalLayout_6.setObjectName("horizontalLayout_6")
         self.pushButton_6 = QtWidgets.QPushButton(self.frame_6)
+        self.pushButton_6.setStyleSheet(":hover {    \n"
+"    background-color:  #2c313c;\n"
+"}\n"
+"\n"
+"")
         self.pushButton_6.setText("")
         icon8 = QtGui.QIcon()
         icon8.addPixmap(QtGui.QPixmap(":/icons/icons/more-horizontal.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -309,6 +345,11 @@ class Ui_MainWindow(object):
         self.pushButton_6.setObjectName("pushButton_6")
         self.horizontalLayout_6.addWidget(self.pushButton_6)
         self.pushButton_5 = QtWidgets.QPushButton(self.frame_6)
+        self.pushButton_5.setStyleSheet(":hover {    \n"
+"    background-color:  #2c313c;\n"
+"}\n"
+"\n"
+"")
         self.pushButton_5.setText("")
         icon9 = QtGui.QIcon()
         icon9.addPixmap(QtGui.QPixmap(":/icons/icons/user.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -324,6 +365,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.frame_7)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.minimizeBtn = QtWidgets.QPushButton(self.frame_7)
+        self.minimizeBtn.setStyleSheet(":hover {    \n"
+"    background-color:  #2c313c;\n"
+"}\n"
+"\n"
+"")
         self.minimizeBtn.setText("")
         icon10 = QtGui.QIcon()
         icon10.addPixmap(QtGui.QPixmap(":/icons/icons/minus.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -332,6 +378,11 @@ class Ui_MainWindow(object):
         self.minimizeBtn.setObjectName("minimizeBtn")
         self.horizontalLayout_4.addWidget(self.minimizeBtn)
         self.restoreBtn = QtWidgets.QPushButton(self.frame_7)
+        self.restoreBtn.setStyleSheet(":hover {    \n"
+"    background-color:  #2c313c;\n"
+"}\n"
+"\n"
+"")
         self.restoreBtn.setText("")
         icon11 = QtGui.QIcon()
         icon11.addPixmap(QtGui.QPixmap(":/icons/icons/square.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -340,6 +391,11 @@ class Ui_MainWindow(object):
         self.restoreBtn.setObjectName("restoreBtn")
         self.horizontalLayout_4.addWidget(self.restoreBtn)
         self.closeBtn = QtWidgets.QPushButton(self.frame_7)
+        self.closeBtn.setStyleSheet(":hover {    \n"
+"    background-color:  #2c313c;\n"
+"}\n"
+"\n"
+"")
         self.closeBtn.setText("")
         icon12 = QtGui.QIcon()
         icon12.addPixmap(QtGui.QPixmap(":/icons/icons/x.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -425,6 +481,11 @@ class Ui_MainWindow(object):
         self.label_5.setObjectName("label_5")
         self.horizontalLayout_8.addWidget(self.label_5, 0, QtCore.Qt.AlignHCenter)
         self.pushButton_7 = QtWidgets.QPushButton(self.frame_8)
+        self.pushButton_7.setStyleSheet(":hover {    \n"
+"    background-color:  #2c313c;\n"
+"}\n"
+"\n"
+"")
         self.pushButton_7.setText("")
         self.pushButton_7.setIcon(icon12)
         self.pushButton_7.setObjectName("pushButton_7")
@@ -492,6 +553,11 @@ class Ui_MainWindow(object):
         self.label_10.setObjectName("label_10")
         self.horizontalLayout_9.addWidget(self.label_10, 0, QtCore.Qt.AlignHCenter)
         self.pushButton_8 = QtWidgets.QPushButton(self.frame_9)
+        self.pushButton_8.setStyleSheet(":hover {    \n"
+"    background-color:  #2c313c;\n"
+"}\n"
+"\n"
+"")
         self.pushButton_8.setText("")
         self.pushButton_8.setIcon(icon12)
         self.pushButton_8.setObjectName("pushButton_8")
@@ -501,7 +567,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_10.addWidget(self.popupNotificationContainer)
         self.horizontalLayout.addWidget(self.mainBodyContainer)
         MainWindow.setCentralWidget(self.centralwidget)
-        
 
         self.retranslateUi(MainWindow)
         self.stackedWidget.setCurrentIndex(0)
@@ -549,6 +614,5 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
-    from Custom_Widgets.Widgets import *
     MainWindow.show()
     sys.exit(app.exec_())
