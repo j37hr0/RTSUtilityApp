@@ -13,8 +13,8 @@ import os
 
 
 
-#TODO: create a Qsmacker Job Stopper - do input validation on the job to be cancelled 
-#T
+
+#TODO: hover over buttons not working
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):

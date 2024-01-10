@@ -98,7 +98,11 @@ background-color: #1f232a;
           </sizepolicy>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: #16191d;</string>
+          <string notr="true">*{background-color: #16191d;}
+
+QPushButton:hover {	
+	background-color: #343b47;
+}</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="leftMargin">
@@ -146,7 +150,10 @@ background-color: #1f232a;
                 <string>Menu</string>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: #2c313c;</string>
+                <string notr="true">*{background-color: #2c313c;}
+:hover {	
+	background-color: #343b47;
+}</string>
                </property>
                <property name="text">
                 <string/>
@@ -193,7 +200,10 @@ background-color: #1f232a;
                 <string>Home</string>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: #2c313c;</string>
+                <string notr="true">*{background-color: #2c313c;}
+:hover {	
+	background-color: #343b47;
+}</string>
                </property>
                <property name="text">
                 <string>Home</string>
@@ -216,7 +226,10 @@ background-color: #1f232a;
                 <string>Qsmacker Tools</string>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: #2c313c;</string>
+                <string notr="true">*{background-color: #2c313c;}
+:hover {	
+	background-color: #343b47;
+}</string>
                </property>
                <property name="text">
                 <string>Qsmacker</string>
@@ -239,7 +252,10 @@ background-color: #1f232a;
                 <string>Realcontrol Tools</string>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: #2c313c;</string>
+                <string notr="true">*{background-color: #2c313c;}
+:hover {	
+	background-color: #343b47;
+}</string>
                </property>
                <property name="text">
                 <string>RealControl</string>
@@ -328,7 +344,10 @@ background-color: #1f232a;
                 <string>Settings</string>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: #2c313c;</string>
+                <string notr="true">*{background-color: #2c313c;}
+:hover {	
+	background-color: #343b47;
+}</string>
                </property>
                <property name="text">
                 <string>Settings</string>
@@ -351,7 +370,10 @@ background-color: #1f232a;
                 <string>Get Help</string>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: #2c313c;</string>
+                <string notr="true">*{background-color: #2c313c;}
+:hover {	
+	background-color: #343b47;
+}</string>
                </property>
                <property name="text">
                 <string>Help</string>
@@ -374,7 +396,10 @@ background-color: #1f232a;
                 <string>Log in to use</string>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: #2c313c;</string>
+                <string notr="true">*{background-color: #2c313c;}
+:hover {	
+	background-color: #343b47;
+}</string>
                </property>
                <property name="text">
                 <string>Sign in</string>
@@ -453,6 +478,14 @@ background-color: #1f232a;
               <widget class="QPushButton" name="pushButton">
                <property name="toolTip">
                 <string>Close Menu</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">:hover {	
+	background-color:  #2c313c;
+	border-radius: 10px;
+}
+
+</string>
                </property>
                <property name="text">
                 <string/>
@@ -632,6 +665,13 @@ background-color: #1f232a;
                <property name="toolTip">
                 <string>More</string>
                </property>
+               <property name="styleSheet">
+                <string notr="true">:hover {	
+	background-color:  #2c313c;
+}
+
+</string>
+               </property>
                <property name="text">
                 <string/>
                </property>
@@ -645,6 +685,13 @@ background-color: #1f232a;
               <widget class="QPushButton" name="pushButton_5">
                <property name="toolTip">
                 <string>Profile Info</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">:hover {	
+	background-color:  #2c313c;
+}
+
+</string>
                </property>
                <property name="text">
                 <string/>
@@ -675,6 +722,13 @@ background-color: #1f232a;
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
               <widget class="QPushButton" name="minimizeBtn">
+               <property name="styleSheet">
+                <string notr="true">:hover {	
+	background-color:  #2c313c;
+}
+
+</string>
+               </property>
                <property name="text">
                 <string/>
                </property>
@@ -692,6 +746,13 @@ background-color: #1f232a;
              </item>
              <item>
               <widget class="QPushButton" name="restoreBtn">
+               <property name="styleSheet">
+                <string notr="true">:hover {	
+	background-color:  #2c313c;
+}
+
+</string>
+               </property>
                <property name="text">
                 <string/>
                </property>
@@ -709,6 +770,13 @@ background-color: #1f232a;
              </item>
              <item>
               <widget class="QPushButton" name="closeBtn">
+               <property name="styleSheet">
+                <string notr="true">:hover {	
+	background-color:  #2c313c;
+}
+
+</string>
+               </property>
                <property name="text">
                 <string/>
                </property>
@@ -902,6 +970,13 @@ background-color: #1f232a;
                      <property name="toolTip">
                       <string>Close Menu</string>
                      </property>
+                     <property name="styleSheet">
+                      <string notr="true">:hover {	
+	background-color:  #2c313c;
+}
+
+</string>
+                     </property>
                      <property name="text">
                       <string/>
                      </property>
@@ -1015,6 +1090,13 @@ background-color: #1f232a;
                 </item>
                 <item alignment="Qt::AlignRight">
                  <widget class="QPushButton" name="pushButton_8">
+                  <property name="styleSheet">
+                   <string notr="true">:hover {	
+	background-color:  #2c313c;
+}
+
+</string>
+                  </property>
                   <property name="text">
                    <string/>
                   </property>
