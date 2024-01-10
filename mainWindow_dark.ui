@@ -15,7 +15,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">*{
-borer: none;
+border: none;
 background-color: transparent;
 background: transparent;
 padding: 0;
@@ -25,8 +25,11 @@ color: #fff;
 #centralwidget{
 background-color: #1f232a;
 }
-#leftMenuSubContainer,  #rightMenuSubContainer{
-background-color: #1619d;
+#popupNotificationContainer{
+	background-color: #343b47;
+}
+#leftMenuSubContainer, #rightMenuSubContainer{
+	background-color: #16191d;
 }
 #leftMenuSubContainer QPushButton{
 	text-align: left;
@@ -671,7 +674,7 @@ background-color: #1619d;
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
-              <widget class="QPushButton" name="pushButton_3">
+              <widget class="QPushButton" name="minimizeBtn">
                <property name="text">
                 <string/>
                </property>
@@ -688,7 +691,7 @@ background-color: #1619d;
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_2">
+              <widget class="QPushButton" name="restoreBtn">
                <property name="text">
                 <string/>
                </property>
@@ -705,7 +708,7 @@ background-color: #1619d;
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_4">
+              <widget class="QPushButton" name="closeBtn">
                <property name="text">
                 <string/>
                </property>
@@ -978,6 +981,13 @@ background-color: #1619d;
        <item>
         <widget class="QWidget" name="popupNotificationContainer" native="true">
          <layout class="QVBoxLayout" name="verticalLayout_18">
+          <item>
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>Notificaiton</string>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QWidget" name="popupNotificationSubContainer" native="true">
             <layout class="QVBoxLayout" name="verticalLayout_19">

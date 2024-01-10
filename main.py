@@ -6,13 +6,15 @@ from qsmackerpermissions import Ui_Dialog
 import sql
 import alerting
 from qsmackerJobsearch import Ui_Dialog as Ui_Dialog2
+import mainWindow_dark
+
 
 #TODO: create a Qsmacker Job Stopper - do input validation on the job to be cancelled 
 #T
 
 app = QtWidgets.QApplication(sys.argv)
 MainWindow = QtWidgets.QMainWindow()
-ui = mainUI.Ui_MainWindow()
+ui = mainWindow_dark.Ui_MainWindow()
 ui.setupUi(MainWindow)
 
 
