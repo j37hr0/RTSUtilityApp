@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
         self.ui.closeRightBtn.clicked.connect(lambda: self.ui.rightMenuContainer.collapseMenu())
 
         #The problem with the UI code above lies in the JSON data not being read for individual widgets
-
+        #we can try fix this by separating the widgets into their own json style files
 
 
 if __name__ == "__main__":

@@ -25,7 +25,7 @@
   ],
   "QCustomSlideMenu": [
     {
-      "name": "leftMenuContainer",
+      "name": "centerMenuContainer",
       "defaultSize": [
         {
           "width": 45,
@@ -61,7 +61,7 @@
           ]
         },
         {
-          "name": "",
+          "name": "centerMenuContainer",
           "defaultSize": [
             {
               "width": 0,
