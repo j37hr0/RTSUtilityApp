@@ -23,6 +23,19 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         loadJsonStyle(self, self.ui)
         self.show()
+        #button connects for center menu
+        self.ui.settingsBtn.clicked.connect(lambda: self.ui.centerMenuContainer.slideMenu())
+        self.ui.helpBtn.clicked.connect(lambda: self.ui.centerMenuContainer.slideMenu())
+        self.ui.signinBtn.clicked.connect(lambda: self.ui.centerMenuContainer.slideMenu())
+        #close btn for center menu
+        self.ui.closeBtnCenter.clicked.connect(lambda: self.ui.centerMenuContainer.collapseMenu())
+        #button connects for right menu
+        self.ui.elipsesBtn.clicked.connect(lambda: self.ui.rightMenuContainer.slideMenu())
+        self.ui.profileBtn.clicked.connect(lambda: self.ui.rightMenuContainer.slideMenu())
+        self.ui.closeRightBtn.clicked.connect(lambda: self.ui.rightMenuContainer.collapseMenu())
+
+        #The problem with the UI code above lies in the JSON data not being read for individual widgets
+
 
 
 if __name__ == "__main__":

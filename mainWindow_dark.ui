@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>956</width>
-    <height>471</height>
+    <height>470</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,7 +69,13 @@ background-color: #1f232a;
      <number>0</number>
     </property>
     <item alignment="Qt::AlignLeft">
-     <widget class="QWidget" name="left_menuContainer" native="true">
+     <widget class="QCustomSlideMenu" name="leftMenuContainer" native="true">
+      <property name="maximumSize">
+       <size>
+        <width>45</width>
+        <height>16777215</height>
+       </size>
+      </property>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
@@ -92,7 +98,7 @@ background-color: #1f232a;
        <item>
         <widget class="QWidget" name="leftMenuSubContainer" native="true">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+          <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -314,7 +320,7 @@ QPushButton:hover {
             </property>
            </spacer>
           </item>
-          <item>
+          <item alignment="Qt::AlignBottom">
            <widget class="QFrame" name="frame_3">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -426,16 +432,22 @@ QPushButton:hover {
      </widget>
     </item>
     <item>
-     <widget class="QWidget" name="centerMenuContainer" native="true">
+     <widget class="QCustomSlideMenu" name="centerMenuContainer" native="true">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
-        <width>200</width>
+        <width>0</width>
         <height>16777215</height>
        </size>
       </property>
@@ -443,6 +455,21 @@ QPushButton:hover {
        <string notr="true"/>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QWidget" name="centerMenuSubContainer" native="true">
          <property name="sizePolicy">
@@ -453,7 +480,7 @@ QPushButton:hover {
          </property>
          <property name="maximumSize">
           <size>
-           <width>250</width>
+           <width>16777215</width>
            <height>16777215</height>
           </size>
          </property>
@@ -475,7 +502,7 @@ QPushButton:hover {
               </widget>
              </item>
              <item alignment="Qt::AlignRight">
-              <widget class="QPushButton" name="pushButton">
+              <widget class="QPushButton" name="closeBtnCenter">
                <property name="toolTip">
                 <string>Close Menu</string>
                </property>
@@ -511,7 +538,7 @@ QPushButton:hover {
              <string notr="true">background-color: #2c313c;</string>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="page">
              <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -596,7 +623,7 @@ QPushButton:hover {
     <item>
      <widget class="QWidget" name="mainBodyContainer" native="true">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -680,7 +707,7 @@ QPushButton:hover {
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
              <item>
-              <widget class="QPushButton" name="pushButton_6">
+              <widget class="QPushButton" name="elipsesBtn">
                <property name="toolTip">
                 <string>More</string>
                </property>
@@ -701,7 +728,7 @@ QPushButton:hover {
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_5">
+              <widget class="QPushButton" name="profileBtn">
                <property name="toolTip">
                 <string>Profile Info</string>
                </property>
@@ -862,7 +889,7 @@ QPushButton:hover {
              <item>
               <widget class="QStackedWidget" name="stackedWidget_3">
                <property name="currentIndex">
-                <number>0</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="page_6">
                 <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -918,11 +945,17 @@ QPushButton:hover {
            </widget>
           </item>
           <item alignment="Qt::AlignRight">
-           <widget class="QWidget" name="rightMenuContainer" native="true">
+           <widget class="QCustomSlideMenu" name="rightMenuContainer" native="true">
             <property name="minimumSize">
              <size>
-              <width>200</width>
+              <width>0</width>
               <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>0</width>
+              <height>16777215</height>
              </size>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -985,7 +1018,13 @@ QPushButton:hover {
                     </widget>
                    </item>
                    <item alignment="Qt::AlignRight">
-                    <widget class="QPushButton" name="pushButton_7">
+                    <widget class="QPushButton" name="closeRightBtn">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
                      <property name="toolTip">
                       <string>Close Menu</string>
                      </property>
@@ -1011,7 +1050,7 @@ QPushButton:hover {
                 <item>
                  <widget class="QStackedWidget" name="stackedWidget_2">
                   <property name="currentIndex">
-                   <number>1</number>
+                   <number>0</number>
                   </property>
                   <widget class="QWidget" name="page_4">
                    <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1083,7 +1122,7 @@ QPushButton:hover {
            </widget>
           </item>
           <item>
-           <widget class="QWidget" name="popupNotificationSubContainer" native="true">
+           <widget class="QCustomSlideMenu" name="popupNotificationSubContainer" native="true">
             <layout class="QVBoxLayout" name="verticalLayout_19">
              <item>
               <widget class="QFrame" name="frame_9">
@@ -1140,6 +1179,14 @@ QPushButton:hover {
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomSlideMenu</class>
+   <extends>QWidget</extends>
+   <header location="global">Custom_Widgets.QCustomSlideMenu.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="resources.qrc"/>
  </resources>

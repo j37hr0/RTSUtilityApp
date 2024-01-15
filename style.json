@@ -22,5 +22,99 @@
         }
       ]
     }
+  ],
+  "QCustomSlideMenu": [
+    {
+      "name": "leftMenuContainer",
+      "defaultSize": [
+        {
+          "width": 45,
+          "height": "parent"
+        }
+      ],
+      "collapsedSize": [
+        {
+          "width": 45,
+          "height": "parent"
+        }
+      ],
+      "expandedSize": [
+        {
+          "width": 100,
+          "height": "parent"
+        }
+      ],
+      "toggleButton": [
+        {
+          "buttonName": "menuBtn",
+          "icons": [
+            {
+              "whenMenuIsCollapsed": ":/icons/icons/align-justify.svg",
+              "whenMenuIsExpanded": ":/icons/icons/chevron-left.svg"
+            }
+          ],
+          "menuTransitionAnimation": [
+            {
+              "animationDuration": 500,
+              "animationEasingCurve": "Linear"
+            }
+          ]
+        },
+        {
+          "name": "",
+          "defaultSize": [
+            {
+              "width": 0,
+              "height": "parent"
+            }
+          ],
+          "collapsedSize": [
+            {
+              "width": 0,
+              "height": "parent"
+            }
+          ],
+          "expandedSize": [
+            {
+              "width": 300,
+              "height": "parent"
+            }
+          ],
+          "menuTransitionAnimation": [
+            {
+              "animationDuration": 500,
+              "animationEasingCurve": "Linear"
+            }
+          ]
+        },
+        {
+          "name": "rightMenuContainer",
+          "defaultSize": [
+            {
+              "width": 0,
+              "height": "auto"
+            }
+          ],
+          "collapsedSize": [
+            {
+              "width": 0,
+              "height": "auto"
+            }
+          ],
+          "expandedSize": [
+            {
+              "width": 300,
+              "height": "auto"
+            }
+          ],
+          "menuTransitionAnimation": [
+            {
+              "animationDuration": 500,
+              "animationEasingCurve": "Linear"
+            }
+          ]
+        }
+      ]
+    }
   ]
 }
