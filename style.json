@@ -25,7 +25,7 @@
   ],
   "QCustomSlideMenu": [
     {
-      "name": "centerMenuContainer",
+      "name": "leftMenuContainer",
       "defaultSize": [
         {
           "width": 45,
@@ -59,60 +59,60 @@
               "animationEasingCurve": "Linear"
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "name": "centerMenuContainer",
+      "defaultSize": [
         {
-          "name": "centerMenuContainer",
-          "defaultSize": [
-            {
-              "width": 0,
-              "height": "parent"
-            }
-          ],
-          "collapsedSize": [
-            {
-              "width": 0,
-              "height": "parent"
-            }
-          ],
-          "expandedSize": [
-            {
-              "width": 300,
-              "height": "parent"
-            }
-          ],
-          "menuTransitionAnimation": [
-            {
-              "animationDuration": 500,
-              "animationEasingCurve": "Linear"
-            }
-          ]
-        },
+          "width": 0,
+          "height": "parent"
+        }
+      ],
+      "collapsedSize": [
         {
-          "name": "rightMenuContainer",
-          "defaultSize": [
-            {
-              "width": 0,
-              "height": "auto"
-            }
-          ],
-          "collapsedSize": [
-            {
-              "width": 0,
-              "height": "auto"
-            }
-          ],
-          "expandedSize": [
-            {
-              "width": 300,
-              "height": "auto"
-            }
-          ],
-          "menuTransitionAnimation": [
-            {
-              "animationDuration": 500,
-              "animationEasingCurve": "Linear"
-            }
-          ]
+          "width": 0,
+          "height": "parent"
+        }
+      ],
+      "expandedSize": [
+        {
+          "width": 300,
+          "height": "parent"
+        }
+      ],
+      "menuTransitionAnimation": [
+        {
+          "animationDuration": 500,
+          "animationEasingCurve": "Linear"
+        }
+      ]
+    },
+    {
+      "name": "rightMenuContainer",
+      "defaultSize": [
+        {
+          "width": 0,
+          "height": "auto"
+        }
+      ],
+      "collapsedSize": [
+        {
+          "width": 0,
+          "height": "auto"
+        }
+      ],
+      "expandedSize": [
+        {
+          "width": 200,
+          "height": "auto"
+        }
+      ],
+      "menuTransitionAnimation": [
+        {
+          "animationDuration": 500,
+          "animationEasingCurve": "Linear"
         }
       ]
     }
