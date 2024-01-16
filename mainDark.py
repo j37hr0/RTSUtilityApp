@@ -33,6 +33,7 @@ class MainWindow(QMainWindow):
         self.ui.elipsesBtn.clicked.connect(lambda: self.ui.rightMenuContainer.slideMenu())
         self.ui.profileBtn.clicked.connect(lambda: self.ui.rightMenuContainer.slideMenu())
         self.ui.closeRightBtn.clicked.connect(lambda: self.ui.rightMenuContainer.collapseMenu())
+        #self.ui.notificationBtn.clicked.connect(lambda: self.ui.popupNotificationContainer.slideMenu())
 
         #The problem with the UI code above lies in the JSON data not being read for individual widgets
         #we can try fix this by separating the widgets into their own json style files

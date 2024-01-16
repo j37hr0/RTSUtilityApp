@@ -115,6 +115,52 @@
           "animationEasingCurve": "Linear"
         }
       ]
+    },
+    {
+      "name": "popupNotificationContainer",
+      "defaultSize": [
+        {
+          "width": 0,
+          "height": "auto"
+        }
+      ],
+      "collapsedSize": [
+        {
+          "width": 0,
+          "height": "auto"
+        }
+      ],
+      "expandedSize": [
+        {
+          "width": 500,
+          "height": "300"
+        }
+      ],
+      "menuTransitionAnimation": [
+        {
+          "animationDuration": 500,
+          "animationEasingCurve": "Linear"
+        }
+      ],
+      "floatPosition": [
+        {
+          "relativeTo": "centralwidget",
+          "position": "bottom-right",
+          "shadow": [
+            {
+              "color": "#000",
+              "blurRadius": 20,
+              "xOffset": 0,
+              "yOffset": 0
+            }
+          ]
+        }
+      ],
+      "toggleButton": [
+        {
+          "buttonName": "notificationBtn"
+        }
+      ]
     }
   ]
 }

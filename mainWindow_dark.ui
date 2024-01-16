@@ -707,6 +707,17 @@ QPushButton:hover {
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
              <item>
+              <widget class="QPushButton" name="notificationBtn">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="resources.qrc">
+                 <normaloff>:/icons/icons/bell.svg</normaloff>:/icons/icons/bell.svg</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QPushButton" name="elipsesBtn">
                <property name="toolTip">
                 <string>More</string>
@@ -1112,10 +1123,28 @@ QPushButton:hover {
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="popupNotificationContainer" native="true">
+        <widget class="QCustomSlideMenu" name="popupNotificationContainer" native="true">
          <layout class="QVBoxLayout" name="verticalLayout_18">
+          <item alignment="Qt::AlignRight">
+           <widget class="QPushButton" name="pushButton_8">
+            <property name="styleSheet">
+             <string notr="true">:hover {	
+	background-color:  #2c313c;
+}
+
+</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="resources.qrc">
+              <normaloff>:/icons/icons/x.svg</normaloff>:/icons/icons/x.svg</iconset>
+            </property>
+           </widget>
+          </item>
           <item>
-           <widget class="QLabel" name="label_11">
+           <widget class="QLabel" name="notificaitonTitle">
             <property name="text">
              <string>Notificaiton</string>
             </property>
@@ -1134,7 +1163,7 @@ QPushButton:hover {
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_9">
                 <item alignment="Qt::AlignHCenter">
-                 <widget class="QLabel" name="label_10">
+                 <widget class="QLabel" name="notificationBody">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -1142,25 +1171,7 @@ QPushButton:hover {
                    </sizepolicy>
                   </property>
                   <property name="text">
-                   <string>Notification Message</string>
-                  </property>
-                 </widget>
-                </item>
-                <item alignment="Qt::AlignRight">
-                 <widget class="QPushButton" name="pushButton_8">
-                  <property name="styleSheet">
-                   <string notr="true">:hover {	
-	background-color:  #2c313c;
-}
-
-</string>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="resources.qrc">
-                    <normaloff>:/icons/icons/x.svg</normaloff>:/icons/icons/x.svg</iconset>
+                   <string>Notification Body</string>
                   </property>
                  </widget>
                 </item>
