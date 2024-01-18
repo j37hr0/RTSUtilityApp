@@ -921,7 +921,17 @@ QPushButton:hover {
              <item>
               <widget class="QCustomQStackedWidget" name="mainPages">
                <property name="styleSheet">
-                <string notr="true">QPushButton {background-color: white;
+                <string notr="true">QComboBox{
+	color: black;
+	selection-color: black;
+	border: 2px;
+	background-color:white;
+}
+QComboBox:item:selected{
+	background-color:black;
+	color:white;
+}
+QPushButton {background-color: white;
 color: black;
 border-radius: 5px;}
 QPushButton:hover {
@@ -940,7 +950,7 @@ color: blue;
 }</string>
                </property>
                <property name="currentIndex">
-                <number>2</number>
+                <number>3</number>
                </property>
                <widget class="QWidget" name="homePage">
                 <property name="styleSheet">
@@ -977,7 +987,7 @@ color: blue;
                    </property>
                    <layout class="QHBoxLayout" name="horizontalLayout_15">
                     <item>
-                     <widget class="QPushButton" name="pushButton">
+                     <widget class="QPushButton" name="auditPageBtn">
                       <property name="minimumSize">
                        <size>
                         <width>250</width>
@@ -1209,6 +1219,122 @@ color: blue;
                     </property>
                     <property name="text">
                      <string/>
+                    </property>
+                   </widget>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="auditPage">
+                <layout class="QHBoxLayout" name="horizontalLayout_18">
+                 <item>
+                  <widget class="QFrame" name="frame_17">
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <widget class="QComboBox" name="auditTypeCombo">
+                    <property name="geometry">
+                     <rect>
+                      <x>20</x>
+                      <y>30</y>
+                      <width>121</width>
+                      <height>22</height>
+                     </rect>
+                    </property>
+                    <item>
+                     <property name="text">
+                      <string>RTU (by RefNo)</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>RTU (by SerialNo)</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>Branch</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>Customer</string>
+                     </property>
+                    </item>
+                   </widget>
+                   <widget class="QLabel" name="label_22">
+                    <property name="geometry">
+                     <rect>
+                      <x>20</x>
+                      <y>10</y>
+                      <width>91</width>
+                      <height>16</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string>Select Audit Type</string>
+                    </property>
+                   </widget>
+                   <widget class="QLabel" name="auditTypeLabel">
+                    <property name="geometry">
+                     <rect>
+                      <x>190</x>
+                      <y>10</y>
+                      <width>101</width>
+                      <height>16</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string>Enter Refno: </string>
+                    </property>
+                   </widget>
+                   <widget class="QTextEdit" name="auditSearchBox">
+                    <property name="geometry">
+                     <rect>
+                      <x>190</x>
+                      <y>30</y>
+                      <width>131</width>
+                      <height>21</height>
+                     </rect>
+                    </property>
+                    <property name="placeholderText">
+                     <string>RefNo...</string>
+                    </property>
+                   </widget>
+                   <widget class="QPushButton" name="auditSearchBtn">
+                    <property name="geometry">
+                     <rect>
+                      <x>250</x>
+                      <y>60</y>
+                      <width>75</width>
+                      <height>23</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string>Search</string>
+                    </property>
+                   </widget>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QFrame" name="auditResultsFrame">
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <widget class="QTableWidget" name="auditResultsTable">
+                    <property name="geometry">
+                     <rect>
+                      <x>30</x>
+                      <y>0</y>
+                      <width>471</width>
+                      <height>192</height>
+                     </rect>
                     </property>
                    </widget>
                   </widget>

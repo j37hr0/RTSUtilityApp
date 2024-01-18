@@ -12,10 +12,11 @@ from Custom_Widgets.Widgets import *
 import os
 
 
-
-
-
 #TODO: link keyboard press of enter to buttons for search and user search
+#TODO: for safety, we should reset pages/forms when something is updated or changed in the DB
+#TODO: for a quick win, I can refactor the popup code into a function that takes in the title, text, icon and buttons
+#TODO: when the app opens for auditing purposes, run a query to populate a dictionary with user emails and user ids for use in the audit table
+
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -41,10 +42,158 @@ class MainWindow(QMainWindow):
         self.ui.batchStatusFrame.hide()
         self.ui.qsmackerUserFrame.hide()
         self.ui.defaultBranchFrame.hide()
+        self.ui.auditResultsFrame.hide()
         self.ui.setPermBtn.clicked.connect(lambda: self.update_user_permissions())
         self.ui.branchSearchBtn.clicked.connect(lambda: self.get_default_branch(self.ui.branchSearch.toPlainText()))
+        self.ui.addDefaultMachineBtn.clicked.connect(lambda: self.insert_default_machine())
+        self.ui.auditTypeCombo.currentIndexChanged.connect(lambda: self.set_audit_menu())
+        self.ui.auditSearchBtn.clicked.connect(lambda: self.run_audit())
         #The problem with the UI code above lies in the JSON data not being read for individual widgets
         #we can try fix this by separating the widgets into their own json style files
+    
+    def run_audit(self):
+        sql_connection = sql.Connection()
+        if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
+            result = sql_connection.audit_rtu_by_refno(self.ui.auditSearchBox.toPlainText())
+            if result == "no refno":
+                popup = QMessageBox()
+                popup.setWindowTitle("No results found")
+                popup.setText("No results found for that RefNo, please check the RefNo and try again")
+                popup.setIcon(QMessageBox.Warning)
+                popup.setStandardButtons(QMessageBox.Ok)
+                popup.exec_()
+            else:
+                print(result)
+                self.ui.auditResultsFrame.show()
+                self.ui.auditResultsTable.setRowCount(len(result))
+                self.ui.auditResultsTable.setColumnCount(5)
+                self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "CurrentValue", "PreviousValue"])
+                # Compare dictionaries and append necessary values to auditResultsTable
+                for row in range(len(result) - 1):
+                    current_dict = result[row]
+                    next_dict = result[row + 1]
+                    for key, value in current_dict.items():
+                        if key in next_dict and value != next_dict[key]:
+                            text_value = key
+                            current_value = next_dict[key]
+                            previous_value = value
+                            date_action = str(current_dict["DateAction"])
+                            print(date_action)
+                            user = str(current_dict["UserID"])
+                            self.ui.auditResultsTable.setItem(row, 2, QtWidgets.QTableWidgetItem(text_value))
+                            self.ui.auditResultsTable.setItem(row, 3, QtWidgets.QTableWidgetItem(str(current_value)))
+                            self.ui.auditResultsTable.setItem(row, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
+                            self.ui.auditResultsTable.setItem(row, 0, QtWidgets.QTableWidgetItem(date_action))
+                            self.ui.auditResultsTable.setItem(row, 1, QtWidgets.QTableWidgetItem(user))
+                    
+        if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
+            result = sql_connection.audit_rtu_by_serialno(self.ui.auditSearchBox.toPlainText())
+            if result == "no results":
+                popup = QMessageBox()
+                popup.setWindowTitle("No results found")
+                popup.setText("No results found for that SerialNo, please check the SerialNo and try again")
+                popup.setIcon(QMessageBox.Warning)
+                popup.setStandardButtons(QMessageBox.Ok)
+                popup.exec_()
+            else:
+                self.ui.auditResultsFrame.show()
+                self.ui.auditResultsTable.setRowCount(len(result))
+                self.ui.auditResultsTable.setColumnCount(5)
+                self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "CurrentValue", "PreviousValue"])
+                for row in range(len(result)):
+                    for column in range(2):
+                        self.ui.auditResultsTable.setItem(row, column, QtWidgets.QTableWidgetItem(str(result[row][column])))
+                # Compare dictionaries and append necessary values to auditResultsTable
+                for row in range(len(result) - 1):
+                    current_dict = result[row]
+                    next_dict = result[row + 1]
+                    for key, value in current_dict.items():
+                        if key in next_dict and value != next_dict[key]:
+                            text_value = key
+                            current_value = next_dict[key]
+                            previous_value = value
+                            date_action = current_dict["DateAction"]
+                            user = current_dict["UserID"]
+                            self.ui.auditResultsTable.setItem(row, 2, QtWidgets.QTableWidgetItem(text_value))
+                            self.ui.auditResultsTable.setItem(row, 3, QtWidgets.QTableWidgetItem(str(current_value)))
+                            self.ui.auditResultsTable.setItem(row, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
+                            self.ui.auditResultsTable.setItem(row, 0, QtWidgets.QTableWidgetItem(date_action))
+                            self.ui.auditResultsTable.setItem(row, 1, QtWidgets.QTableWidgetItem(user))
+
+        if self.ui.auditTypeCombo.currentText() == "Branch":
+            result = sql_connection.audit_branch(self.ui.auditSearchBox.toPlainText())
+            if result == "no results":
+                popup = QMessageBox()
+                popup.setWindowTitle("No results found")
+                popup.setText("No results found for that Branch, please check the Branch and try again")
+                popup.setIcon(QMessageBox.Warning)
+                popup.setStandardButtons(QMessageBox.Ok)
+                popup.exec_()
+            else:
+                self.ui.auditResultsFrame.show()
+                self.ui.auditResultsTable.setRowCount(len(result))
+                self.ui.auditResultsTable.setColumnCount(3)
+                self.ui.auditResultsTable.setHorizontalHeaderLabels(["RefNo", "SerialNo", "some other one"])
+                for row in range(len(result)):
+                    for column in range(2):
+                        self.ui.auditResultsTable.setItem(row, column, QtWidgets.QTableWidgetItem(str(result[row][column])))
+        if self.ui.auditTypeCombo.currentText() == "Customer":
+            result = sql_connection.audit_customer(self.ui.auditSearchBox.toPlainText())
+            if result == "no results":
+                popup = QMessageBox()
+                popup.setWindowTitle("No results found")
+                popup.setText("No results found for that Customer, please check the Customer and try again")
+                popup.setIcon(QMessageBox.Warning)
+                popup.setStandardButtons(QMessageBox.Ok)
+                popup.exec_()
+            else:
+                self.ui.auditResultsFrame.show()
+                self.ui.auditResultsTable.setRowCount(len(result))
+                self.ui.auditResultsTable.setColumnCount(3)
+                self.ui.auditResultsTable.setHorizontalHeaderLabels(["RefNo", "SerialNo", "some other one"])
+                for row in range(len(result)):
+                    for column in range(2):
+                        self.ui.auditResultsTable.setItem(row, column, QtWidgets.QTableWidgetItem(str(result[row][column])))
+
+    def set_audit_menu(self):
+        if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
+            #self.ui.auditResultsFrame.show()
+            self.ui.auditTypeLabel.setText("Enter RefNo: ")
+            self.ui.auditSearchBox.setPlaceholderText("RefNo...")
+        if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
+            self.ui.auditTypeLabel.setText("Enter SerialNo: ")
+            self.ui.auditSearchBox.setPlaceholderText("SerialNo...")
+        if self.ui.auditTypeCombo.currentText() == "Branch":
+            self.ui.auditTypeLabel.setText("Enter Branch Name: ")
+            self.ui.auditSearchBox.setPlaceholderText("Branch Name...")
+        if self.ui.auditTypeCombo.currentText() == "Customer":
+            self.ui.auditTypeLabel.setText("Enter Customer Name: ")
+            self.ui.auditSearchBox.setPlaceholderText("Customer Name...")
+    
+    
+    def insert_default_machine(self):
+        popup = QMessageBox()
+        popup.setWindowTitle("Are you sure?")
+        popup.setText("Are you sure you want to insert a default machine for this branch?")
+        popup.setIcon(QMessageBox.Question)
+        popup.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        x = popup.exec_()
+        if x == QMessageBox.Ok:
+            sql_connection = sql.Connection()
+            branch_id = self.ui.branchIDLabel.text()
+            branch_name = self.ui.branchNameLabel.text()
+            sql_connection.insert_default_machine_sql(branch_id)
+            self.ui.addDefaultMachineBtn.setEnabled(False)
+            popup = QMessageBox()
+            popup.setWindowTitle("Default Machine Added")
+            popup.setText("Default machine added successfully")
+            popup.setIcon(QMessageBox.Information)
+            popup.setStandardButtons(QMessageBox.Ok)
+            x = popup.exec_()
+            self.get_default_branch(branch_name)
+            return True
+
+    
     def get_default_branch(self, branch_name):
         sql_connection = sql.Connection()
         branch = sql_connection.find_branch_default_machine_status(branch_name)

@@ -456,7 +456,17 @@ class Ui_MainWindow(object):
         self.verticalLayout_15.setSpacing(0)
         self.verticalLayout_15.setObjectName("verticalLayout_15")
         self.mainPages = QCustomQStackedWidget(self.mainContentsContainer)
-        self.mainPages.setStyleSheet("QPushButton {background-color: white;\n"
+        self.mainPages.setStyleSheet("QComboBox{\n"
+"    color: black;\n"
+"    selection-color: black;\n"
+"    border: 2px;\n"
+"    background-color:white;\n"
+"}\n"
+"QComboBox:item:selected{\n"
+"    background-color:black;\n"
+"    color:white;\n"
+"}\n"
+"QPushButton {background-color: white;\n"
 "color: black;\n"
 "border-radius: 5px;}\n"
 "QPushButton:hover {\n"
@@ -495,10 +505,10 @@ class Ui_MainWindow(object):
         self.frame_15.setObjectName("frame_15")
         self.horizontalLayout_15 = QtWidgets.QHBoxLayout(self.frame_15)
         self.horizontalLayout_15.setObjectName("horizontalLayout_15")
-        self.pushButton = QtWidgets.QPushButton(self.frame_15)
-        self.pushButton.setMinimumSize(QtCore.QSize(250, 50))
-        self.pushButton.setObjectName("pushButton")
-        self.horizontalLayout_15.addWidget(self.pushButton)
+        self.auditPageBtn = QtWidgets.QPushButton(self.frame_15)
+        self.auditPageBtn.setMinimumSize(QtCore.QSize(250, 50))
+        self.auditPageBtn.setObjectName("auditPageBtn")
+        self.horizontalLayout_15.addWidget(self.auditPageBtn)
         self.pushButton_3 = QtWidgets.QPushButton(self.frame_15)
         self.pushButton_3.setMinimumSize(QtCore.QSize(250, 50))
         self.pushButton_3.setObjectName("pushButton_3")
@@ -573,6 +583,46 @@ class Ui_MainWindow(object):
         self.branchNameLabel.setObjectName("branchNameLabel")
         self.horizontalLayout_17.addWidget(self.defaultBranchFrame)
         self.mainPages.addWidget(self.defaultMacBranchPage)
+        self.auditPage = QtWidgets.QWidget()
+        self.auditPage.setObjectName("auditPage")
+        self.horizontalLayout_18 = QtWidgets.QHBoxLayout(self.auditPage)
+        self.horizontalLayout_18.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_18.setObjectName("horizontalLayout_18")
+        self.frame_17 = QtWidgets.QFrame(self.auditPage)
+        self.frame_17.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_17.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_17.setObjectName("frame_17")
+        self.auditTypeCombo = QtWidgets.QComboBox(self.frame_17)
+        self.auditTypeCombo.setGeometry(QtCore.QRect(20, 30, 121, 22))
+        self.auditTypeCombo.setObjectName("auditTypeCombo")
+        self.auditTypeCombo.addItem("")
+        self.auditTypeCombo.addItem("")
+        self.auditTypeCombo.addItem("")
+        self.auditTypeCombo.addItem("")
+        self.label_22 = QtWidgets.QLabel(self.frame_17)
+        self.label_22.setGeometry(QtCore.QRect(20, 10, 91, 16))
+        self.label_22.setObjectName("label_22")
+        self.auditTypeLabel = QtWidgets.QLabel(self.frame_17)
+        self.auditTypeLabel.setGeometry(QtCore.QRect(190, 10, 101, 16))
+        self.auditTypeLabel.setObjectName("auditTypeLabel")
+        self.auditSearchBox = QtWidgets.QTextEdit(self.frame_17)
+        self.auditSearchBox.setGeometry(QtCore.QRect(190, 30, 131, 21))
+        self.auditSearchBox.setObjectName("auditSearchBox")
+        self.auditSearchBtn = QtWidgets.QPushButton(self.frame_17)
+        self.auditSearchBtn.setGeometry(QtCore.QRect(250, 60, 75, 23))
+        self.auditSearchBtn.setObjectName("auditSearchBtn")
+        self.horizontalLayout_18.addWidget(self.frame_17)
+        self.auditResultsFrame = QtWidgets.QFrame(self.auditPage)
+        self.auditResultsFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.auditResultsFrame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.auditResultsFrame.setObjectName("auditResultsFrame")
+        self.auditResultsTable = QtWidgets.QTableWidget(self.auditResultsFrame)
+        self.auditResultsTable.setGeometry(QtCore.QRect(30, 0, 471, 192))
+        self.auditResultsTable.setObjectName("auditResultsTable")
+        self.auditResultsTable.setColumnCount(0)
+        self.auditResultsTable.setRowCount(0)
+        self.horizontalLayout_18.addWidget(self.auditResultsFrame)
+        self.mainPages.addWidget(self.auditPage)
         self.qsmackPage = QtWidgets.QWidget()
         self.qsmackPage.setObjectName("qsmackPage")
         self.verticalLayout_17 = QtWidgets.QVBoxLayout(self.qsmackPage)
@@ -832,7 +882,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.helpMenuPages.setCurrentIndex(0)
-        self.mainPages.setCurrentIndex(2)
+        self.mainPages.setCurrentIndex(3)
         self.profileMenuPages.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -861,7 +911,7 @@ class Ui_MainWindow(object):
         self.elipsesBtn.setToolTip(_translate("MainWindow", "More"))
         self.profileBtn.setToolTip(_translate("MainWindow", "Profile Info"))
         self.label_8.setText(_translate("MainWindow", "Welcome to the home page of the Real Telematics Utility App"))
-        self.pushButton.setText(_translate("MainWindow", "Audits Page"))
+        self.auditPageBtn.setText(_translate("MainWindow", "Audits Page"))
         self.pushButton_3.setText(_translate("MainWindow", "Some Other Button Function"))
         self.defaultMacBranchBtn.setText(_translate("MainWindow", "Check/Add Default Machine on Branch"))
         self.label_15.setText(_translate("MainWindow", "Enter Branch Name:"))
@@ -872,6 +922,14 @@ class Ui_MainWindow(object):
         self.addDefaultMachineBtn.setText(_translate("MainWindow", "Add Default Machine"))
         self.label_20.setText(_translate("MainWindow", "Customer Name:"))
         self.label_21.setText(_translate("MainWindow", "Branch Name:"))
+        self.auditTypeCombo.setItemText(0, _translate("MainWindow", "RTU (by RefNo)"))
+        self.auditTypeCombo.setItemText(1, _translate("MainWindow", "RTU (by SerialNo)"))
+        self.auditTypeCombo.setItemText(2, _translate("MainWindow", "Branch"))
+        self.auditTypeCombo.setItemText(3, _translate("MainWindow", "Customer"))
+        self.label_22.setText(_translate("MainWindow", "Select Audit Type"))
+        self.auditTypeLabel.setText(_translate("MainWindow", "Enter Refno: "))
+        self.auditSearchBox.setPlaceholderText(_translate("MainWindow", "RefNo..."))
+        self.auditSearchBtn.setText(_translate("MainWindow", "Search"))
         self.qsmackerPermPageBtn.setText(_translate("MainWindow", "Qsmacker Permissions Update"))
         self.qsmackerBatchPageBtn.setText(_translate("MainWindow", "Check Qsmacker Batch Status"))
         self.label_13.setText(_translate("MainWindow", "Job Name (exact):"))

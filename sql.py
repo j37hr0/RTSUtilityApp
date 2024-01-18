@@ -217,3 +217,92 @@ class Connection:
                 branch.append(defaultMachine)
                 print(branch)
                 return branch
+
+
+    def insert_default_machine_sql(self, branchID):
+        self.make_connection(database="Realcontrol")
+        self.cursor.execute(f"""
+                            Declare @BranchID Int = {branchID}
+                            Declare @AgentID Int
+                            Declare @SerialNumber Int
+                            Declare @RefNo Varchar(20)
+                            Declare @strTypeID Int
+                            Declare @ModelID Int
+
+                            Set @AgentID = (Select ID From tblAgents Where [Description] = 'RTS STOCK')
+                            Set @SerialNumber = 0 - (Select max(ID) + 1 From tblRTUDetails)
+
+                            If @SerialNumber is null
+                            Begin
+                            Set @SerialNumber = 1
+                            End
+                            Set @strTypeID = (select min(ID) from [dbo].[tblRTUType])
+                            Set @ModelID = (select min(ID) from [dbo].[tblRTUModel])
+                            Set @RefNo = (select convert(varchar(42), @BranchID) + '_DEFAULT')
+
+                            Insert Into tblRTUDetails(AgentID,BranchID,SerialNumber,CellNumber,SIMNumber,RefNo,strTypeID,ModelID)
+                            Select @AgentID,@BranchID,@SerialNumber,@RefNo,@RefNo,@RefNo,@strTypeID,@ModelID
+                            """)
+        return True
+    
+    def audit_rtu_by_refno(self, refno):
+        if refno == "":
+            print("No refno provided")
+            return "no refno"
+        else:
+            self.make_connection(database="Realcontrol")
+            self.cursor.execute(f"""select * from tblRTUDetails_auditExact where RefNo = '{refno}' order by id desc""")
+            rtu = self.cursor.fetchall()
+            if rtu == [None]:
+                print("No RTU found")
+                return "no refno"
+            else:
+                self.close_connection()
+                return rtu
+        
+    def audit_rtu_by_serialno(self, serialno):
+        if serialno == "":
+            print("No refno provided")
+            return "no refno"
+        else:
+            self.make_connection(database="Realcontrol")
+            self.cursor.execute(f"""select * from tblRTUDetails where RefNo = {serialno}""")
+            rtu = self.cursor.fetchall()
+            if rtu == [None]:
+                print("No RTU found")
+                return "no refno"
+            else:
+                self.close_connection()
+                return rtu
+            
+    def audit_branch(self, branch):
+        if branch == "":
+            print("No Branch provided")
+            return "no branch"
+        else:
+            self.make_connection(database="Realcontrol")
+            self.cursor.execute(f"""select * from tblbranch_auditExact where  like '{branch}'""")
+            branchResults = self.cursor.fetchall()
+            if branchResults == [None]:
+                print("No Branch found")
+                return "no branch"
+            else:
+                self.close_connection()
+                return branchResults
+            
+    def audit_customer(self, customer):
+        if customer == "":
+            print("No Customer provided")
+            return "no customer"
+        else:
+            self.make_connection(database="Realcontrol")
+            self.cursor.execute(f"""select * from tblRTUDetails where RefNo like '{branch}'""")
+            customerResults = self.cursor.fetchall()
+            if customerResults == [None]:
+                print("No Customer found")
+                return "no customer"
+            else:
+                self.close_connection()
+                return customerResults
+            
+            
