@@ -2,6 +2,8 @@ from decouple import config
 import pymssql
 import sys
 
+#TODO: refactor connection class methods into inherited classes for each app function
+
 server = config("PYMSSQL_SERVER")
 user = config("PYMSSQL_USER")
 passwd = config("PYMSSQL_PASSWORD")
@@ -190,3 +192,28 @@ class Connection:
             self.connection.commit()
             self.close_connection()
             return True
+        
+
+    def find_branch_default_machine_status(self, branch):
+        if branch == "":
+            print("No branch provided")
+            return "no branch"
+        else:
+            self.make_connection(database="Realcontrol")
+            self.cursor.execute(f"""select b.ID as 'BranchID', b.BranchName, c.CustomerName from tblBranch b
+                                  inner join tblCustomers c on c.ID = b.CustomerID
+                                  where BranchName = '{branch}'""")
+            branch = [self.cursor.fetchone()]
+            print(f"the value of branch is {branch}")
+            if branch == [None]:
+                print("No branch found")
+                return "no branch"
+            else:
+                self.close_connection()
+                self.make_connection(database="Realcontrol")
+                self.cursor.execute(f"""select count(*) as 'HasDefaultMachine' from tblRTUDetails
+                                      where BranchID = {branch[0]['BranchID']} and RefNo like '%DEFAULT%'""")
+                defaultMachine = self.cursor.fetchone()
+                branch.append(defaultMachine)
+                print(branch)
+                return branch

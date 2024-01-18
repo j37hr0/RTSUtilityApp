@@ -40,9 +40,42 @@ class MainWindow(QMainWindow):
         self.ui.killJobBtn.clicked.connect(lambda: self.kill_qsmacker_job(self.ui.jobIDLabel.text()))
         self.ui.batchStatusFrame.hide()
         self.ui.qsmackerUserFrame.hide()
+        self.ui.defaultBranchFrame.hide()
         self.ui.setPermBtn.clicked.connect(lambda: self.update_user_permissions())
+        self.ui.branchSearchBtn.clicked.connect(lambda: self.get_default_branch(self.ui.branchSearch.toPlainText()))
         #The problem with the UI code above lies in the JSON data not being read for individual widgets
         #we can try fix this by separating the widgets into their own json style files
+    def get_default_branch(self, branch_name):
+        sql_connection = sql.Connection()
+        branch = sql_connection.find_branch_default_machine_status(branch_name)
+        if branch == "no branch":
+            popup = QMessageBox()
+            popup.setWindowTitle("No branch found")
+            popup.setText("No branch found with that name, please check the name and try again")
+            popup.setIcon(QMessageBox.Warning)
+            popup.setStandardButtons(QMessageBox.Ok)
+            popup.exec_()
+            del branch
+        elif branch[1]['HasDefaultMachine'] == 1:
+            self.ui.defaultBranchFrame.show()
+            self.ui.addDefaultMachineBtn.hide()
+            self.ui.hasDefaultMachineLabel.setText("True")
+            self.ui.branchIDLabel.setText(str(branch[0]['BranchID']))
+            self.ui.branchNameLabel.setText(str(branch[0]['BranchName']))
+            self.ui.customerNameLabel.setText(str(branch[0]['CustomerName']))
+            del branch
+        elif branch[1]['HasDefaultMachine'] == 0:
+            ##There is some bug here where if you have searched for a previous branch that has a default machine, 
+            ##and then one that DOESN'T have a default machine, the add default machine button will not appear
+            self.ui.addDefaultMachineBtn.setEnabled(True)
+            self.ui.defaultBranchFrame.show()
+            self.ui.hasDefaultMachineLabel.setText("False")
+            self.ui.branchIDLabel.setText(str(branch[0]['BranchID']))
+            self.ui.branchNameLabel.setText(str(branch[0]['BranchName']))
+            self.ui.customerNameLabel.setText(str(branch[0]['CustomerName']))
+            del branch
+
+    
     def update_user_permissions(self):
         user_id = self.ui.userIDLabel.text()
         user_email = self.ui.qsmacker_email.toPlainText()
