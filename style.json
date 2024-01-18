@@ -162,5 +162,37 @@
         }
       ]
     }
+  ],
+  "QCustomQStackedWidget": [
+    {
+      "name": "mainPages",
+      "navigation": [
+        {
+          "navigationButtons": [
+            {
+              "homeBtn": "homePage",
+              "qsmackerBtn": "qsmackPage",
+              "realcontrolBtn": "rcPage",
+              "qsmackerPermPageBtn": "qsmackerPermissionsPage",
+              "qsmackerBatchPageBtn": "qsmackerBatchPage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "helpMenuPages",
+      "navigation": [
+        {
+          "navigationButtons": [
+            {
+              "settingsBtn": "settingsPage",
+              "helpBtn": "helpPage",
+              "loginBtn": "loginPage"
+            }
+          ]
+        }
+      ]
+    }
   ]
 }
