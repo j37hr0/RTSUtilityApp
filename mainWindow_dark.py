@@ -482,7 +482,8 @@ class Ui_MainWindow(object):
 "QListWidget{\n"
 "background-color: grey;\n"
 "color: blue;\n"
-"}")
+"}\n"
+"")
         self.mainPages.setObjectName("mainPages")
         self.homePage = QtWidgets.QWidget()
         self.homePage.setStyleSheet("background-color: #343b47;")

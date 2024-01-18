@@ -921,7 +921,14 @@ QPushButton:hover {
              <item>
               <widget class="QCustomQStackedWidget" name="mainPages">
                <property name="styleSheet">
-                <string notr="true">QComboBox{
+                <string notr="true">QHeaderView::section{
+	background-color: black;
+	color: white;
+}
+QTableView{
+	color:black;
+}
+QComboBox{
 	color: black;
 	selection-color: black;
 	border: 2px;
@@ -947,7 +954,8 @@ border-color: white;
 QListWidget{
 background-color: grey;
 color: blue;
-}</string>
+}
+</string>
                </property>
                <property name="currentIndex">
                 <number>3</number>
