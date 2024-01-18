@@ -933,10 +933,14 @@ background-color: white;
 color: black;
 border-width:5px;
 border-color: white;
+}
+QListWidget{
+background-color: grey;
+color: blue;
 }</string>
                </property>
                <property name="currentIndex">
-                <number>4</number>
+                <number>2</number>
                </property>
                <widget class="QWidget" name="homePage">
                 <property name="styleSheet">
@@ -945,11 +949,16 @@ border-color: white;
                 <widget class="QLabel" name="label_8">
                  <property name="geometry">
                   <rect>
-                   <x>180</x>
-                   <y>80</y>
-                   <width>321</width>
-                   <height>20</height>
+                   <x>30</x>
+                   <y>30</y>
+                   <width>581</width>
+                   <height>61</height>
                   </rect>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>14</pointsize>
+                  </font>
                  </property>
                  <property name="text">
                   <string>Welcome to the home page of the Real Telematics Utility App</string>
@@ -1006,7 +1015,7 @@ border-color: white;
                    </property>
                    <layout class="QHBoxLayout" name="horizontalLayout_16">
                     <item>
-                     <widget class="QPushButton" name="pushButton_2">
+                     <widget class="QPushButton" name="defaultMacBranchBtn">
                       <property name="minimumSize">
                        <size>
                         <width>250</width>
@@ -1019,6 +1028,134 @@ border-color: white;
                      </widget>
                     </item>
                    </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="defaultMacBranchPage">
+                <layout class="QHBoxLayout" name="horizontalLayout_17">
+                 <item>
+                  <widget class="QFrame" name="frame_16">
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <widget class="QLabel" name="label_15">
+                    <property name="geometry">
+                     <rect>
+                      <x>0</x>
+                      <y>0</y>
+                      <width>101</width>
+                      <height>21</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string>Enter Branch Name:</string>
+                    </property>
+                   </widget>
+                   <widget class="QPushButton" name="pushButton_2">
+                    <property name="geometry">
+                     <rect>
+                      <x>100</x>
+                      <y>50</y>
+                      <width>75</width>
+                      <height>23</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string>Search</string>
+                    </property>
+                   </widget>
+                   <widget class="QTextEdit" name="textEdit">
+                    <property name="geometry">
+                     <rect>
+                      <x>0</x>
+                      <y>20</y>
+                      <width>171</width>
+                      <height>21</height>
+                     </rect>
+                    </property>
+                    <property name="placeholderText">
+                     <string>Branch Name..</string>
+                    </property>
+                   </widget>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QFrame" name="frame_17">
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <widget class="QLabel" name="label_16">
+                    <property name="geometry">
+                     <rect>
+                      <x>40</x>
+                      <y>20</y>
+                      <width>71</width>
+                      <height>16</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string>Branch Id:</string>
+                    </property>
+                   </widget>
+                   <widget class="QLabel" name="branchIDLabel">
+                    <property name="geometry">
+                     <rect>
+                      <x>40</x>
+                      <y>40</y>
+                      <width>47</width>
+                      <height>13</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                   <widget class="QLabel" name="label_18">
+                    <property name="geometry">
+                     <rect>
+                      <x>130</x>
+                      <y>20</y>
+                      <width>111</width>
+                      <height>16</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string>Has Default Machine:</string>
+                    </property>
+                   </widget>
+                   <widget class="QLabel" name="hasDefaultMachineLabel">
+                    <property name="geometry">
+                     <rect>
+                      <x>130</x>
+                      <y>40</y>
+                      <width>61</width>
+                      <height>16</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                   <widget class="QPushButton" name="pushButton_4">
+                    <property name="geometry">
+                     <rect>
+                      <x>30</x>
+                      <y>80</y>
+                      <width>111</width>
+                      <height>23</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string>Add Default Machine</string>
+                    </property>
+                   </widget>
                   </widget>
                  </item>
                 </layout>
@@ -1132,13 +1269,7 @@ border-color: white;
                      </rect>
                     </property>
                     <property name="styleSheet">
-                     <string notr="true">*{background-color: white;
-color: black;
-border-radius: 5px;}
-:hover {
-	background-color: #343b47;
-	color: white;
-}</string>
+                     <string notr="true"/>
                     </property>
                     <property name="text">
                      <string>Kill Job</string>
@@ -1154,13 +1285,7 @@ border-radius: 5px;}
                      </rect>
                     </property>
                     <property name="styleSheet">
-                     <string notr="true">*{background-color: white;
-color: black;
-border-radius: 5px;}
-:hover {
-	background-color: #343b47;
-	color: white;
-}</string>
+                     <string notr="true"/>
                     </property>
                     <property name="text">
                      <string>Find Job</string>
@@ -1275,8 +1400,7 @@ border-radius: 5px;}
                       </rect>
                      </property>
                      <property name="styleSheet">
-                      <string notr="true">background-color: grey;
-color: blue;</string>
+                      <string notr="true"/>
                      </property>
                     </widget>
                    </widget>

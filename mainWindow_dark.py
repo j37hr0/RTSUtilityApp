@@ -456,12 +456,32 @@ class Ui_MainWindow(object):
         self.verticalLayout_15.setSpacing(0)
         self.verticalLayout_15.setObjectName("verticalLayout_15")
         self.mainPages = QCustomQStackedWidget(self.mainContentsContainer)
+        self.mainPages.setStyleSheet("QPushButton {background-color: white;\n"
+"color: black;\n"
+"border-radius: 5px;}\n"
+"QPushButton:hover {\n"
+"    background-color: #343b47;\n"
+"    color: white;\n"
+"}\n"
+"QTextEdit{\n"
+"background-color: white;\n"
+"color: black;\n"
+"border-width:5px;\n"
+"border-color: white;\n"
+"}\n"
+"QListWidget{\n"
+"background-color: grey;\n"
+"color: blue;\n"
+"}")
         self.mainPages.setObjectName("mainPages")
         self.homePage = QtWidgets.QWidget()
         self.homePage.setStyleSheet("background-color: #343b47;")
         self.homePage.setObjectName("homePage")
         self.label_8 = QtWidgets.QLabel(self.homePage)
-        self.label_8.setGeometry(QtCore.QRect(180, 80, 321, 20))
+        self.label_8.setGeometry(QtCore.QRect(30, 30, 581, 61))
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        self.label_8.setFont(font)
         self.label_8.setObjectName("label_8")
         self.mainPages.addWidget(self.homePage)
         self.rcPage = QtWidgets.QWidget()
@@ -469,17 +489,75 @@ class Ui_MainWindow(object):
         self.verticalLayout_16 = QtWidgets.QVBoxLayout(self.rcPage)
         self.verticalLayout_16.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_16.setObjectName("verticalLayout_16")
-        self.rcPageLabel = QtWidgets.QLabel(self.rcPage)
-        font = QtGui.QFont()
-        font.setPointSize(15)
-        font.setBold(True)
-        font.setWeight(75)
-        self.rcPageLabel.setFont(font)
-        self.rcPageLabel.setStyleSheet("background-color: #343b47;")
-        self.rcPageLabel.setAlignment(QtCore.Qt.AlignCenter)
-        self.rcPageLabel.setObjectName("rcPageLabel")
-        self.verticalLayout_16.addWidget(self.rcPageLabel)
+        self.frame_15 = QtWidgets.QFrame(self.rcPage)
+        self.frame_15.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_15.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_15.setObjectName("frame_15")
+        self.horizontalLayout_15 = QtWidgets.QHBoxLayout(self.frame_15)
+        self.horizontalLayout_15.setObjectName("horizontalLayout_15")
+        self.pushButton = QtWidgets.QPushButton(self.frame_15)
+        self.pushButton.setMinimumSize(QtCore.QSize(250, 50))
+        self.pushButton.setObjectName("pushButton")
+        self.horizontalLayout_15.addWidget(self.pushButton)
+        self.pushButton_3 = QtWidgets.QPushButton(self.frame_15)
+        self.pushButton_3.setMinimumSize(QtCore.QSize(250, 50))
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.horizontalLayout_15.addWidget(self.pushButton_3)
+        self.verticalLayout_16.addWidget(self.frame_15, 0, QtCore.Qt.AlignLeft)
+        self.frame_11 = QtWidgets.QFrame(self.rcPage)
+        self.frame_11.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_11.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_11.setObjectName("frame_11")
+        self.horizontalLayout_16 = QtWidgets.QHBoxLayout(self.frame_11)
+        self.horizontalLayout_16.setObjectName("horizontalLayout_16")
+        self.defaultMacBranchBtn = QtWidgets.QPushButton(self.frame_11)
+        self.defaultMacBranchBtn.setMinimumSize(QtCore.QSize(250, 50))
+        self.defaultMacBranchBtn.setObjectName("defaultMacBranchBtn")
+        self.horizontalLayout_16.addWidget(self.defaultMacBranchBtn)
+        self.verticalLayout_16.addWidget(self.frame_11, 0, QtCore.Qt.AlignLeft)
         self.mainPages.addWidget(self.rcPage)
+        self.defaultMacBranchPage = QtWidgets.QWidget()
+        self.defaultMacBranchPage.setObjectName("defaultMacBranchPage")
+        self.horizontalLayout_17 = QtWidgets.QHBoxLayout(self.defaultMacBranchPage)
+        self.horizontalLayout_17.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_17.setObjectName("horizontalLayout_17")
+        self.frame_16 = QtWidgets.QFrame(self.defaultMacBranchPage)
+        self.frame_16.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_16.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_16.setObjectName("frame_16")
+        self.label_15 = QtWidgets.QLabel(self.frame_16)
+        self.label_15.setGeometry(QtCore.QRect(0, 0, 101, 21))
+        self.label_15.setObjectName("label_15")
+        self.pushButton_2 = QtWidgets.QPushButton(self.frame_16)
+        self.pushButton_2.setGeometry(QtCore.QRect(100, 50, 75, 23))
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.textEdit = QtWidgets.QTextEdit(self.frame_16)
+        self.textEdit.setGeometry(QtCore.QRect(0, 20, 171, 21))
+        self.textEdit.setObjectName("textEdit")
+        self.horizontalLayout_17.addWidget(self.frame_16)
+        self.frame_17 = QtWidgets.QFrame(self.defaultMacBranchPage)
+        self.frame_17.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_17.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_17.setObjectName("frame_17")
+        self.label_16 = QtWidgets.QLabel(self.frame_17)
+        self.label_16.setGeometry(QtCore.QRect(40, 20, 71, 16))
+        self.label_16.setObjectName("label_16")
+        self.branchIDLabel = QtWidgets.QLabel(self.frame_17)
+        self.branchIDLabel.setGeometry(QtCore.QRect(40, 40, 47, 13))
+        self.branchIDLabel.setText("")
+        self.branchIDLabel.setObjectName("branchIDLabel")
+        self.label_18 = QtWidgets.QLabel(self.frame_17)
+        self.label_18.setGeometry(QtCore.QRect(130, 20, 111, 16))
+        self.label_18.setObjectName("label_18")
+        self.hasDefaultMachineLabel = QtWidgets.QLabel(self.frame_17)
+        self.hasDefaultMachineLabel.setGeometry(QtCore.QRect(130, 40, 61, 16))
+        self.hasDefaultMachineLabel.setText("")
+        self.hasDefaultMachineLabel.setObjectName("hasDefaultMachineLabel")
+        self.pushButton_4 = QtWidgets.QPushButton(self.frame_17)
+        self.pushButton_4.setGeometry(QtCore.QRect(30, 80, 111, 23))
+        self.pushButton_4.setObjectName("pushButton_4")
+        self.horizontalLayout_17.addWidget(self.frame_17)
+        self.mainPages.addWidget(self.defaultMacBranchPage)
         self.qsmackPage = QtWidgets.QWidget()
         self.qsmackPage.setObjectName("qsmackPage")
         self.verticalLayout_17 = QtWidgets.QVBoxLayout(self.qsmackPage)
@@ -493,13 +571,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_12.setObjectName("horizontalLayout_12")
         self.qsmackerPermPageBtn = QtWidgets.QPushButton(self.frame_13)
         self.qsmackerPermPageBtn.setMinimumSize(QtCore.QSize(250, 50))
-        self.qsmackerPermPageBtn.setStyleSheet("*{background-color: white;\n"
-"color: black;\n"
-"border-radius: 5px;}\n"
-":hover {\n"
-"    background-color: #343b47;\n"
-"    color: white;\n"
-"}")
+        self.qsmackerPermPageBtn.setStyleSheet("")
         self.qsmackerPermPageBtn.setObjectName("qsmackerPermPageBtn")
         self.horizontalLayout_12.addWidget(self.qsmackerPermPageBtn)
         self.verticalLayout_17.addWidget(self.frame_13, 0, QtCore.Qt.AlignLeft)
@@ -511,13 +583,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_13.setObjectName("horizontalLayout_13")
         self.qsmackerBatchPageBtn = QtWidgets.QPushButton(self.frame_12)
         self.qsmackerBatchPageBtn.setMinimumSize(QtCore.QSize(250, 50))
-        self.qsmackerBatchPageBtn.setStyleSheet("*{background-color: white;\n"
-"color: black;\n"
-"border-radius: 5px;}\n"
-":hover {\n"
-"    background-color: #343b47;\n"
-"    color: white;\n"
-"}")
+        self.qsmackerBatchPageBtn.setStyleSheet("")
         self.qsmackerBatchPageBtn.setObjectName("qsmackerBatchPageBtn")
         self.horizontalLayout_13.addWidget(self.qsmackerBatchPageBtn)
         self.verticalLayout_17.addWidget(self.frame_12, 0, QtCore.Qt.AlignLeft)
@@ -536,30 +602,15 @@ class Ui_MainWindow(object):
         self.label_13.setObjectName("label_13")
         self.qsmacker_jobname = QtWidgets.QTextEdit(self.frame_14)
         self.qsmacker_jobname.setGeometry(QtCore.QRect(10, 40, 211, 21))
-        self.qsmacker_jobname.setStyleSheet("background-color: white;\n"
-"color: black;\n"
-"border-width:5px;\n"
-"border-color: white;")
+        self.qsmacker_jobname.setStyleSheet("")
         self.qsmacker_jobname.setObjectName("qsmacker_jobname")
         self.killJobBtn = QtWidgets.QPushButton(self.frame_14)
         self.killJobBtn.setGeometry(QtCore.QRect(150, 100, 75, 23))
-        self.killJobBtn.setStyleSheet("*{background-color: white;\n"
-"color: black;\n"
-"border-radius: 5px;}\n"
-":hover {\n"
-"    background-color: #343b47;\n"
-"    color: white;\n"
-"}")
+        self.killJobBtn.setStyleSheet("")
         self.killJobBtn.setObjectName("killJobBtn")
         self.findJobBtn = QtWidgets.QPushButton(self.frame_14)
         self.findJobBtn.setGeometry(QtCore.QRect(150, 70, 75, 23))
-        self.findJobBtn.setStyleSheet("*{background-color: white;\n"
-"color: black;\n"
-"border-radius: 5px;}\n"
-":hover {\n"
-"    background-color: #343b47;\n"
-"    color: white;\n"
-"}")
+        self.findJobBtn.setStyleSheet("")
         self.findJobBtn.setObjectName("findJobBtn")
         self.batchStatusFrame = QtWidgets.QFrame(self.frame_14)
         self.batchStatusFrame.setEnabled(True)
@@ -591,13 +642,12 @@ class Ui_MainWindow(object):
         self.label_19.setObjectName("label_19")
         self.batch_list = QtWidgets.QListWidget(self.batchStatusFrame)
         self.batch_list.setGeometry(QtCore.QRect(10, 100, 561, 81))
-        self.batch_list.setStyleSheet("background-color: grey;\n"
-"color: blue;")
+        self.batch_list.setStyleSheet("")
         self.batch_list.setObjectName("batch_list")
         self.horizontalLayout_14.addWidget(self.frame_14)
         self.mainPages.addWidget(self.qsmackerBatchPage)
         self.qsmackerPermissionsPage = QtWidgets.QWidget()
-        self.qsmackerPermissionsPage.setStyleSheet("background-color: #343b47;")
+        self.qsmackerPermissionsPage.setStyleSheet("#qsmackerPermissionsPage{background-color: #343b47;}")
         self.qsmackerPermissionsPage.setObjectName("qsmackerPermissionsPage")
         self.horizontalLayout_11 = QtWidgets.QHBoxLayout(self.qsmackerPermissionsPage)
         self.horizontalLayout_11.setContentsMargins(0, 0, 0, 0)
@@ -611,20 +661,11 @@ class Ui_MainWindow(object):
         self.label_9.setObjectName("label_9")
         self.userSearchBtn = QtWidgets.QPushButton(self.frame_10)
         self.userSearchBtn.setGeometry(QtCore.QRect(140, 110, 75, 23))
-        self.userSearchBtn.setStyleSheet("*{background-color: white;\n"
-"color: black;\n"
-"border-radius: 5px;}\n"
-":hover {\n"
-"    background-color: #343b47;\n"
-"    color: white;\n"
-"}")
+        self.userSearchBtn.setStyleSheet("")
         self.userSearchBtn.setObjectName("userSearchBtn")
         self.qsmacker_email = QtWidgets.QTextEdit(self.frame_10)
         self.qsmacker_email.setGeometry(QtCore.QRect(20, 60, 191, 21))
-        self.qsmacker_email.setStyleSheet("background-color: white;\n"
-"color: black;\n"
-"border-width:5px;\n"
-"border-color: white;")
+        self.qsmacker_email.setStyleSheet("")
         self.qsmacker_email.setObjectName("qsmacker_email")
         self.horizontalLayout_11.addWidget(self.frame_10)
         self.qsmackerUserFrame = QtWidgets.QFrame(self.qsmackerPermissionsPage)
@@ -641,13 +682,7 @@ class Ui_MainWindow(object):
         self.setPermBtn = QtWidgets.QPushButton(self.qsmackerUserFrame)
         self.setPermBtn.setEnabled(False)
         self.setPermBtn.setGeometry(QtCore.QRect(80, 150, 131, 23))
-        self.setPermBtn.setStyleSheet("*{background-color: white;\n"
-"color: black;\n"
-"border-radius: 5px;}\n"
-":hover {\n"
-"    background-color: #343b47;\n"
-"    color: white;\n"
-"}")
+        self.setPermBtn.setStyleSheet("")
         self.setPermBtn.setObjectName("setPermBtn")
         self.label_11 = QtWidgets.QLabel(self.qsmackerUserFrame)
         self.label_11.setGeometry(QtCore.QRect(80, 110, 81, 16))
@@ -782,7 +817,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.helpMenuPages.setCurrentIndex(0)
-        self.mainPages.setCurrentIndex(0)
+        self.mainPages.setCurrentIndex(2)
         self.profileMenuPages.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -811,7 +846,15 @@ class Ui_MainWindow(object):
         self.elipsesBtn.setToolTip(_translate("MainWindow", "More"))
         self.profileBtn.setToolTip(_translate("MainWindow", "Profile Info"))
         self.label_8.setText(_translate("MainWindow", "Welcome to the home page of the Real Telematics Utility App"))
-        self.rcPageLabel.setText(_translate("MainWindow", "Realcontrol Apps - audits and more coming soon"))
+        self.pushButton.setText(_translate("MainWindow", "Audits Page"))
+        self.pushButton_3.setText(_translate("MainWindow", "Some Other Button Function"))
+        self.defaultMacBranchBtn.setText(_translate("MainWindow", "Check/Add Default Machine on Branch"))
+        self.label_15.setText(_translate("MainWindow", "Enter Branch Name:"))
+        self.pushButton_2.setText(_translate("MainWindow", "Search"))
+        self.textEdit.setPlaceholderText(_translate("MainWindow", "Branch Name.."))
+        self.label_16.setText(_translate("MainWindow", "Branch Id:"))
+        self.label_18.setText(_translate("MainWindow", "Has Default Machine:"))
+        self.pushButton_4.setText(_translate("MainWindow", "Add Default Machine"))
         self.qsmackerPermPageBtn.setText(_translate("MainWindow", "Qsmacker Permissions Update"))
         self.qsmackerBatchPageBtn.setText(_translate("MainWindow", "Check Qsmacker Batch Status"))
         self.label_13.setText(_translate("MainWindow", "Job Name (exact):"))
