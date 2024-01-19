@@ -11,7 +11,7 @@ from Custom_Widgets.Widgets import *
 #import Custom_Widgets.Widgets as Widgets
 import os
 
-
+#TODO: export to csv button for audit results
 #TODO: for safety, we should reset pages/forms when something is updated or changed in the DB
 #TODO: for a quick win, I can refactor the popup code into a function that takes in the title, text, icon and buttons
 #TODO: fix the dateaction to remove the ms off the end so it fits nicely in the tablewidget
@@ -45,6 +45,8 @@ class MainWindow(QMainWindow):
         self.ui.branchSearch.returnPressed.connect(lambda: self.get_default_branch(self.ui.branchSearch.text()))
         self.ui.qsmacker_email.returnPressed.connect(lambda: self.get_user_compatibility(self.ui.qsmacker_email.text()))
         self.ui.auditSearchBox.returnPressed.connect(lambda: self.run_audit())
+        
+        #Connect comboboxes to functions
         self.ui.auditTypeCombo.currentIndexChanged.connect(lambda: self.set_audit_menu())
         
         #Hide UI elements
@@ -74,7 +76,7 @@ class MainWindow(QMainWindow):
                 keys_to_exclude = ["DateAction", "UserID", "SocketID", "DateAndTimeServiced", "ID", "IpPublic", "ColumnsUpdated"]
                 #print(result)
                 self.ui.auditResultsFrame.show()
-                self.ui.auditResultsTable.setRowCount(1)
+                self.ui.auditResultsTable.setRowCount(0)
                 self.ui.auditResultsTable.setColumnCount(5)
                 self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
                 # Compare dictionaries and append necessary values to auditResultsTable
@@ -119,9 +121,9 @@ class MainWindow(QMainWindow):
                 popup.setStandardButtons(QMessageBox.Ok)
                 popup.exec_()
             else:
-                keys_to_exclude = ["DateAction", "ID", "ColumnsUpdated"]
+                keys_to_exclude = ["DateAction", "ID", "ColumnsUpdated", "UserID"]
                 self.ui.auditResultsFrame.show()
-                self.ui.auditResultsTable.setRowCount(1)
+                self.ui.auditResultsTable.setRowCount(0)
                 self.ui.auditResultsTable.setColumnCount(5)
                 self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
                 for row in range(len(result) - 1):
@@ -132,6 +134,11 @@ class MainWindow(QMainWindow):
                             text_value = key
                             if text_value in keys_to_exclude:
                                 continue
+                            #need to if text_value is customerID or RegionID, then get the name of the customer or region, but I has the dumb, brain is tired
+                            if text_value == "CustomerID":
+                                text_value = sql_connection.get_customer_name(value)
+                            if text_value == "RegionID":
+                                text_value = sql_connection.get_region_name(value)
                                 #need to if text_value is customerID or RegionID, then get the name of the customer or region
                             new_value = value
                             previous_value = next_dict[key]
@@ -174,7 +181,7 @@ class MainWindow(QMainWindow):
 
     def set_audit_menu(self):
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
-            #self.ui.auditResultsFrame.show()
+
             self.ui.auditTypeLabel.setText("Enter RefNo: ")
             self.ui.auditSearchBox.setPlaceholderText("RefNo...")
         if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
@@ -357,6 +364,7 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyle('Fusion')
     window = MainWindow()
     #example of how to set notification
     #window.set_notification("New Job", "A new job has been posted")

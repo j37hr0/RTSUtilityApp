@@ -328,3 +328,39 @@ class Connection:
         rts_users = self.cursor.fetchall()
         self.close_connection()
         return rts_users
+    
+    def get_customername_by_customerid(self, customerid):
+        if customerid == "":
+            print("No customer id provided")
+            return "no customer id"
+        else:
+            self.make_connection(database="Realcontrol")
+            self.cursor.execute(f"""
+                                select CustomerName from tblCustomers
+                                where ID = {customerid}
+                                """)
+            customer = self.cursor.fetchone()
+            if customer == None:
+                print("No customer found")
+                return "no customer"
+            else:
+                self.close_connection()
+                return customer
+            
+    def get_regionname_by_regionid(self, regionid):
+        if regionid == "":
+            print("No region id provided")
+            return "no region id"
+        else:
+            self.make_connection(database="Realcontrol")
+            self.cursor.execute(f"""
+                                select Description from tblRegion
+                                where ID = {regionid}
+                                """)
+            region = self.cursor.fetchone()
+            if region == None:
+                print("No region found")
+                return "no region"
+            else:
+                self.close_connection()
+                return region
