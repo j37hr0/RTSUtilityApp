@@ -296,7 +296,7 @@ class Connection:
             return "no customer"
         else:
             self.make_connection(database="Realcontrol")
-            self.cursor.execute(f"""select * from tblRTUDetails where RefNo like '{branch}'""")
+            self.cursor.execute(f"""select * from tblRTUDetails where RefNo like '{customer}'""")
             customerResults = self.cursor.fetchall()
             if customerResults == [None]:
                 print("No Customer found")

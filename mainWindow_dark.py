@@ -456,7 +456,14 @@ class Ui_MainWindow(object):
         self.verticalLayout_15.setSpacing(0)
         self.verticalLayout_15.setObjectName("verticalLayout_15")
         self.mainPages = QCustomQStackedWidget(self.mainContentsContainer)
-        self.mainPages.setStyleSheet("QComboBox{\n"
+        self.mainPages.setStyleSheet("QHeaderView::section{\n"
+"    background-color: black;\n"
+"    color: white;\n"
+"}\n"
+"QTableView{\n"
+"    color:black;\n"
+"}\n"
+"QComboBox{\n"
 "    color: black;\n"
 "    selection-color: black;\n"
 "    border: 2px;\n"
@@ -473,7 +480,7 @@ class Ui_MainWindow(object):
 "    background-color: #343b47;\n"
 "    color: white;\n"
 "}\n"
-"QTextEdit{\n"
+"QTextEdit, QLineEdit{\n"
 "background-color: white;\n"
 "color: black;\n"
 "border-width:5px;\n"
@@ -542,8 +549,8 @@ class Ui_MainWindow(object):
         self.branchSearchBtn = QtWidgets.QPushButton(self.frame_16)
         self.branchSearchBtn.setGeometry(QtCore.QRect(100, 50, 75, 23))
         self.branchSearchBtn.setObjectName("branchSearchBtn")
-        self.branchSearch = QtWidgets.QTextEdit(self.frame_16)
-        self.branchSearch.setGeometry(QtCore.QRect(0, 20, 171, 21))
+        self.branchSearch = QtWidgets.QLineEdit(self.frame_16)
+        self.branchSearch.setGeometry(QtCore.QRect(0, 20, 151, 20))
         self.branchSearch.setObjectName("branchSearch")
         self.horizontalLayout_17.addWidget(self.frame_16)
         self.defaultBranchFrame = QtWidgets.QFrame(self.defaultMacBranchPage)
@@ -606,12 +613,12 @@ class Ui_MainWindow(object):
         self.auditTypeLabel = QtWidgets.QLabel(self.frame_17)
         self.auditTypeLabel.setGeometry(QtCore.QRect(190, 10, 101, 16))
         self.auditTypeLabel.setObjectName("auditTypeLabel")
-        self.auditSearchBox = QtWidgets.QTextEdit(self.frame_17)
-        self.auditSearchBox.setGeometry(QtCore.QRect(190, 30, 131, 21))
-        self.auditSearchBox.setObjectName("auditSearchBox")
         self.auditSearchBtn = QtWidgets.QPushButton(self.frame_17)
         self.auditSearchBtn.setGeometry(QtCore.QRect(250, 60, 75, 23))
         self.auditSearchBtn.setObjectName("auditSearchBtn")
+        self.auditSearchBox = QtWidgets.QLineEdit(self.frame_17)
+        self.auditSearchBox.setGeometry(QtCore.QRect(190, 30, 113, 20))
+        self.auditSearchBox.setObjectName("auditSearchBox")
         self.horizontalLayout_18.addWidget(self.frame_17)
         self.auditResultsFrame = QtWidgets.QFrame(self.auditPage)
         self.auditResultsFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -666,10 +673,6 @@ class Ui_MainWindow(object):
         self.label_13 = QtWidgets.QLabel(self.frame_14)
         self.label_13.setGeometry(QtCore.QRect(10, 20, 101, 20))
         self.label_13.setObjectName("label_13")
-        self.qsmacker_jobname = QtWidgets.QTextEdit(self.frame_14)
-        self.qsmacker_jobname.setGeometry(QtCore.QRect(10, 40, 211, 21))
-        self.qsmacker_jobname.setStyleSheet("")
-        self.qsmacker_jobname.setObjectName("qsmacker_jobname")
         self.killJobBtn = QtWidgets.QPushButton(self.frame_14)
         self.killJobBtn.setGeometry(QtCore.QRect(150, 100, 75, 23))
         self.killJobBtn.setStyleSheet("")
@@ -710,6 +713,9 @@ class Ui_MainWindow(object):
         self.batch_list.setGeometry(QtCore.QRect(10, 100, 561, 81))
         self.batch_list.setStyleSheet("")
         self.batch_list.setObjectName("batch_list")
+        self.qsmacker_jobname = QtWidgets.QLineEdit(self.frame_14)
+        self.qsmacker_jobname.setGeometry(QtCore.QRect(10, 40, 141, 20))
+        self.qsmacker_jobname.setObjectName("qsmacker_jobname")
         self.horizontalLayout_14.addWidget(self.frame_14)
         self.mainPages.addWidget(self.qsmackerBatchPage)
         self.qsmackerPermissionsPage = QtWidgets.QWidget()
@@ -726,12 +732,11 @@ class Ui_MainWindow(object):
         self.label_9.setGeometry(QtCore.QRect(20, 30, 61, 16))
         self.label_9.setObjectName("label_9")
         self.userSearchBtn = QtWidgets.QPushButton(self.frame_10)
-        self.userSearchBtn.setGeometry(QtCore.QRect(140, 110, 75, 23))
+        self.userSearchBtn.setGeometry(QtCore.QRect(70, 80, 75, 23))
         self.userSearchBtn.setStyleSheet("")
         self.userSearchBtn.setObjectName("userSearchBtn")
-        self.qsmacker_email = QtWidgets.QTextEdit(self.frame_10)
-        self.qsmacker_email.setGeometry(QtCore.QRect(20, 60, 191, 21))
-        self.qsmacker_email.setStyleSheet("")
+        self.qsmacker_email = QtWidgets.QLineEdit(self.frame_10)
+        self.qsmacker_email.setGeometry(QtCore.QRect(20, 50, 113, 20))
         self.qsmacker_email.setObjectName("qsmacker_email")
         self.horizontalLayout_11.addWidget(self.frame_10)
         self.qsmackerUserFrame = QtWidgets.QFrame(self.qsmackerPermissionsPage)
@@ -883,7 +888,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.helpMenuPages.setCurrentIndex(0)
-        self.mainPages.setCurrentIndex(3)
+        self.mainPages.setCurrentIndex(6)
         self.profileMenuPages.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -929,24 +934,19 @@ class Ui_MainWindow(object):
         self.auditTypeCombo.setItemText(3, _translate("MainWindow", "Customer"))
         self.label_22.setText(_translate("MainWindow", "Select Audit Type"))
         self.auditTypeLabel.setText(_translate("MainWindow", "Enter Refno: "))
-        self.auditSearchBox.setPlaceholderText(_translate("MainWindow", "RefNo..."))
         self.auditSearchBtn.setText(_translate("MainWindow", "Search"))
+        self.auditSearchBox.setPlaceholderText(_translate("MainWindow", "RefNo..."))
         self.qsmackerPermPageBtn.setText(_translate("MainWindow", "Qsmacker Permissions Update"))
         self.qsmackerBatchPageBtn.setText(_translate("MainWindow", "Check Qsmacker Batch Status"))
         self.label_13.setText(_translate("MainWindow", "Job Name (exact):"))
-        self.qsmacker_jobname.setPlaceholderText(_translate("MainWindow", "Batch Name..."))
         self.killJobBtn.setText(_translate("MainWindow", "Kill Job"))
         self.findJobBtn.setText(_translate("MainWindow", "Find Job"))
         self.label_14.setText(_translate("MainWindow", "Job ID:"))
         self.label_17.setText(_translate("MainWindow", "Total Machines:"))
         self.label_19.setText(_translate("MainWindow", "Tota Pending Commands:"))
+        self.qsmacker_jobname.setPlaceholderText(_translate("MainWindow", "Batch Name..."))
         self.label_9.setText(_translate("MainWindow", "User Email:"))
         self.userSearchBtn.setText(_translate("MainWindow", "Search"))
-        self.qsmacker_email.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.qsmacker_email.setPlaceholderText(_translate("MainWindow", "Email..."))
         self.label_10.setText(_translate("MainWindow", "User ID:"))
         self.setPermBtn.setText(_translate("MainWindow", "Set Qsmacker Permissions"))

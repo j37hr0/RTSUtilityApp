@@ -945,7 +945,7 @@ QPushButton:hover {
 	background-color: #343b47;
 	color: white;
 }
-QTextEdit{
+QTextEdit, QLineEdit{
 background-color: white;
 color: black;
 border-width:5px;
@@ -958,7 +958,7 @@ color: blue;
 </string>
                </property>
                <property name="currentIndex">
-                <number>3</number>
+                <number>6</number>
                </property>
                <widget class="QWidget" name="homePage">
                 <property name="styleSheet">
@@ -1086,13 +1086,13 @@ color: blue;
                      <string>Search</string>
                     </property>
                    </widget>
-                   <widget class="QTextEdit" name="branchSearch">
+                   <widget class="QLineEdit" name="branchSearch">
                     <property name="geometry">
                      <rect>
                       <x>0</x>
                       <y>20</y>
-                      <width>171</width>
-                      <height>21</height>
+                      <width>151</width>
+                      <height>20</height>
                      </rect>
                     </property>
                     <property name="placeholderText">
@@ -1299,19 +1299,6 @@ color: blue;
                      <string>Enter Refno: </string>
                     </property>
                    </widget>
-                   <widget class="QTextEdit" name="auditSearchBox">
-                    <property name="geometry">
-                     <rect>
-                      <x>190</x>
-                      <y>30</y>
-                      <width>131</width>
-                      <height>21</height>
-                     </rect>
-                    </property>
-                    <property name="placeholderText">
-                     <string>RefNo...</string>
-                    </property>
-                   </widget>
                    <widget class="QPushButton" name="auditSearchBtn">
                     <property name="geometry">
                      <rect>
@@ -1323,6 +1310,19 @@ color: blue;
                     </property>
                     <property name="text">
                      <string>Search</string>
+                    </property>
+                   </widget>
+                   <widget class="QLineEdit" name="auditSearchBox">
+                    <property name="geometry">
+                     <rect>
+                      <x>190</x>
+                      <y>30</y>
+                      <width>113</width>
+                      <height>20</height>
+                     </rect>
+                    </property>
+                    <property name="placeholderText">
+                     <string>RefNo...</string>
                     </property>
                    </widget>
                   </widget>
@@ -1430,22 +1430,6 @@ color: blue;
                     </property>
                     <property name="text">
                      <string>Job Name (exact):</string>
-                    </property>
-                   </widget>
-                   <widget class="QTextEdit" name="qsmacker_jobname">
-                    <property name="geometry">
-                     <rect>
-                      <x>10</x>
-                      <y>40</y>
-                      <width>211</width>
-                      <height>21</height>
-                     </rect>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true"/>
-                    </property>
-                    <property name="placeholderText">
-                     <string>Batch Name...</string>
                     </property>
                    </widget>
                    <widget class="QPushButton" name="killJobBtn">
@@ -1593,6 +1577,19 @@ color: blue;
                      </property>
                     </widget>
                    </widget>
+                   <widget class="QLineEdit" name="qsmacker_jobname">
+                    <property name="geometry">
+                     <rect>
+                      <x>10</x>
+                      <y>40</y>
+                      <width>141</width>
+                      <height>20</height>
+                     </rect>
+                    </property>
+                    <property name="placeholderText">
+                     <string>Batch Name...</string>
+                    </property>
+                   </widget>
                   </widget>
                  </item>
                 </layout>
@@ -1626,8 +1623,8 @@ color: blue;
                    <widget class="QPushButton" name="userSearchBtn">
                     <property name="geometry">
                      <rect>
-                      <x>140</x>
-                      <y>110</y>
+                      <x>70</x>
+                      <y>80</y>
                       <width>75</width>
                       <height>23</height>
                      </rect>
@@ -1639,24 +1636,14 @@ color: blue;
                      <string>Search</string>
                     </property>
                    </widget>
-                   <widget class="QTextEdit" name="qsmacker_email">
+                   <widget class="QLineEdit" name="qsmacker_email">
                     <property name="geometry">
                      <rect>
                       <x>20</x>
-                      <y>60</y>
-                      <width>191</width>
-                      <height>21</height>
+                      <y>50</y>
+                      <width>113</width>
+                      <height>20</height>
                      </rect>
-                    </property>
-                    <property name="styleSheet">
-                     <string notr="true"/>
-                    </property>
-                    <property name="html">
-                     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="placeholderText">
                      <string>Email...</string>

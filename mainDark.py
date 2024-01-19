@@ -25,36 +25,41 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         loadJsonStyle(self, self.ui)
         self.show()
-        #button connects for center menu
+        #Connect buttons to functions
         self.ui.settingsBtn.clicked.connect(lambda: self.ui.centerMenuContainer.slideMenu())
         self.ui.helpBtn.clicked.connect(lambda: self.ui.centerMenuContainer.slideMenu())
         self.ui.loginBtn.clicked.connect(lambda: self.ui.centerMenuContainer.slideMenu())
-        #close btn for center menu
         self.ui.closeBtnCenter.clicked.connect(lambda: self.ui.centerMenuContainer.collapseMenu())
-        #button connects for right menu
         self.ui.elipsesBtn.clicked.connect(lambda: self.ui.rightMenuContainer.slideMenu())
         self.ui.profileBtn.clicked.connect(lambda: self.ui.rightMenuContainer.slideMenu())
         self.ui.closeRightBtn.clicked.connect(lambda: self.ui.rightMenuContainer.collapseMenu())
         self.ui.closeNotificationBtn.clicked.connect(lambda: self.ui.popupNotificationContainer.collapseMenu())
-        self.ui.userSearchBtn.clicked.connect(lambda: self.get_user_compatibility(self.ui.qsmacker_email.toPlainText()))
-        self.ui.findJobBtn.clicked.connect(lambda: self.get_qsmacker_job(self.ui.qsmacker_jobname.toPlainText()))
+        self.ui.userSearchBtn.clicked.connect(lambda: self.get_user_compatibility(self.ui.qsmacker_email.text()))
+        self.ui.findJobBtn.clicked.connect(lambda: self.get_qsmacker_job(self.ui.qsmacker_jobname.text()))
         self.ui.killJobBtn.clicked.connect(lambda: self.kill_qsmacker_job(self.ui.jobIDLabel.text()))
+        self.ui.setPermBtn.clicked.connect(lambda: self.update_user_permissions())
+        self.ui.branchSearchBtn.clicked.connect(lambda: self.get_default_branch(self.ui.branchSearch.text()))
+        self.ui.auditSearchBtn.clicked.connect(lambda: self.run_audit())
+        self.ui.addDefaultMachineBtn.clicked.connect(lambda: self.insert_default_machine())
+        
+        #Connect enter keypresses to lineedits
+        self.ui.qsmacker_jobname.returnPressed.connect(lambda: self.get_qsmacker_job(self.ui.qsmacker_jobname.text()))
+        self.ui.branchSearch.returnPressed.connect(lambda: self.get_default_branch(self.ui.branchSearch.text()))
+        self.ui.qsmacker_email.returnPressed.connect(lambda: self.get_user_compatibility(self.ui.qsmacker_email.text()))
+        self.ui.auditSearchBox.returnPressed.connect(lambda: self.run_audit())
+        self.ui.auditTypeCombo.currentIndexChanged.connect(lambda: self.set_audit_menu())
+        
+        #Hide UI elements
         self.ui.batchStatusFrame.hide()
         self.ui.qsmackerUserFrame.hide()
         self.ui.defaultBranchFrame.hide()
         self.ui.auditResultsFrame.hide()
-        self.ui.setPermBtn.clicked.connect(lambda: self.update_user_permissions())
-        self.ui.branchSearchBtn.clicked.connect(lambda: self.get_default_branch(self.ui.branchSearch.toPlainText()))
-        self.ui.addDefaultMachineBtn.clicked.connect(lambda: self.insert_default_machine())
-        self.ui.auditTypeCombo.currentIndexChanged.connect(lambda: self.set_audit_menu())
-        self.ui.auditSearchBtn.clicked.connect(lambda: self.run_audit())
-        #The problem with the UI code above lies in the JSON data not being read for individual widgets
-        #we can try fix this by separating the widgets into their own json style files
+
     
     def run_audit(self):
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
-            result = sql_connection.audit_rtu_by_refno(self.ui.auditSearchBox.toPlainText())
+            result = sql_connection.audit_rtu_by_refno(self.ui.auditSearchBox.text())
             if result == "no refno":
                 popup = QMessageBox()
                 popup.setWindowTitle("No results found")
@@ -87,7 +92,7 @@ class MainWindow(QMainWindow):
                             self.ui.auditResultsTable.setItem(row, 1, QtWidgets.QTableWidgetItem(user))
                     
         if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
-            result = sql_connection.audit_rtu_by_serialno(self.ui.auditSearchBox.toPlainText())
+            result = sql_connection.audit_rtu_by_serialno(self.ui.auditSearchBox.text())
             if result == "no results":
                 popup = QMessageBox()
                 popup.setWindowTitle("No results found")
@@ -121,7 +126,7 @@ class MainWindow(QMainWindow):
                             self.ui.auditResultsTable.setItem(row, 1, QtWidgets.QTableWidgetItem(user))
 
         if self.ui.auditTypeCombo.currentText() == "Branch":
-            result = sql_connection.audit_branch(self.ui.auditSearchBox.toPlainText())
+            result = sql_connection.audit_branch(self.ui.auditSearchBox.text())
             if result == "no results":
                 popup = QMessageBox()
                 popup.setWindowTitle("No results found")
@@ -138,7 +143,7 @@ class MainWindow(QMainWindow):
                     for column in range(2):
                         self.ui.auditResultsTable.setItem(row, column, QtWidgets.QTableWidgetItem(str(result[row][column])))
         if self.ui.auditTypeCombo.currentText() == "Customer":
-            result = sql_connection.audit_customer(self.ui.auditSearchBox.toPlainText())
+            result = sql_connection.audit_customer(self.ui.auditSearchBox.text())
             if result == "no results":
                 popup = QMessageBox()
                 popup.setWindowTitle("No results found")
@@ -227,7 +232,7 @@ class MainWindow(QMainWindow):
     
     def update_user_permissions(self):
         user_id = self.ui.userIDLabel.text()
-        user_email = self.ui.qsmacker_email.toPlainText()
+        user_email = self.ui.qsmacker_email.text()
         popup = QMessageBox()
         popup.setWindowTitle("User is compatible")
         popup.setText("Are you sure you want to update the permissions for this user?")
@@ -266,9 +271,9 @@ class MainWindow(QMainWindow):
     def get_user_compatibility(self, user_id):
         isValid = True
         sql_connection = sql.Connection()
-        use_email = sql_connection.find_user(self.ui.qsmacker_email.toPlainText())
-        print("the value of emails is: " + self.ui.qsmacker_email.toPlainText())
-        if self.ui.qsmacker_email.toPlainText() == "":
+        use_email = sql_connection.find_user(self.ui.qsmacker_email.text())
+        print("the value of emails is: " + self.ui.qsmacker_email.text())
+        if self.ui.qsmacker_email.text() == "":
             isValid = False
             popup = QMessageBox()
             popup.setWindowTitle("No email provided")
@@ -294,7 +299,7 @@ class MainWindow(QMainWindow):
             popup.exec_()
         elif isValid:
             sql_connection = sql.Connection()
-            self.ui.userIDLabel.setText(str(sql_connection.find_user(self.ui.qsmacker_email.toPlainText())))
+            self.ui.userIDLabel.setText(str(sql_connection.find_user(self.ui.qsmacker_email.text())))
             user_id = self.ui.userIDLabel.text()
             permissions = sql_connection.find_permissions_by_user_id(user_id)
             if not permissions:
@@ -315,7 +320,7 @@ class MainWindow(QMainWindow):
 
     def get_qsmacker_job(self, job_name):
         sql_connection = sql.Connection()
-        jobName = self.ui.qsmacker_jobname.toPlainText()
+        jobName = self.ui.qsmacker_jobname.text()
         job = sql_connection.find_job(jobName)
         if job == "no job":
             popup = QMessageBox()
