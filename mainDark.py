@@ -71,12 +71,12 @@ class MainWindow(QMainWindow):
                 popup.setStandardButtons(QMessageBox.Ok)
                 popup.exec_()
             else:
-                keys_to_exclude = ["DateAction", "UserID", "SocketID", "DateAndTimeServiced", "ID"]
+                keys_to_exclude = ["DateAction", "UserID", "SocketID", "DateAndTimeServiced", "ID", "IpPublic", "ColumnsUpdated"]
                 print(result)
                 self.ui.auditResultsFrame.show()
                 self.ui.auditResultsTable.setRowCount(1)
                 self.ui.auditResultsTable.setColumnCount(5)
-                self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "CurrentValue", "PreviousValue"])
+                self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
                 # Compare dictionaries and append necessary values to auditResultsTable
                 #Find a way to exclude things like DateAction from being written to the auditResultsTable
                 for row in range(len(result) - 1):
@@ -88,8 +88,8 @@ class MainWindow(QMainWindow):
                             if text_value in keys_to_exclude:
                                 continue
                                 #We probably need to remove the key:value pair here, then repeat the current loop
-                            current_value = next_dict[key]
-                            previous_value = value
+                            new_value = value
+                            previous_value = next_dict[key]
                             date_action = str(current_dict["DateAction"])
                             for user in self.rts_users:
                                 if user['id'] == current_dict["UserID"]:
@@ -103,7 +103,7 @@ class MainWindow(QMainWindow):
                                 row_number = self.ui.auditResultsTable.rowCount() 
                                 self.ui.auditResultsTable.insertRow(row_number)
                                 self.ui.auditResultsTable.setItem(row_number, 2, QtWidgets.QTableWidgetItem(text_value))
-                                self.ui.auditResultsTable.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(current_value)))
+                                self.ui.auditResultsTable.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(new_value)))
                                 self.ui.auditResultsTable.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
                                 self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(date_action))
                                 self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
@@ -133,12 +133,12 @@ class MainWindow(QMainWindow):
                     for key, value in current_dict.items():
                         if key in next_dict and value != next_dict[key]:
                             text_value = key
-                            current_value = next_dict[key]
+                            new_value = next_dict[key]
                             previous_value = value
                             date_action = current_dict["DateAction"]
                             user = current_dict["UserID"]
                             self.ui.auditResultsTable.setItem(row, 2, QtWidgets.QTableWidgetItem(text_value))
-                            self.ui.auditResultsTable.setItem(row, 3, QtWidgets.QTableWidgetItem(str(current_value)))
+                            self.ui.auditResultsTable.setItem(row, 3, QtWidgets.QTableWidgetItem(str(new_value)))
                             self.ui.auditResultsTable.setItem(row, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
                             self.ui.auditResultsTable.setItem(row, 0, QtWidgets.QTableWidgetItem(date_action))
                             self.ui.auditResultsTable.setItem(row, 1, QtWidgets.QTableWidgetItem(user))
