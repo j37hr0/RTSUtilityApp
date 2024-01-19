@@ -71,18 +71,23 @@ class MainWindow(QMainWindow):
                 popup.setStandardButtons(QMessageBox.Ok)
                 popup.exec_()
             else:
+                keys_to_exclude = ["DateAction", "UserID", "SocketID", "DateAndTimeServiced", "ID"]
                 print(result)
                 self.ui.auditResultsFrame.show()
-                self.ui.auditResultsTable.setRowCount(len(result))
+                self.ui.auditResultsTable.setRowCount(1)
                 self.ui.auditResultsTable.setColumnCount(5)
                 self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "CurrentValue", "PreviousValue"])
                 # Compare dictionaries and append necessary values to auditResultsTable
+                #Find a way to exclude things like DateAction from being written to the auditResultsTable
                 for row in range(len(result) - 1):
                     current_dict = result[row]
                     next_dict = result[row + 1]
                     for key, value in current_dict.items():
                         if key in next_dict and value != next_dict[key]:
                             text_value = key
+                            if text_value in keys_to_exclude:
+                                continue
+                                #We probably need to remove the key:value pair here, then repeat the current loop
                             current_value = next_dict[key]
                             previous_value = value
                             date_action = str(current_dict["DateAction"])
@@ -92,12 +97,18 @@ class MainWindow(QMainWindow):
                                     break
                             else:
                                 user = "User Email Unknown, ID is: " + str(current_dict["UserID"])
-                            self.ui.auditResultsTable.setItem(row, 2, QtWidgets.QTableWidgetItem(text_value))
-                            self.ui.auditResultsTable.setItem(row, 3, QtWidgets.QTableWidgetItem(str(current_value)))
-                            self.ui.auditResultsTable.setItem(row, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
-                            self.ui.auditResultsTable.setItem(row, 0, QtWidgets.QTableWidgetItem(date_action))
-                            self.ui.auditResultsTable.setItem(row, 1, QtWidgets.QTableWidgetItem(user))
-                    
+                            if text_value == "":
+                                continue
+                            else:
+                                row_number = self.ui.auditResultsTable.rowCount() 
+                                self.ui.auditResultsTable.insertRow(row_number)
+                                self.ui.auditResultsTable.setItem(row_number, 2, QtWidgets.QTableWidgetItem(text_value))
+                                self.ui.auditResultsTable.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(current_value)))
+                                self.ui.auditResultsTable.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
+                                self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(date_action))
+                                self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
+
+
         if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
             result = sql_connection.audit_rtu_by_serialno(self.ui.auditSearchBox.text())
             if result == "no results":
