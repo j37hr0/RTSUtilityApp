@@ -12,11 +12,9 @@ from Custom_Widgets.Widgets import *
 import os
 
 
-
 #TODO: for safety, we should reset pages/forms when something is updated or changed in the DB
 #TODO: for a quick win, I can refactor the popup code into a function that takes in the title, text, icon and buttons
-#TODO: when the app opens for auditing purposes, run a query to populate a dictionary with user emails and user ids for use in the audit table
-
+#TODO: fix the dateaction to remove the ms off the end so it fits nicely in the tablewidget
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -121,13 +119,41 @@ class MainWindow(QMainWindow):
                 popup.setStandardButtons(QMessageBox.Ok)
                 popup.exec_()
             else:
+                keys_to_exclude = ["DateAction", "ID", "ColumnsUpdated"]
                 self.ui.auditResultsFrame.show()
-                self.ui.auditResultsTable.setRowCount(len(result))
-                self.ui.auditResultsTable.setColumnCount(3)
-                self.ui.auditResultsTable.setHorizontalHeaderLabels(["RefNo", "SerialNo", "some other one"])
-                for row in range(len(result)):
-                    for column in range(2):
-                        self.ui.auditResultsTable.setItem(row, column, QtWidgets.QTableWidgetItem(str(result[row][column])))
+                self.ui.auditResultsTable.setRowCount(1)
+                self.ui.auditResultsTable.setColumnCount(5)
+                self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
+                for row in range(len(result) - 1):
+                    current_dict = result[row]
+                    next_dict = result[row + 1]
+                    for key, value in current_dict.items():
+                        if key in next_dict and value != next_dict[key]:
+                            text_value = key
+                            if text_value in keys_to_exclude:
+                                continue
+                                #need to if text_value is customerID or RegionID, then get the name of the customer or region
+                            new_value = value
+                            previous_value = next_dict[key]
+                            date_action = str(current_dict["DateAction"]) 
+                            for user in self.rts_users:
+                                if user['id'] == current_dict["UserID"]:
+                                    user = user['email']
+                                    break
+                            else:
+                                user = "User Email Unknown, ID is: " + str(current_dict["UserID"])
+                            if text_value == "":
+                                continue
+                            else:
+                                row_number = self.ui.auditResultsTable.rowCount() 
+                                self.ui.auditResultsTable.insertRow(row_number)
+                                self.ui.auditResultsTable.setItem(row_number, 2, QtWidgets.QTableWidgetItem(text_value))
+                                self.ui.auditResultsTable.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(new_value)))
+                                self.ui.auditResultsTable.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
+                                self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(date_action))
+                                self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
+
+
         if self.ui.auditTypeCombo.currentText() == "Customer":
             result = sql_connection.audit_customer(self.ui.auditSearchBox.text())
             if result == "no results":
@@ -139,9 +165,9 @@ class MainWindow(QMainWindow):
                 popup.exec_()
             else:
                 self.ui.auditResultsFrame.show()
-                self.ui.auditResultsTable.setRowCount(len(result))
-                self.ui.auditResultsTable.setColumnCount(3)
-                self.ui.auditResultsTable.setHorizontalHeaderLabels(["RefNo", "SerialNo", "some other one"])
+                self.ui.auditResultsTable.setRowCount(1)
+                self.ui.auditResultsTable.setColumnCount(4)
+                self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "CustomerName", "BranchName"])
                 for row in range(len(result)):
                     for column in range(2):
                         self.ui.auditResultsTable.setItem(row, column, QtWidgets.QTableWidgetItem(str(result[row][column])))

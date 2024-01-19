@@ -486,9 +486,9 @@ class Ui_MainWindow(object):
 "border-width:5px;\n"
 "border-color: white;\n"
 "}\n"
-"QListWidget{\n"
+"QTableWidget{\n"
 "background-color: grey;\n"
-"color: blue;\n"
+"color: black;\n"
 "}\n"
 "")
         self.mainPages.setObjectName("mainPages")
@@ -597,6 +597,12 @@ class Ui_MainWindow(object):
         self.horizontalLayout_18.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_18.setObjectName("horizontalLayout_18")
         self.frame_17 = QtWidgets.QFrame(self.auditPage)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.frame_17.sizePolicy().hasHeightForWidth())
+        self.frame_17.setSizePolicy(sizePolicy)
+        self.frame_17.setMinimumSize(QtCore.QSize(400, 0))
         self.frame_17.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_17.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_17.setObjectName("frame_17")
@@ -611,13 +617,13 @@ class Ui_MainWindow(object):
         self.label_22.setGeometry(QtCore.QRect(20, 10, 91, 16))
         self.label_22.setObjectName("label_22")
         self.auditTypeLabel = QtWidgets.QLabel(self.frame_17)
-        self.auditTypeLabel.setGeometry(QtCore.QRect(190, 10, 101, 16))
+        self.auditTypeLabel.setGeometry(QtCore.QRect(190, 10, 131, 16))
         self.auditTypeLabel.setObjectName("auditTypeLabel")
         self.auditSearchBtn = QtWidgets.QPushButton(self.frame_17)
-        self.auditSearchBtn.setGeometry(QtCore.QRect(250, 60, 75, 23))
+        self.auditSearchBtn.setGeometry(QtCore.QRect(310, 60, 75, 23))
         self.auditSearchBtn.setObjectName("auditSearchBtn")
         self.auditSearchBox = QtWidgets.QLineEdit(self.frame_17)
-        self.auditSearchBox.setGeometry(QtCore.QRect(190, 30, 113, 20))
+        self.auditSearchBox.setGeometry(QtCore.QRect(190, 30, 191, 20))
         self.auditSearchBox.setObjectName("auditSearchBox")
         self.horizontalLayout_18.addWidget(self.frame_17)
         self.auditResultsFrame = QtWidgets.QFrame(self.auditPage)
@@ -625,7 +631,7 @@ class Ui_MainWindow(object):
         self.auditResultsFrame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.auditResultsFrame.setObjectName("auditResultsFrame")
         self.auditResultsTable = QtWidgets.QTableWidget(self.auditResultsFrame)
-        self.auditResultsTable.setGeometry(QtCore.QRect(30, 0, 471, 192))
+        self.auditResultsTable.setGeometry(QtCore.QRect(120, 0, 561, 331))
         self.auditResultsTable.setObjectName("auditResultsTable")
         self.auditResultsTable.setColumnCount(0)
         self.auditResultsTable.setRowCount(0)
@@ -888,7 +894,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.helpMenuPages.setCurrentIndex(0)
-        self.mainPages.setCurrentIndex(6)
+        self.mainPages.setCurrentIndex(3)
         self.profileMenuPages.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 

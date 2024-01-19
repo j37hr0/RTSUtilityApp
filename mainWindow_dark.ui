@@ -951,14 +951,14 @@ color: black;
 border-width:5px;
 border-color: white;
 }
-QListWidget{
+QTableWidget{
 background-color: grey;
-color: blue;
+color: black;
 }
 </string>
                </property>
                <property name="currentIndex">
-                <number>6</number>
+                <number>3</number>
                </property>
                <widget class="QWidget" name="homePage">
                 <property name="styleSheet">
@@ -1237,6 +1237,18 @@ color: blue;
                 <layout class="QHBoxLayout" name="horizontalLayout_18">
                  <item>
                   <widget class="QFrame" name="frame_17">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>400</width>
+                     <height>0</height>
+                    </size>
+                   </property>
                    <property name="frameShape">
                     <enum>QFrame::StyledPanel</enum>
                    </property>
@@ -1291,7 +1303,7 @@ color: blue;
                      <rect>
                       <x>190</x>
                       <y>10</y>
-                      <width>101</width>
+                      <width>131</width>
                       <height>16</height>
                      </rect>
                     </property>
@@ -1302,7 +1314,7 @@ color: blue;
                    <widget class="QPushButton" name="auditSearchBtn">
                     <property name="geometry">
                      <rect>
-                      <x>250</x>
+                      <x>310</x>
                       <y>60</y>
                       <width>75</width>
                       <height>23</height>
@@ -1317,7 +1329,7 @@ color: blue;
                      <rect>
                       <x>190</x>
                       <y>30</y>
-                      <width>113</width>
+                      <width>191</width>
                       <height>20</height>
                      </rect>
                     </property>
@@ -1338,10 +1350,10 @@ color: blue;
                    <widget class="QTableWidget" name="auditResultsTable">
                     <property name="geometry">
                      <rect>
-                      <x>30</x>
+                      <x>120</x>
                       <y>0</y>
-                      <width>471</width>
-                      <height>192</height>
+                      <width>561</width>
+                      <height>331</height>
                      </rect>
                     </property>
                    </widget>

@@ -289,7 +289,11 @@ class Connection:
             return "no branch"
         else:
             self.make_connection(database="Realcontrol")
-            self.cursor.execute(f"""select * from tblbranch_auditExact where  like '{branch}'""")
+            self.cursor.execute(f"""
+                                select * from tblBranch_AuditExact
+                                where IDOriginal = (select ID from tblBranch where BranchName = '{branch}')
+                                order by id desc
+                                """)
             branchResults = self.cursor.fetchall()
             if branchResults == [None]:
                 print("No Branch found")
