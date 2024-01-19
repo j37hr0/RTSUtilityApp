@@ -63,6 +63,8 @@ class MainWindow(QMainWindow):
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
             result = sql_connection.audit_rtu_by_refno(self.ui.auditSearchBox.text())
+        if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
+            result = sql_connection.audit_rtu_by_serialno(self.ui.auditSearchBox.text())
             if result == "no refno":
                 popup = QMessageBox()
                 popup.setWindowTitle("No results found")
@@ -72,7 +74,7 @@ class MainWindow(QMainWindow):
                 popup.exec_()
             else:
                 keys_to_exclude = ["DateAction", "UserID", "SocketID", "DateAndTimeServiced", "ID", "IpPublic", "ColumnsUpdated"]
-                print(result)
+                #print(result)
                 self.ui.auditResultsFrame.show()
                 self.ui.auditResultsTable.setRowCount(1)
                 self.ui.auditResultsTable.setColumnCount(5)
@@ -108,40 +110,6 @@ class MainWindow(QMainWindow):
                                 self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(date_action))
                                 self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
 
-
-        if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
-            result = sql_connection.audit_rtu_by_serialno(self.ui.auditSearchBox.text())
-            if result == "no results":
-                popup = QMessageBox()
-                popup.setWindowTitle("No results found")
-                popup.setText("No results found for that SerialNo, please check the SerialNo and try again")
-                popup.setIcon(QMessageBox.Warning)
-                popup.setStandardButtons(QMessageBox.Ok)
-                popup.exec_()
-            else:
-                self.ui.auditResultsFrame.show()
-                self.ui.auditResultsTable.setRowCount(len(result))
-                self.ui.auditResultsTable.setColumnCount(5)
-                self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "CurrentValue", "PreviousValue"])
-                for row in range(len(result)):
-                    for column in range(2):
-                        self.ui.auditResultsTable.setItem(row, column, QtWidgets.QTableWidgetItem(str(result[row][column])))
-                # Compare dictionaries and append necessary values to auditResultsTable
-                for row in range(len(result) - 1):
-                    current_dict = result[row]
-                    next_dict = result[row + 1]
-                    for key, value in current_dict.items():
-                        if key in next_dict and value != next_dict[key]:
-                            text_value = key
-                            new_value = next_dict[key]
-                            previous_value = value
-                            date_action = current_dict["DateAction"]
-                            user = current_dict["UserID"]
-                            self.ui.auditResultsTable.setItem(row, 2, QtWidgets.QTableWidgetItem(text_value))
-                            self.ui.auditResultsTable.setItem(row, 3, QtWidgets.QTableWidgetItem(str(new_value)))
-                            self.ui.auditResultsTable.setItem(row, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
-                            self.ui.auditResultsTable.setItem(row, 0, QtWidgets.QTableWidgetItem(date_action))
-                            self.ui.auditResultsTable.setItem(row, 1, QtWidgets.QTableWidgetItem(user))
 
         if self.ui.auditTypeCombo.currentText() == "Branch":
             result = sql_connection.audit_branch(self.ui.auditSearchBox.text())
