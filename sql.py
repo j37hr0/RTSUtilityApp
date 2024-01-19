@@ -305,4 +305,14 @@ class Connection:
                 self.close_connection()
                 return customerResults
             
-            
+    def get_rts_users(self):
+        self.make_connection(database="Realcontrol")
+        self.cursor.execute("""
+                            select id, email from tblusers
+                            where (email like '%@realtelematics.co.za%'
+                            or email like '%@realtimesolutions.co.za%')
+                            and email not like '%za.%'
+                            """)
+        rts_users = self.cursor.fetchall()
+        self.close_connection()
+        return rts_users

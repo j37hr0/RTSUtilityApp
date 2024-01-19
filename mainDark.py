@@ -12,7 +12,7 @@ from Custom_Widgets.Widgets import *
 import os
 
 
-#TODO: link keyboard press of enter to buttons for search and user search
+
 #TODO: for safety, we should reset pages/forms when something is updated or changed in the DB
 #TODO: for a quick win, I can refactor the popup code into a function that takes in the title, text, icon and buttons
 #TODO: when the app opens for auditing purposes, run a query to populate a dictionary with user emails and user ids for use in the audit table
@@ -54,8 +54,11 @@ class MainWindow(QMainWindow):
         self.ui.qsmackerUserFrame.hide()
         self.ui.defaultBranchFrame.hide()
         self.ui.auditResultsFrame.hide()
+        
+        #populate rts_users to compare audits against
+        self.rts_users = sql.Connection().get_rts_users()
 
-    
+
     def run_audit(self):
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
@@ -83,8 +86,12 @@ class MainWindow(QMainWindow):
                             current_value = next_dict[key]
                             previous_value = value
                             date_action = str(current_dict["DateAction"])
-                            print(date_action)
-                            user = str(current_dict["UserID"])
+                            for user in self.rts_users:
+                                if user['id'] == current_dict["UserID"]:
+                                    user = user['email']
+                                    break
+                            else:
+                                user = "User Email Unknown, ID is: " + str(current_dict["UserID"])
                             self.ui.auditResultsTable.setItem(row, 2, QtWidgets.QTableWidgetItem(text_value))
                             self.ui.auditResultsTable.setItem(row, 3, QtWidgets.QTableWidgetItem(str(current_value)))
                             self.ui.auditResultsTable.setItem(row, 4, QtWidgets.QTableWidgetItem(str(previous_value)))

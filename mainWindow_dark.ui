@@ -1623,7 +1623,7 @@ color: blue;
                    <widget class="QPushButton" name="userSearchBtn">
                     <property name="geometry">
                      <rect>
-                      <x>70</x>
+                      <x>100</x>
                       <y>80</y>
                       <width>75</width>
                       <height>23</height>
@@ -1641,7 +1641,7 @@ color: blue;
                      <rect>
                       <x>20</x>
                       <y>50</y>
-                      <width>113</width>
+                      <width>151</width>
                       <height>20</height>
                      </rect>
                     </property>
