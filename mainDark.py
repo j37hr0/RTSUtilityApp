@@ -13,7 +13,6 @@ import os
 
 #TODO: export to csv button for audit results
 #TODO: for safety, we should reset pages/forms when something is updated or changed in the DB
-#TODO: for a quick win, I can refactor the popup code into a function that takes in the title, text, icon and buttons
 #TODO: fix the dateaction to remove the ms off the end so it fits nicely in the tablewidget
 
 class MainWindow(QMainWindow):
@@ -58,7 +57,6 @@ class MainWindow(QMainWindow):
         #populate rts_users to compare audits against
         self.rts_users = sql.Connection().get_rts_users()
 
-
     def create_popup(self, title, text, icon, buttons):
         self.popup = QMessageBox()
         self.popup.setWindowTitle(title)
@@ -83,7 +81,6 @@ class MainWindow(QMainWindow):
                 self.ui.auditResultsTable.setColumnCount(5)
                 self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
                 # Compare dictionaries and append necessary values to auditResultsTable
-                #Find a way to exclude things like DateAction from being written to the auditResultsTable
                 for row in range(len(result) - 1):
                     current_dict = result[row]
                     next_dict = result[row + 1]
@@ -92,7 +89,6 @@ class MainWindow(QMainWindow):
                             text_value = key
                             if text_value in keys_to_exclude:
                                 continue
-                                #We probably need to remove the key:value pair here, then repeat the current loop
                             new_value = value
                             previous_value = next_dict[key]
                             date_action = str(current_dict["DateAction"])
@@ -246,6 +242,7 @@ class MainWindow(QMainWindow):
             return result
     
     def set_notification(self, notification, notificationBody):
+        #create focus on notification, and make it hold focus until it is closed
         self.ui.notificaitonTitle.setText(notification)
         self.ui.notificationBody.setText(notificationBody)
 
@@ -279,12 +276,12 @@ class MainWindow(QMainWindow):
                 self.create_popup("User has permissions already", "User has permissions already, please contact the IT department to update permissions", QMessageBox.Critical, QMessageBox.Ok)
 
 
-
-
     def get_qsmacker_job(self, job_name):
         sql_connection = sql.Connection()
         jobName = self.ui.qsmacker_jobname.text()
         job = sql_connection.find_job(jobName)
+        print("the value of job is: ")
+        print(job)
         if job == "no job":
             self.create_popup("No job found", "No job found with that name, please check the name and try again", QMessageBox.Warning, QMessageBox.Ok)
         elif job != "no job":
@@ -294,11 +291,42 @@ class MainWindow(QMainWindow):
             self.ui.qsmacker_jobname.setText(str(job[1]))
             self.ui.totalMachinesLabel.setText(str(counts[0]['Machines']))
             self.ui.totalCommandsLabel.setText(str(counts[1]['Commands']))
+            if job[3] == 1:
+                self.ui.jobStatusLabel.setText("Added")
+            elif job[3] == 2:
+                self.ui.jobStatusLabel.setText("Success")
+            elif job[3] == 3:
+                self.ui.jobStatusLabel.setText("Failed")
             self.ui.batch_list.clear()
-            for number in range(len(job[3])):
-                #self.ui.batch_list.addItem(str(job[3][number][0]))
-                row = f"ID: {job[3][number]['JobId']} - SerialNo: {job[3][number]['serialNumber']} - Description: {job[3][number]['Description']} - InsertDate: {job[3][number]['insertDate']} - BatchStatusId: {job[3][number]['BatchStatusId']} -']))"
-                self.ui.batch_list.addItem(row)
+            self.ui.batch_list.show()
+            self.ui.batch_list.setRowCount(0)
+            self.ui.batch_list.setColumnCount(5)
+            self.ui.batch_list.setHorizontalHeaderLabels(["JobID", "SerialNo", "Description", "InsertDate", "BatchStatusId"])
+            for number in range(len(job[4])):
+                if job[4][number]['BatchStatusId'] == 1:
+                    jobStatusTranslated = "Added"
+                elif job[4][number]['BatchStatusId'] == 2:
+                    jobStatusTranslated = "Loaded"
+                elif job[4][number]['BatchStatusId'] == 3:
+                    jobStatusTranslated = "Success"
+                elif job[4][number]['BatchStatusId'] == 4:
+                    jobStatusTranslated = "Failed"
+                elif job[4][number]['BatchStatusId'] == 5:
+                    jobStatusTranslated = "No Device"
+                elif job[4][number]['BatchStatusId'] == 6:
+                    jobStatusTranslated = "Manual User Failed"
+                elif job[4][number]['BatchStatusId'] == 7:
+                    jobStatusTranslated = "Failed - lost comms"
+                row_number = self.ui.batch_list.rowCount()
+                self.ui.batch_list.insertRow(row_number)
+                self.ui.batch_list.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(job[4][number]['JobId'])))
+                self.ui.batch_list.setItem(row_number, 1, QtWidgets.QTableWidgetItem(str(job[4][number]['serialNumber'])))
+                self.ui.batch_list.setItem(row_number, 2, QtWidgets.QTableWidgetItem(str(job[4][number]['Description'])))
+                self.ui.batch_list.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(job[4][number]['insertDate'])))
+                self.ui.batch_list.setItem(row_number, 4, QtWidgets.QTableWidgetItem(jobStatusTranslated))
+
+                # row = f"ID: {job[3][number]['JobId']} - SerialNo: {job[3][number]['serialNumber']} - Description: {job[3][number]['Description']} - InsertDate: {job[3][number]['insertDate']} - BatchStatusId: {jobStatusTranslated} -']))"
+                # self.ui.batch_list.setItem()
 
 
 if __name__ == "__main__":

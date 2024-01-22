@@ -145,7 +145,7 @@
       "floatPosition": [
         {
           "relativeTo": "centralwidget",
-          "position": "bottom-right",
+          "position": "center-center",
           "shadow": [
             {
               "color": "#000",
@@ -172,6 +172,7 @@
             {
               "homeBtn": "homePage",
               "qsmackerBtn": "qsmackPage",
+              "qsmackerBatchPageBtn": "qsmackerBatchPage",
               "realcontrolBtn": "rcPage",
               "qsmackerPermPageBtn": "qsmackerPermissionsPage",
               "auditPageBtn": "auditPage"

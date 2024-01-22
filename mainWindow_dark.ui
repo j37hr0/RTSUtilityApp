@@ -958,7 +958,7 @@ color: black;
 </string>
                </property>
                <property name="currentIndex">
-                <number>3</number>
+                <number>5</number>
                </property>
                <widget class="QWidget" name="homePage">
                 <property name="styleSheet">
@@ -1527,7 +1527,7 @@ color: black;
                      <property name="geometry">
                       <rect>
                        <x>90</x>
-                       <y>40</y>
+                       <y>70</y>
                        <width>79</width>
                        <height>16</height>
                       </rect>
@@ -1540,7 +1540,7 @@ color: black;
                      <property name="geometry">
                       <rect>
                        <x>10</x>
-                       <y>40</y>
+                       <y>70</y>
                        <width>71</width>
                        <height>16</height>
                       </rect>
@@ -1553,7 +1553,7 @@ color: black;
                      <property name="geometry">
                       <rect>
                        <x>150</x>
-                       <y>70</y>
+                       <y>100</y>
                        <width>79</width>
                        <height>16</height>
                       </rect>
@@ -1566,7 +1566,7 @@ color: black;
                      <property name="geometry">
                       <rect>
                        <x>10</x>
-                       <y>70</y>
+                       <y>100</y>
                        <width>131</width>
                        <height>16</height>
                       </rect>
@@ -1575,17 +1575,43 @@ color: black;
                       <string>Tota Pending Commands:</string>
                      </property>
                     </widget>
-                    <widget class="QListWidget" name="batch_list">
+                    <widget class="QTableWidget" name="batch_list">
                      <property name="geometry">
                       <rect>
-                       <x>10</x>
-                       <y>100</y>
-                       <width>561</width>
-                       <height>81</height>
+                       <x>190</x>
+                       <y>10</y>
+                       <width>391</width>
+                       <height>151</height>
                       </rect>
                      </property>
                      <property name="styleSheet">
                       <string notr="true"/>
+                     </property>
+                    </widget>
+                    <widget class="QLabel" name="label_23">
+                     <property name="geometry">
+                      <rect>
+                       <x>10</x>
+                       <y>40</y>
+                       <width>61</width>
+                       <height>16</height>
+                      </rect>
+                     </property>
+                     <property name="text">
+                      <string>Job Status:</string>
+                     </property>
+                    </widget>
+                    <widget class="QLabel" name="jobStatusLabel">
+                     <property name="geometry">
+                      <rect>
+                       <x>70</x>
+                       <y>40</y>
+                       <width>61</width>
+                       <height>16</height>
+                      </rect>
+                     </property>
+                     <property name="text">
+                      <string/>
                      </property>
                     </widget>
                    </widget>

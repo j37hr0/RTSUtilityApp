@@ -135,8 +135,7 @@ class Connection:
                 print("No job found SQL")
                 return "no job"
             else:
-                job = [job['id'], job['Description'], job['Email']]
-                print(job)
+                job = [job['id'], job['Description'], job['Email'], job['JobStatusId']]
                 batches = self.get_batches(job[0])
                 removeKeys = ['id', 'jobid', 'BatchTypeId', 'currentBatch', 'removedFromQueue','userId', 'hasChildBatch','parentBatchId'] 
                 for key in removeKeys:
