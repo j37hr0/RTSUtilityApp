@@ -67,50 +67,52 @@ class MainWindow(QMainWindow):
         self.x = self.popup.exec_()
 
     def run_audit(self):
+        print("running audit function")
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
             result = sql_connection.audit_rtu_by_refno(self.ui.auditSearchBox.text())
+            print(result)
         if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
             result = sql_connection.audit_rtu_by_serialno(self.ui.auditSearchBox.text())
-            if result == "no refno":
-                self.create_popup("No results found", "No results found for that SerialNo, please check the SerialNo and try again", QMessageBox.Warning, QMessageBox.Ok)
-            else:
-                keys_to_exclude = ["DateAction", "UserID", "SocketID", "DateAndTimeServiced", "ID", "IpPublic", "ColumnsUpdated"]
-                #print(result)
-                self.ui.auditResultsFrame.show()
-                self.ui.auditResultsTable.setRowCount(0)
-                self.ui.auditResultsTable.setColumnCount(5)
-                self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
-                # Compare dictionaries and append necessary values to auditResultsTable
-                for row in range(len(result) - 1):
-                    current_dict = result[row]
-                    next_dict = result[row + 1]
-                    for key, value in current_dict.items():
-                        if key in next_dict and value != next_dict[key]:
-                            text_value = key
-                            if text_value in keys_to_exclude:
-                                continue
-                            new_value = value
-                            previous_value = next_dict[key]
-                            date_action = str(current_dict["DateAction"])
-                            for user in self.rts_users:
-                                if user['id'] == current_dict["UserID"]:
-                                    user = user['email']
-                                    break
-                            else:
-                                user = "User Email Unknown, ID is: " + str(current_dict["UserID"])
-                            if text_value == "":
-                                continue
-                            else:
-                                row_number = self.ui.auditResultsTable.rowCount() 
-                                d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
-                                self.ui.auditResultsTable.insertRow(row_number)
-                                self.ui.auditResultsTable.setItem(row_number, 2, QtWidgets.QTableWidgetItem(text_value))
-                                self.ui.auditResultsTable.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(new_value)))
-                                self.ui.auditResultsTable.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
-                                self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
-                                self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
-
+        if result == "no refno":
+            self.create_popup("No results found", "No results found for that SerialNo, please check the SerialNo and try again", QMessageBox.Warning, QMessageBox.Ok)
+        else:
+            keys_to_exclude = ["DateAction", "UserID", "SocketID", "DateAndTimeServiced", "ID", "IpPublic", "ColumnsUpdated"]
+            # print(result)
+            self.ui.auditResultsFrame.show()
+            self.ui.auditResultsTable.setRowCount(0)
+            self.ui.auditResultsTable.setColumnCount(5)
+            self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
+            # Compare dictionaries and append necessary values to auditResultsTable
+            for row in range(len(result) - 1):
+                current_dict = result[row]
+                next_dict = result[row + 1]
+                for key, value in current_dict.items():
+                    if key in next_dict and value != next_dict[key]:
+                        text_value = key
+                        if text_value in keys_to_exclude:
+                            continue
+                        new_value = value
+                        previous_value = next_dict[key]
+                        date_action = str(current_dict["DateAction"])
+                        for user in self.rts_users:
+                            if user['id'] == current_dict["UserID"]:
+                                user = user['email']
+                                break
+                        else:
+                            user = "User Email Unknown, ID is: " + str(current_dict["UserID"])
+                        if text_value == "":
+                            continue
+                        else:
+                            row_number = self.ui.auditResultsTable.rowCount() 
+                            d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
+                            self.ui.auditResultsTable.insertRow(row_number)
+                            self.ui.auditResultsTable.setItem(row_number, 2, QtWidgets.QTableWidgetItem(text_value))
+                            self.ui.auditResultsTable.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(new_value)))
+                            self.ui.auditResultsTable.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
+                            self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
+                            self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
+                            print("reachiung the end of the function")
 
         if self.ui.auditTypeCombo.currentText() == "Branch":
             result = sql_connection.audit_branch(self.ui.auditSearchBox.text())
@@ -138,7 +140,7 @@ class MainWindow(QMainWindow):
                                 #need to if text_value is customerID or RegionID, then get the name of the customer or region
                             new_value = value
                             previous_value = next_dict[key]
-                            date_action = str(current_dict["DateAction"]).replace(microsecond=0) 
+                            date_action = str(current_dict["DateAction"])
                             for user in self.rts_users:
                                 if user['id'] == current_dict["UserID"]:
                                     user = user['email']
@@ -149,6 +151,7 @@ class MainWindow(QMainWindow):
                                 continue
                             else:
                                 row_number = self.ui.auditResultsTable.rowCount() 
+                                self.ui.auditResultsTable.insertRow(row_number)
                                 d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
                                 self.ui.auditResultsTable.insertRow(row_number)
                                 self.ui.auditResultsTable.setItem(row_number, 2, QtWidgets.QTableWidgetItem(text_value))
@@ -156,6 +159,7 @@ class MainWindow(QMainWindow):
                                 self.ui.auditResultsTable.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
                                 self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
                                 self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
+                                self.ui.auditResultsTable.show()
 
 
         if self.ui.auditTypeCombo.currentText() == "Customer":
@@ -304,6 +308,8 @@ class MainWindow(QMainWindow):
             self.ui.batch_list.show()
             self.ui.batch_list.setRowCount(0)
             self.ui.batch_list.setColumnCount(5)
+            self.ui.batch_list.setColumnWidth(2, 150)
+            self.ui.batch_list.setColumnWidth(3, 120)
             self.ui.batch_list.setHorizontalHeaderLabels(["JobID", "SerialNo", "Description", "InsertDate", "BatchStatusId"])
             status_mapping = {
                 1: "Added",

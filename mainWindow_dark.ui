@@ -958,7 +958,7 @@ color: black;
 </string>
                </property>
                <property name="currentIndex">
-                <number>5</number>
+                <number>3</number>
                </property>
                <widget class="QWidget" name="homePage">
                 <property name="styleSheet">
@@ -1234,132 +1234,142 @@ color: black;
                 </layout>
                </widget>
                <widget class="QWidget" name="auditPage">
-                <layout class="QHBoxLayout" name="horizontalLayout_18">
-                 <item>
-                  <widget class="QFrame" name="frame_17">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
+                <widget class="QFrame" name="frame_17">
+                 <property name="geometry">
+                  <rect>
+                   <x>9</x>
+                   <y>9</y>
+                   <width>300</width>
+                   <height>182</height>
+                  </rect>
+                 </property>
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>300</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <widget class="QComboBox" name="auditTypeCombo">
+                  <property name="geometry">
+                   <rect>
+                    <x>20</x>
+                    <y>30</y>
+                    <width>121</width>
+                    <height>22</height>
+                   </rect>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>RTU (by RefNo)</string>
                    </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>400</width>
-                     <height>0</height>
-                    </size>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>RTU (by SerialNo)</string>
                    </property>
-                   <property name="frameShape">
-                    <enum>QFrame::StyledPanel</enum>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Branch</string>
                    </property>
-                   <property name="frameShadow">
-                    <enum>QFrame::Raised</enum>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Customer</string>
                    </property>
-                   <widget class="QComboBox" name="auditTypeCombo">
-                    <property name="geometry">
-                     <rect>
-                      <x>20</x>
-                      <y>30</y>
-                      <width>121</width>
-                      <height>22</height>
-                     </rect>
-                    </property>
-                    <item>
-                     <property name="text">
-                      <string>RTU (by RefNo)</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>RTU (by SerialNo)</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>Branch</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>Customer</string>
-                     </property>
-                    </item>
-                   </widget>
-                   <widget class="QLabel" name="label_22">
-                    <property name="geometry">
-                     <rect>
-                      <x>20</x>
-                      <y>10</y>
-                      <width>91</width>
-                      <height>16</height>
-                     </rect>
-                    </property>
-                    <property name="text">
-                     <string>Select Audit Type</string>
-                    </property>
-                   </widget>
-                   <widget class="QLabel" name="auditTypeLabel">
-                    <property name="geometry">
-                     <rect>
-                      <x>190</x>
-                      <y>10</y>
-                      <width>131</width>
-                      <height>16</height>
-                     </rect>
-                    </property>
-                    <property name="text">
-                     <string>Enter Refno: </string>
-                    </property>
-                   </widget>
-                   <widget class="QPushButton" name="auditSearchBtn">
-                    <property name="geometry">
-                     <rect>
-                      <x>310</x>
-                      <y>60</y>
-                      <width>75</width>
-                      <height>23</height>
-                     </rect>
-                    </property>
-                    <property name="text">
-                     <string>Search</string>
-                    </property>
-                   </widget>
-                   <widget class="QLineEdit" name="auditSearchBox">
-                    <property name="geometry">
-                     <rect>
-                      <x>190</x>
-                      <y>30</y>
-                      <width>191</width>
-                      <height>20</height>
-                     </rect>
-                    </property>
-                    <property name="placeholderText">
-                     <string>RefNo...</string>
-                    </property>
-                   </widget>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QFrame" name="auditResultsFrame">
-                   <property name="frameShape">
-                    <enum>QFrame::StyledPanel</enum>
-                   </property>
-                   <property name="frameShadow">
-                    <enum>QFrame::Raised</enum>
-                   </property>
-                   <widget class="QTableWidget" name="auditResultsTable">
-                    <property name="geometry">
-                     <rect>
-                      <x>120</x>
-                      <y>0</y>
-                      <width>561</width>
-                      <height>331</height>
-                     </rect>
-                    </property>
-                   </widget>
-                  </widget>
-                 </item>
-                </layout>
+                  </item>
+                 </widget>
+                 <widget class="QLabel" name="label_22">
+                  <property name="geometry">
+                   <rect>
+                    <x>20</x>
+                    <y>10</y>
+                    <width>91</width>
+                    <height>16</height>
+                   </rect>
+                  </property>
+                  <property name="text">
+                   <string>Select Audit Type</string>
+                  </property>
+                 </widget>
+                 <widget class="QLabel" name="auditTypeLabel">
+                  <property name="geometry">
+                   <rect>
+                    <x>20</x>
+                    <y>80</y>
+                    <width>131</width>
+                    <height>16</height>
+                   </rect>
+                  </property>
+                  <property name="text">
+                   <string>Enter Refno: </string>
+                  </property>
+                 </widget>
+                 <widget class="QPushButton" name="auditSearchBtn">
+                  <property name="geometry">
+                   <rect>
+                    <x>140</x>
+                    <y>130</y>
+                    <width>75</width>
+                    <height>23</height>
+                   </rect>
+                  </property>
+                  <property name="text">
+                   <string>Search</string>
+                  </property>
+                 </widget>
+                 <widget class="QLineEdit" name="auditSearchBox">
+                  <property name="geometry">
+                   <rect>
+                    <x>20</x>
+                    <y>100</y>
+                    <width>191</width>
+                    <height>20</height>
+                   </rect>
+                  </property>
+                  <property name="placeholderText">
+                   <string>RefNo...</string>
+                  </property>
+                 </widget>
+                </widget>
+                <widget class="QFrame" name="auditResultsFrame">
+                 <property name="geometry">
+                  <rect>
+                   <x>315</x>
+                   <y>9</y>
+                   <width>745</width>
+                   <height>182</height>
+                  </rect>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <widget class="QTableWidget" name="auditResultsTable">
+                  <property name="geometry">
+                   <rect>
+                    <x>10</x>
+                    <y>0</y>
+                    <width>721</width>
+                    <height>331</height>
+                   </rect>
+                  </property>
+                 </widget>
+                </widget>
                </widget>
                <widget class="QWidget" name="qsmackPage">
                 <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1485,9 +1495,9 @@ color: black;
                     </property>
                     <property name="geometry">
                      <rect>
-                      <x>430</x>
+                      <x>250</x>
                       <y>0</y>
-                      <width>611</width>
+                      <width>791</width>
                       <height>191</height>
                      </rect>
                     </property>
@@ -1544,7 +1554,7 @@ color: black;
                       <rect>
                        <x>10</x>
                        <y>70</y>
-                       <width>71</width>
+                       <width>81</width>
                        <height>16</height>
                       </rect>
                      </property>
@@ -1555,7 +1565,7 @@ color: black;
                     <widget class="QLabel" name="totalCommandsLabel">
                      <property name="geometry">
                       <rect>
-                       <x>150</x>
+                       <x>140</x>
                        <y>100</y>
                        <width>79</width>
                        <height>16</height>
@@ -1582,9 +1592,9 @@ color: black;
                      <property name="geometry">
                       <rect>
                        <x>190</x>
-                       <y>10</y>
-                       <width>391</width>
-                       <height>151</height>
+                       <y>0</y>
+                       <width>601</width>
+                       <height>181</height>
                       </rect>
                      </property>
                      <property name="styleSheet">
@@ -1623,7 +1633,7 @@ color: black;
                      <rect>
                       <x>10</x>
                       <y>40</y>
-                      <width>141</width>
+                      <width>171</width>
                       <height>20</height>
                      </rect>
                     </property>
