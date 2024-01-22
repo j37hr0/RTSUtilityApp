@@ -680,6 +680,7 @@ class Ui_MainWindow(object):
         self.label_13.setGeometry(QtCore.QRect(10, 20, 101, 20))
         self.label_13.setObjectName("label_13")
         self.killJobBtn = QtWidgets.QPushButton(self.frame_14)
+        self.killJobBtn.setEnabled(False)
         self.killJobBtn.setGeometry(QtCore.QRect(150, 100, 75, 23))
         self.killJobBtn.setStyleSheet("")
         self.killJobBtn.setObjectName("killJobBtn")

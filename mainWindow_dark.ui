@@ -1445,6 +1445,9 @@ color: black;
                     </property>
                    </widget>
                    <widget class="QPushButton" name="killJobBtn">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
                     <property name="geometry">
                      <rect>
                       <x>150</x>

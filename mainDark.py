@@ -10,10 +10,10 @@ import mainWindow_dark
 from Custom_Widgets.Widgets import *
 #import Custom_Widgets.Widgets as Widgets
 import os
+import datetime
 
 #TODO: export to csv button for audit results
 #TODO: for safety, we should reset pages/forms when something is updated or changed in the DB
-#TODO: fix the dateaction to remove the ms off the end so it fits nicely in the tablewidget
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -53,6 +53,7 @@ class MainWindow(QMainWindow):
         self.ui.qsmackerUserFrame.hide()
         self.ui.defaultBranchFrame.hide()
         self.ui.auditResultsFrame.hide()
+        self.ui.killJobBtn.hide()
         
         #populate rts_users to compare audits against
         self.rts_users = sql.Connection().get_rts_users()
@@ -102,11 +103,12 @@ class MainWindow(QMainWindow):
                                 continue
                             else:
                                 row_number = self.ui.auditResultsTable.rowCount() 
+                                d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
                                 self.ui.auditResultsTable.insertRow(row_number)
                                 self.ui.auditResultsTable.setItem(row_number, 2, QtWidgets.QTableWidgetItem(text_value))
                                 self.ui.auditResultsTable.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(new_value)))
                                 self.ui.auditResultsTable.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
-                                self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(date_action))
+                                self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
                                 self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
 
 
@@ -136,7 +138,7 @@ class MainWindow(QMainWindow):
                                 #need to if text_value is customerID or RegionID, then get the name of the customer or region
                             new_value = value
                             previous_value = next_dict[key]
-                            date_action = str(current_dict["DateAction"]) 
+                            date_action = str(current_dict["DateAction"]).replace(microsecond=0) 
                             for user in self.rts_users:
                                 if user['id'] == current_dict["UserID"]:
                                     user = user['email']
@@ -147,11 +149,12 @@ class MainWindow(QMainWindow):
                                 continue
                             else:
                                 row_number = self.ui.auditResultsTable.rowCount() 
+                                d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
                                 self.ui.auditResultsTable.insertRow(row_number)
                                 self.ui.auditResultsTable.setItem(row_number, 2, QtWidgets.QTableWidgetItem(text_value))
                                 self.ui.auditResultsTable.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(new_value)))
                                 self.ui.auditResultsTable.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
-                                self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(date_action))
+                                self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
                                 self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
 
 
@@ -302,31 +305,29 @@ class MainWindow(QMainWindow):
             self.ui.batch_list.setRowCount(0)
             self.ui.batch_list.setColumnCount(5)
             self.ui.batch_list.setHorizontalHeaderLabels(["JobID", "SerialNo", "Description", "InsertDate", "BatchStatusId"])
+            status_mapping = {
+                1: "Added",
+                2: "Loaded",
+                3: "Success",
+                4: "Failed",
+                5: "No Device",
+                6: "Manual User Failed",
+                7: "Failed - lost comms"
+            }
             for number in range(len(job[4])):
-                if job[4][number]['BatchStatusId'] == 1:
-                    jobStatusTranslated = "Added"
-                elif job[4][number]['BatchStatusId'] == 2:
-                    jobStatusTranslated = "Loaded"
-                elif job[4][number]['BatchStatusId'] == 3:
-                    jobStatusTranslated = "Success"
-                elif job[4][number]['BatchStatusId'] == 4:
-                    jobStatusTranslated = "Failed"
-                elif job[4][number]['BatchStatusId'] == 5:
-                    jobStatusTranslated = "No Device"
-                elif job[4][number]['BatchStatusId'] == 6:
-                    jobStatusTranslated = "Manual User Failed"
-                elif job[4][number]['BatchStatusId'] == 7:
-                    jobStatusTranslated = "Failed - lost comms"
+                batch_status_id = job[4][number]['BatchStatusId']
+                jobStatusTranslated = status_mapping.get(batch_status_id, "Unknown")
+                if jobStatusTranslated == "Added" or jobStatusTranslated == "Loaded":
+                    self.ui.killJobBtn.setEnabled(True)
+                    self.ui.killJobBtn.show()
                 row_number = self.ui.batch_list.rowCount()
                 self.ui.batch_list.insertRow(row_number)
+                d = datetime.datetime.strptime(str(job[4][number]['insertDate']), '%Y-%m-%d %H:%M:%S.%f')
                 self.ui.batch_list.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(job[4][number]['JobId'])))
                 self.ui.batch_list.setItem(row_number, 1, QtWidgets.QTableWidgetItem(str(job[4][number]['serialNumber'])))
                 self.ui.batch_list.setItem(row_number, 2, QtWidgets.QTableWidgetItem(str(job[4][number]['Description'])))
-                self.ui.batch_list.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(job[4][number]['insertDate'])))
+                self.ui.batch_list.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
                 self.ui.batch_list.setItem(row_number, 4, QtWidgets.QTableWidgetItem(jobStatusTranslated))
-
-                # row = f"ID: {job[3][number]['JobId']} - SerialNo: {job[3][number]['serialNumber']} - Description: {job[3][number]['Description']} - InsertDate: {job[3][number]['insertDate']} - BatchStatusId: {jobStatusTranslated} -']))"
-                # self.ui.batch_list.setItem()
 
 
 if __name__ == "__main__":
