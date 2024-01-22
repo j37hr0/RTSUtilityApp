@@ -59,6 +59,14 @@ class MainWindow(QMainWindow):
         self.rts_users = sql.Connection().get_rts_users()
 
 
+    def create_popup(self, title, text, icon, buttons):
+        self.popup = QMessageBox()
+        self.popup.setWindowTitle(title)
+        self.popup.setText(text)
+        self.popup.setIcon(icon)
+        self.popup.setStandardButtons(buttons)
+        self.x = self.popup.exec_()
+
     def run_audit(self):
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
@@ -66,12 +74,7 @@ class MainWindow(QMainWindow):
         if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
             result = sql_connection.audit_rtu_by_serialno(self.ui.auditSearchBox.text())
             if result == "no refno":
-                popup = QMessageBox()
-                popup.setWindowTitle("No results found")
-                popup.setText("No results found for that RefNo, please check the RefNo and try again")
-                popup.setIcon(QMessageBox.Warning)
-                popup.setStandardButtons(QMessageBox.Ok)
-                popup.exec_()
+                self.create_popup("No results found", "No results found for that SerialNo, please check the SerialNo and try again", QMessageBox.Warning, QMessageBox.Ok)
             else:
                 keys_to_exclude = ["DateAction", "UserID", "SocketID", "DateAndTimeServiced", "ID", "IpPublic", "ColumnsUpdated"]
                 #print(result)
@@ -114,12 +117,7 @@ class MainWindow(QMainWindow):
         if self.ui.auditTypeCombo.currentText() == "Branch":
             result = sql_connection.audit_branch(self.ui.auditSearchBox.text())
             if result == "no results":
-                popup = QMessageBox()
-                popup.setWindowTitle("No results found")
-                popup.setText("No results found for that Branch, please check the Branch and try again")
-                popup.setIcon(QMessageBox.Warning)
-                popup.setStandardButtons(QMessageBox.Ok)
-                popup.exec_()
+                self.create_popup("No results found", "No results found for that Branch, please check the Branch and try again", QMessageBox.Warning, QMessageBox.Ok)
             else:
                 keys_to_exclude = ["DateAction", "ID", "ColumnsUpdated", "UserID"]
                 self.ui.auditResultsFrame.show()
@@ -164,12 +162,7 @@ class MainWindow(QMainWindow):
         if self.ui.auditTypeCombo.currentText() == "Customer":
             result = sql_connection.audit_customer(self.ui.auditSearchBox.text())
             if result == "no results":
-                popup = QMessageBox()
-                popup.setWindowTitle("No results found")
-                popup.setText("No results found for that Customer, please check the Customer and try again")
-                popup.setIcon(QMessageBox.Warning)
-                popup.setStandardButtons(QMessageBox.Ok)
-                popup.exec_()
+                self.create_popup("No results found", "No results found for that Customer, please check the Customer and try again", QMessageBox.Warning, QMessageBox.Ok)
             else:
                 self.ui.auditResultsFrame.show()
                 self.ui.auditResultsTable.setRowCount(1)
@@ -196,24 +189,14 @@ class MainWindow(QMainWindow):
     
     
     def insert_default_machine(self):
-        popup = QMessageBox()
-        popup.setWindowTitle("Are you sure?")
-        popup.setText("Are you sure you want to insert a default machine for this branch?")
-        popup.setIcon(QMessageBox.Question)
-        popup.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-        x = popup.exec_()
-        if x == QMessageBox.Ok:
+        self.create_popup("Are you sure?", "Are you sure you want to insert a default machine for this branch?", QMessageBox.Question, QMessageBox.Ok | QMessageBox.Cancel)
+        if self.x == QMessageBox.Ok:
             sql_connection = sql.Connection()
             branch_id = self.ui.branchIDLabel.text()
             branch_name = self.ui.branchNameLabel.text()
             sql_connection.insert_default_machine_sql(branch_id)
             self.ui.addDefaultMachineBtn.setEnabled(False)
-            popup = QMessageBox()
-            popup.setWindowTitle("Default Machine Added")
-            popup.setText("Default machine added successfully")
-            popup.setIcon(QMessageBox.Information)
-            popup.setStandardButtons(QMessageBox.Ok)
-            x = popup.exec_()
+            self.create_popup("Default Machine Added", "Default machine added successfully", QMessageBox.Information, QMessageBox.Ok)
             self.get_default_branch(branch_name)
             return True
 
@@ -222,12 +205,7 @@ class MainWindow(QMainWindow):
         sql_connection = sql.Connection()
         branch = sql_connection.find_branch_default_machine_status(branch_name)
         if branch == "no branch":
-            popup = QMessageBox()
-            popup.setWindowTitle("No branch found")
-            popup.setText("No branch found with that name, please check the name and try again")
-            popup.setIcon(QMessageBox.Warning)
-            popup.setStandardButtons(QMessageBox.Ok)
-            popup.exec_()
+            self.create_popup("No branch found", "No branch found with that name, please check the name and try again", QMessageBox.Warning, QMessageBox.Ok)
             del branch
         elif branch[1]['HasDefaultMachine'] == 1:
             self.ui.defaultBranchFrame.show()
@@ -252,34 +230,19 @@ class MainWindow(QMainWindow):
     def update_user_permissions(self):
         user_id = self.ui.userIDLabel.text()
         user_email = self.ui.qsmacker_email.text()
-        popup = QMessageBox()
-        popup.setWindowTitle("User is compatible")
-        popup.setText("Are you sure you want to update the permissions for this user?")
-        popup.setIcon(QMessageBox.Question)
-        popup.setStandardButtons(QMessageBox.Yes | QMessageBox.Cancel)
-        x = popup.exec_()
-        if x == QMessageBox.Yes:
+        self.create_popup("Are you sure?", "Are you sure you want to update the permissions for this user?", QMessageBox.Question, QMessageBox.Yes | QMessageBox.Cancel)
+        if self.x == QMessageBox.Yes:
             sql_connection = sql.Connection()
             result = sql_connection.update_permissions(user_id)
             if result:
                 self.ui.permissionsLabel.setText("True")
                 self.ui.setPermBtn.setEnabled(False)
-                popup0 = QMessageBox()
-                popup0.setWindowTitle("Permissions Updated")
-                popup0.setText("Permissions updated successfully")
-                popup0.setIcon(QMessageBox.Information)
-                popup0.setStandardButtons(QMessageBox.Ok)
-                x = popup0.exec_()
+                self.create_popup("Permissions Updated", "Permissions updated successfully", QMessageBox.Information, QMessageBox.Ok)
                 email = alerting.EmailAlerts()
                 email.recieverEmail.append(user_email)
                 email.send_email("Qsmacker Permissions Updated", f"Qsmacker permissions updated for user with email {user_email} and user id {user_id}")
             if not result:
-                popup1 = QMessageBox()
-                popup1.setWindowTitle("Permissions not updated")
-                popup1.setText("Permissions not updated, some error. If it persists, please contact IT")
-                popup1.setIcon(QMessageBox.Critical)
-                popup1.setStandardButtons(QMessageBox.Ok)
-                x = popup1.exec_()
+                self.create_popup("Permissions not updated", "Permissions not updated, some error. If it persists, please contact IT", QMessageBox.Critical, QMessageBox.Ok)
             return result
     
     def set_notification(self, notification, notificationBody):
@@ -294,28 +257,13 @@ class MainWindow(QMainWindow):
         print("the value of emails is: " + self.ui.qsmacker_email.text())
         if self.ui.qsmacker_email.text() == "":
             isValid = False
-            popup = QMessageBox()
-            popup.setWindowTitle("No email provided")
-            popup.setText("Please enter an email address")
-            popup.setIcon(QMessageBox.Warning)
-            popup.setStandardButtons(QMessageBox.Ok)
-            popup.exec_()
+            self.create_popup("No email provided", "Please enter an email address", QMessageBox.Warning, QMessageBox.Ok)
         elif use_email == "not employee":
             isValid = False
-            popup = QMessageBox()
-            popup.setWindowTitle("Not an employee")
-            popup.setText("Please enter a valid Real Telematics email address")
-            popup.setIcon(QMessageBox.Warning)
-            popup.setStandardButtons(QMessageBox.Ok)
-            popup.exec_()
+            self.create_popup("Not an employee", "Please enter a valid Real Telematics email address", QMessageBox.Warning, QMessageBox.Ok)
         elif use_email == "no user":
             isValid = False
-            popup = QMessageBox()
-            popup.setWindowTitle("User not found")
-            popup.setText("No user found with that email address")
-            popup.setIcon(QMessageBox.Warning)
-            popup.setStandardButtons(QMessageBox.Ok)
-            popup.exec_()
+            self.create_popup("User not found", "No user found with that email address", QMessageBox.Warning, QMessageBox.Ok)
         elif isValid:
             sql_connection = sql.Connection()
             self.ui.userIDLabel.setText(str(sql_connection.find_user(self.ui.qsmacker_email.text())))
@@ -328,12 +276,8 @@ class MainWindow(QMainWindow):
             else:
                 self.ui.setPermBtn.setEnabled(False)
                 self.ui.permissionsLabel.setText("True")
-                popup = QMessageBox()
-                popup.setWindowTitle("User has permissions already")
-                popup.setText("User has permissions already, please contact the IT department to update permissions")
-                popup.setIcon(QMessageBox.Critical)
-                popup.setStandardButtons(QMessageBox.Ok)
-                x = popup.exec_()
+                self.create_popup("User has permissions already", "User has permissions already, please contact the IT department to update permissions", QMessageBox.Critical, QMessageBox.Ok)
+
 
 
 
@@ -342,12 +286,7 @@ class MainWindow(QMainWindow):
         jobName = self.ui.qsmacker_jobname.text()
         job = sql_connection.find_job(jobName)
         if job == "no job":
-            popup = QMessageBox()
-            popup.setWindowTitle("No job found")
-            popup.setText("No job found with that name, please check the name and try again")
-            popup.setIcon(QMessageBox.Warning)
-            popup.setStandardButtons(QMessageBox.Ok)
-            popup.exec_()
+            self.create_popup("No job found", "No job found with that name, please check the name and try again", QMessageBox.Warning, QMessageBox.Ok)
         elif job != "no job":
             self.ui.batchStatusFrame.show()
             counts = sql_connection.get_totals(job[0])
