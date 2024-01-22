@@ -14,6 +14,10 @@ import datetime
 
 #TODO: export to csv button for audit results
 #TODO: for safety, we should reset pages/forms when something is updated or changed in the DB
+#TODO: sanitize inputs for sql queries: https://realpython.com/prevent-python-sql-injection/
+#TODO: sanitize inputs: serialnumber no chars, no spaces, no special chars (check DB), no more than 15 chars, delete last space if there is one
+# https://realpython.com/python-pyqt-qthread/
+#Disable buttons that are not needed until a DB query is done
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -67,13 +71,22 @@ class MainWindow(QMainWindow):
         self.x = self.popup.exec_()
 
     def run_audit(self):
-        print("running audit function")
+        if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
+            self.run_audit_refno()
+        elif self.ui.auditTypeCombo.currentText == "RTU (by SerialNo)":
+            self.run_audit_serial()
+        elif self.ui.auditTypeCombo.currentText() == "Branch":
+            self.run_audit_branch()
+        elif self.ui.auditTypeCombo.currentText() == "Customer":
+            self.run_audit_customer()
+        elif self.ui.auditTypeCombo.currentText() == "User":
+            self.run_audit_user()
+
+    def run_audit_refno(self):
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
             result = sql_connection.audit_rtu_by_refno(self.ui.auditSearchBox.text())
-            print(result)
-        if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
-            result = sql_connection.audit_rtu_by_serialno(self.ui.auditSearchBox.text())
+            #print(result)
         if result == "no refno":
             self.create_popup("No results found", "No results found for that SerialNo, please check the SerialNo and try again", QMessageBox.Warning, QMessageBox.Ok)
         else:
@@ -82,6 +95,11 @@ class MainWindow(QMainWindow):
             self.ui.auditResultsFrame.show()
             self.ui.auditResultsTable.setRowCount(0)
             self.ui.auditResultsTable.setColumnCount(5)
+            self.ui.auditResultsTable.setColumnWidth(0, 120)
+            self.ui.auditResultsTable.setColumnWidth(1, 150)
+            self.ui.auditResultsTable.setColumnWidth(2, 120)
+            self.ui.auditResultsTable.setColumnWidth(3, 140)
+            self.ui.auditResultsTable.setColumnWidth(4, 140)
             self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
             # Compare dictionaries and append necessary values to auditResultsTable
             for row in range(len(result) - 1):
@@ -112,8 +130,57 @@ class MainWindow(QMainWindow):
                             self.ui.auditResultsTable.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
                             self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
                             self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
-                            print("reachiung the end of the function")
+    
+    def run_audit_serial(self):
+        sql_connection = sql.Connection()
+        if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
+            result = sql_connection.audit_rtu_by_serialno(self.ui.auditSearchBox.text())
+        if result == "no refno":
+            self.create_popup("No results found", "No results found for that SerialNo, please check the SerialNo and try again", QMessageBox.Warning, QMessageBox.Ok)
+        else:
+            keys_to_exclude = ["DateAction", "UserID", "SocketID", "DateAndTimeServiced", "ID", "IpPublic", "ColumnsUpdated"]
+            # print(result)
+            self.ui.auditResultsFrame.show()
+            self.ui.auditResultsTable.setRowCount(0)
+            self.ui.auditResultsTable.setColumnCount(5)
+            self.ui.auditResultsTable.setColumnWidth(0, 120)
+            self.ui.auditResultsTable.setColumnWidth(1, 150)
+            self.ui.auditResultsTable.setColumnWidth(2, 120)
+            self.ui.auditResultsTable.setColumnWidth(3, 140)
+            self.ui.auditResultsTable.setColumnWidth(4, 140)
+            self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
+            # Compare dictionaries and append necessary values to auditResultsTable
+            for row in range(len(result) - 1):
+                current_dict = result[row]
+                next_dict = result[row + 1]
+                for key, value in current_dict.items():
+                    if key in next_dict and value != next_dict[key]:
+                        text_value = key
+                        if text_value in keys_to_exclude:
+                            continue
+                        new_value = value
+                        previous_value = next_dict[key]
+                        date_action = str(current_dict["DateAction"])
+                        for user in self.rts_users:
+                            if user['id'] == current_dict["UserID"]:
+                                user = user['email']
+                                break
+                        else:
+                            user = "User Email Unknown, ID is: " + str(current_dict["UserID"])
+                        if text_value == "":
+                            continue
+                        else:
+                            row_number = self.ui.auditResultsTable.rowCount() 
+                            d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
+                            self.ui.auditResultsTable.insertRow(row_number)
+                            self.ui.auditResultsTable.setItem(row_number, 2, QtWidgets.QTableWidgetItem(text_value))
+                            self.ui.auditResultsTable.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(new_value)))
+                            self.ui.auditResultsTable.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
+                            self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
+                            self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
 
+    def run_audit_branch(self):
+        sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "Branch":
             result = sql_connection.audit_branch(self.ui.auditSearchBox.text())
             if result == "no results":
@@ -132,12 +199,10 @@ class MainWindow(QMainWindow):
                             text_value = key
                             if text_value in keys_to_exclude:
                                 continue
-                            #need to if text_value is customerID or RegionID, then get the name of the customer or region, but I has the dumb, brain is tired
                             if text_value == "CustomerID":
                                 text_value = sql_connection.get_customer_name(value)
                             if text_value == "RegionID":
                                 text_value = sql_connection.get_region_name(value)
-                                #need to if text_value is customerID or RegionID, then get the name of the customer or region
                             new_value = value
                             previous_value = next_dict[key]
                             date_action = str(current_dict["DateAction"])
@@ -161,7 +226,8 @@ class MainWindow(QMainWindow):
                                 self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
                                 self.ui.auditResultsTable.show()
 
-
+    def run_audit_customer(self):
+        sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "Customer":
             result = sql_connection.audit_customer(self.ui.auditSearchBox.text())
             if result == "no results":
@@ -171,6 +237,21 @@ class MainWindow(QMainWindow):
                 self.ui.auditResultsTable.setRowCount(1)
                 self.ui.auditResultsTable.setColumnCount(4)
                 self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "CustomerName", "BranchName"])
+                for row in range(len(result)):
+                    for column in range(2):
+                        self.ui.auditResultsTable.setItem(row, column, QtWidgets.QTableWidgetItem(str(result[row][column])))
+
+    def run_audit_user(self):
+        sql_connection = sql.Connection()
+        if self.ui.auditTypeCombo.currentText() == "User":
+            result = sql_connection.audit_user(self.ui.auditSearchBox.text())
+            if result == "no results":
+                self.create_popup("No results found", "No results found for that User, please check the User and try again", QMessageBox.Warning, QMessageBox.Ok)
+            else:
+                self.ui.auditResultsFrame.show()
+                self.ui.auditResultsTable.setRowCount(1)
+                self.ui.auditResultsTable.setColumnCount(4)
+                self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "Email", "Password"])
                 for row in range(len(result)):
                     for column in range(2):
                         self.ui.auditResultsTable.setItem(row, column, QtWidgets.QTableWidgetItem(str(result[row][column])))
@@ -189,7 +270,9 @@ class MainWindow(QMainWindow):
         if self.ui.auditTypeCombo.currentText() == "Customer":
             self.ui.auditTypeLabel.setText("Enter Customer Name: ")
             self.ui.auditSearchBox.setPlaceholderText("Customer Name...")
-    
+        if self.ui.auditTypeCombo.currentText() == "User":
+            self.ui.auditTypeLabel.setText("Enter User Email: ")
+            self.ui.auditSearchBox.setPlaceholderText("User Email...")
     
     def insert_default_machine(self):
         self.create_popup("Are you sure?", "Are you sure you want to insert a default machine for this branch?", QMessageBox.Question, QMessageBox.Ok | QMessageBox.Cancel)

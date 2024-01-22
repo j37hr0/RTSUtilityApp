@@ -920,6 +920,9 @@ QPushButton:hover {
              </property>
              <item>
               <widget class="QCustomQStackedWidget" name="mainPages">
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
                <property name="styleSheet">
                 <string notr="true">QHeaderView::section{
 	background-color: black;
@@ -1266,10 +1269,15 @@ color: black;
                    <rect>
                     <x>20</x>
                     <y>30</y>
-                    <width>121</width>
+                    <width>161</width>
                     <height>22</height>
                    </rect>
                   </property>
+                  <item>
+                   <property name="text">
+                    <string>User</string>
+                   </property>
+                  </item>
                   <item>
                    <property name="text">
                     <string>RTU (by RefNo)</string>
@@ -1365,7 +1373,7 @@ color: black;
                     <x>10</x>
                     <y>0</y>
                     <width>721</width>
-                    <height>331</height>
+                    <height>181</height>
                    </rect>
                   </property>
                  </widget>
