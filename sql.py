@@ -247,38 +247,6 @@ class Connection:
             else:
                 self.close_connection()
                 return rtu
-
-
-    def audit_rtu_by_refno(self, refno):
-        if refno == "":
-            print("No refno provided")
-            return "no refno"
-        else:
-            self.make_connection(database="Realcontrol")
-            self.cursor.execute("select * from tblRTUDetails_AuditExact (nolock)where IDOriginal = (select ID from tblRTUDetails where RefNo = %s) order by id desc", (refno))
-            rtu = self.cursor.fetchall()
-            if rtu == [None]:
-                print("No RTU found")
-                return "no refno"
-            else:
-                self.close_connection()
-                return rtu
-        
-    def audit_rtu_by_serialno(self, serialno):
-        if serialno == "":
-            print("No refno provided")
-            return "no refno"
-        else:
-            self.make_connection(database="Realcontrol")
-            print("getting to sql")
-            self.cursor.execute("select * from tblRTUDetails_AuditExact (nolock) where IDOriginal = (select ID from tblRTUDetails where SerialNumber = %s) order by id desc", (serialno))
-            rtu = self.cursor.fetchall()
-            if rtu == [None]:
-                print("No RTU found")
-                return "no refno"
-            else:
-                self.close_connection()
-                return rtu
             
     def get_branch_creation_date(self, branchID):
         if branchID == "":
