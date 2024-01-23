@@ -277,7 +277,22 @@ class Connection:
             else:
                 self.close_connection()
                 return customerResults
-            
+
+    def audit_user(self, email):
+        if email == "":
+            print("No email provided")
+            return "no email"
+        else:
+            self.make_connection(database="Realcontrol")
+            self.cursor.execute("select * from tblUsers_auditExact where IDOriginal = (select ID from tblusers where email = %s)", (email))
+            userResults = self.cursor.fetchall()
+            if userResults == [None]:
+                print("No User found")
+                return "no user"
+            else:
+                self.close_connection()
+                return userResults
+          
     def get_rts_users(self):
         self.make_connection(database="Realcontrol")
         self.cursor.execute("""

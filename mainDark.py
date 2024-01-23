@@ -84,6 +84,35 @@ class MainWindow(QMainWindow):
         elif self.ui.auditTypeCombo.currentText() == "User":
             self.run_audit_user()
 
+    def handle_result(self, results, keys_excluded):
+        for row in range(len(results) - 1):
+                    current_dict = results[row]
+                    next_dict = results[row + 1]
+                    for key, value in current_dict.items():
+                        if key in next_dict and value != next_dict[key]:
+                            text_value = key
+                            if text_value in keys_excluded:
+                                continue
+                            new_value = value
+                            previous_value = next_dict[key]
+                            date_action = str(current_dict["DateAction"])
+                            if text_value == "UserAction" and new_value == 1:
+                                text_value = "User Created"
+                            for user in self.rts_users:
+                                if user['id'] == current_dict["UserID"]:
+                                    user = user['email']
+                                    break
+                            else:
+                                user = "User Email Unknown, ID is: " + str(current_dict["UserID"])
+                            if text_value == "":
+                                continue
+                            else:
+                                print(text_value, user, new_value, previous_value, date_action)
+                                row_number = self.ui.auditResultsTable.rowCount()
+                                self.ui.auditResultsTable.insertRow(row_number) 
+                                d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
+                                self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)])
+    
     def setup_columns(self, columnWidths, columnCount, columnHeaders):
         for column in range(columnCount):
             self.ui.auditResultsTable.setRowCount(0)
@@ -110,34 +139,7 @@ class MainWindow(QMainWindow):
             # print(result)
             self.setup_columns([120, 150, 120, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
             self.ui.auditResultsFrame.show()
-            for row in range(len(result) - 1):
-                current_dict = result[row]
-                next_dict = result[row + 1]
-                for key, value in current_dict.items():
-                    if key in next_dict and value != next_dict[key]:
-                        text_value = key
-                        if text_value in keys_to_exclude:
-                            continue
-                        new_value = value
-                        previous_value = next_dict[key]
-                        date_action = str(current_dict["DateAction"])
-                        if text_value == "UserAction" and new_value == 1:
-                            text_value = "Machine Created"
-                        for user in self.rts_users:
-                            if user['id'] == current_dict["UserID"]:
-                                user = user['email']
-                                break
-                        else:
-                            user = "User Email Unknown, ID is: " + str(current_dict["UserID"])
-                        if text_value == "":
-                            continue
-                        else:
-                            print(text_value, user, new_value, previous_value, date_action)
-                            row_number = self.ui.auditResultsTable.rowCount()
-                            self.ui.auditResultsTable.insertRow(row_number) 
-                            d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
-                            self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)])
-
+            self.handle_result(result, keys_to_exclude)
 
     def run_audit_branch(self):
         self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
@@ -169,35 +171,7 @@ class MainWindow(QMainWindow):
             else:
                 keys_to_exclude = ["DateAction", "ID", "ColumnsUpdated", "UserID"]
                 self.ui.auditResultsFrame.show()
-                for row in range(len(result) - 1):
-                    current_dict = result[row]
-                    next_dict = result[row + 1]
-                    for key, value in current_dict.items():
-                        if key in next_dict and value != next_dict[key]:
-                            text_value = key
-                            if text_value in keys_to_exclude:
-                                continue
-                            if text_value == "CustomerID":
-                                text_value = sql_connection.get_customername_by_customerid(value)['CustomerName']
-                            if text_value == "RegionID":
-                                text_value = sql_connection.get_region_name(value)['RegionName']
-                            new_value = value
-                            previous_value = next_dict[key]
-                            date_action = str(current_dict["DateAction"])
-                            for user in self.rts_users:
-                                if user['id'] == current_dict["UserID"]:
-                                    user = user['email']
-                                    break
-                            else:
-                                user = "User Email Unknown, ID is: " + str(current_dict["UserID"])
-                            if text_value == "":
-                                continue
-                            else:
-                                row_number = self.ui.auditResultsTable.rowCount()
-                                self.ui.auditResultsTable.insertRow(row_number)
-                                d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
-                                self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)])
-
+                self.handle_result(result, keys_to_exclude)
 
     def run_audit_customer(self):
         self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
@@ -230,35 +204,7 @@ class MainWindow(QMainWindow):
                 self.create_popup("No results found", "No results found for that Customer, please check the Customer and try again", QMessageBox.Warning, QMessageBox.Ok)
             else:
                 self.ui.auditResultsFrame.show()
-                for row in range(len(result) - 1):
-                    current_dict = result[row]
-                    next_dict = result[row + 1]
-                    for key, value in current_dict.items():
-                        if key in next_dict and value != next_dict[key]:
-                            text_value = key
-                            print(text_value)
-                            if text_value in keys_to_exclude:
-                                continue
-                            if text_value == "CustomerID":
-                                text_value = sql_connection.get_customername_by_customerid(value)['CustomerName']
-                            if text_value == "RegionID":
-                                text_value = sql_connection.get_region_name(value)['RegionName']
-                            new_value = value
-                            previous_value = next_dict[key]
-                            date_action = str(current_dict["DateAction"])
-                            for user in self.rts_users:
-                                if user['id'] == current_dict["UserID"]:
-                                    user = user['email']
-                                    break
-                            else:
-                                user = "User Email Unknown, ID is: " + str(current_dict["UserID"])
-                            if text_value == "":
-                                continue
-                            else:
-                                row_number = self.ui.auditResultsTable.rowCount()
-                                self.ui.auditResultsTable.insertRow(row_number)
-                                d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
-                                self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)])
+                self.handle_result(result, keys_to_exclude)
 
     def run_audit_user(self):
         sql_connection = sql.Connection()
@@ -267,14 +213,10 @@ class MainWindow(QMainWindow):
             if result == "no results":
                 self.create_popup("No results found", "No results found for that User, please check the User and try again", QMessageBox.Warning, QMessageBox.Ok)
             else:
+                keys_to_exclude = ["DateAction", "ID", "ColumnsUpdated", "UserID"]
+                self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
                 self.ui.auditResultsFrame.show()
-                self.ui.auditResultsTable.setRowCount(1)
-                self.ui.auditResultsTable.setColumnCount(4)
-                self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "Email", "Password"])
-                for row in range(len(result)):
-                    for column in range(2):
-                        self.ui.auditResultsTable.setItem(row, column, QtWidgets.QTableWidgetItem(str(result[row][column])))
-
+                self.handle_result(result, keys_to_exclude)
 
     def set_audit_menu(self):
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
