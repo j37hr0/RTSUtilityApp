@@ -13,13 +13,16 @@ import os
 import datetime
 
 #TODO: export to csv button for audit results
-#TODO: for safety, we should reset pages/forms when something is updated or changed in the DB
 #TODO:  delete last space if there is one on all inputs
-# https://realpython.com/python-pyqt-qthread/
+#^^ This seems to be included in the SQL library, but needs to be tested more
 #TODO: Disable buttons that are not needed until a DB query is done
-#TODO: Make a notification popup for audits that have no results 
+#TODO: Make a notification popup for audits that have no results
+#TODO: Convert popups to custom widget notifications
 #TODO: look at concurrency issues with the DB, and how to handle them  https://realpython.com/python-pyqt-qthread/
 #TODO: testing qsmacker batch failing 
+#TODO: add admin alerting for qsmacker batch failing, default machine being add, qsmacker permissions being updated
+
+
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -28,13 +31,15 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         loadJsonStyle(self, self.ui)
         self.show()
+        self.ui.mainPages.setCurrentIndex(0)
         #Connect buttons to functions
         self.ui.settingsBtn.clicked.connect(lambda: self.ui.centerMenuContainer.slideMenu())
         self.ui.helpBtn.clicked.connect(lambda: self.ui.centerMenuContainer.slideMenu())
         self.ui.loginBtn.clicked.connect(lambda: self.ui.centerMenuContainer.slideMenu())
         self.ui.closeBtnCenter.clicked.connect(lambda: self.ui.centerMenuContainer.collapseMenu())
         self.ui.elipsesBtn.clicked.connect(lambda: self.ui.rightMenuContainer.slideMenu())
-        self.ui.profileBtn.clicked.connect(lambda: self.ui.rightMenuContainer.slideMenu())
+        self.ui.profileBtn.clicked.connect(lambda: self.refresh())
+        #self.ui.profileBtn.clicked.connect(lambda: self.ui.rightMenuContainer.slideMenu())
         self.ui.closeRightBtn.clicked.connect(lambda: self.ui.rightMenuContainer.collapseMenu())
         self.ui.closeNotificationBtn.clicked.connect(lambda: self.ui.popupNotificationContainer.collapseMenu())
         self.ui.userSearchBtn.clicked.connect(lambda: self.get_user_compatibility(self.ui.qsmacker_email.text()))
@@ -63,6 +68,44 @@ class MainWindow(QMainWindow):
         
         #populate rts_users to compare audits against
         self.rts_users = sql.Connection().get_rts_users()
+
+    def refresh(self):
+        self.ui.mainPages.setCurrentIndex(0)
+        self.rts_users = sql.Connection().get_rts_users()
+        self.ui.centerMenuContainer.collapseMenu()
+        self.ui.rightMenuContainer.collapseMenu()
+        self.ui.popupNotificationContainer.collapseMenu()
+        self.ui.qsmacker_jobname.setText("")
+        self.ui.branchSearch.setText("")
+        self.ui.qsmacker_email.setText("")
+        self.ui.auditSearchBox.setText("")
+        self.ui.auditResultsTable.setRowCount(0)
+        self.ui.auditResultsFrame.hide()
+        self.ui.qsmackerUserFrame.hide()
+        self.ui.defaultBranchFrame.hide()
+        self.ui.batchStatusFrame.hide()
+        self.ui.killJobBtn.hide()
+        self.ui.setPermBtn.setEnabled(False)
+        self.ui.addDefaultMachineBtn.setEnabled(False)
+        self.ui.permissionsLabel.setText("")
+        self.ui.hasDefaultMachineLabel.setText("")
+        self.ui.jobIDLabel.setText("")
+        self.ui.qsmacker_jobname.setText("")
+        self.ui.totalMachinesLabel.setText("")
+        self.ui.totalCommandsLabel.setText("")
+        self.ui.jobStatusLabel.setText("")
+        self.ui.batch_list.clear()
+        self.ui.batch_list.setRowCount(0)
+        self.ui.batch_list.setColumnCount(0)
+        self.ui.batch_list.hide()
+        self.ui.userIDLabel.setText("")
+        self.ui.branchIDLabel.setText("")
+        self.ui.branchNameLabel.setText("")
+        self.ui.customerNameLabel.setText("")
+        self.ui.auditTypeCombo.setCurrentIndex(0)
+        self.ui.auditSearchBox.setPlaceholderText("RefNo...")
+        self.ui.auditTypeLabel.setText("Enter RefNo: ")
+        self.ui.auditSearchBox.setValidator(None)
 
     def create_popup(self, title, text, icon, buttons):
         self.popup = QMessageBox()
@@ -276,6 +319,7 @@ class MainWindow(QMainWindow):
             self.ui.addDefaultMachineBtn.setEnabled(False)
             self.create_popup("Default Machine Added", "Default machine added successfully", QMessageBox.Information, QMessageBox.Ok)
             self.get_default_branch(branch_name)
+            self.refresh()
             return True
     
     def get_default_branch(self, branch_name):
@@ -317,10 +361,12 @@ class MainWindow(QMainWindow):
                 email = alerting.EmailAlerts()
                 email.recieverEmail.append(user_email)
                 email.send_email("Qsmacker Permissions Updated", f"Qsmacker permissions updated for user with email {user_email} and user id {user_id}")
+                self.refresh()
             if not result:
                 self.create_popup("Permissions not updated", "Permissions not updated, some error. If it persists, please contact IT", QMessageBox.Critical, QMessageBox.Ok)
+                self.refresh()
             return result
-    
+
     def set_notification(self, notification, notificationBody):
         #create focus on notification, and make it hold focus until it is closed
         self.ui.notificaitonTitle.setText(notification)
@@ -415,12 +461,3 @@ if __name__ == "__main__":
     #window.set_notification("New Job", "A new job has been posted")
     sys.exit(app.exec_())
     
-
-# app = QtWidgets.QApplication(sys.argv)
-# MainWindow = QtWidgets.QMainWindow()
-# ui = mainWindow_dark.Ui_MainWindow()
-# ui.setupUi(MainWindow)
-
-
-# MainWindow.show()
-# sys.exit(app.exec_())
