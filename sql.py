@@ -33,7 +33,7 @@ class Connection:
             return "not employee"
         else:
             self.make_connection()
-            self.cursor.execute("SELECT * FROM tblusers WHERE email like %s", (email))
+            self.cursor.execute("SELECT * FROM tblusers WHERE email = %s", (email))
             user = self.cursor.fetchone()
             if user == None:
                 print("No user found")
@@ -62,11 +62,7 @@ class Connection:
     #1241 for prod, 2157 for dev user perms
     def update_permissions(self, id):
         self.make_connection()
-        self.cursor.execute(f"""
-                              Insert Into tblUserPermissions
-                              Select 6380, {id}, AreaID, PermissionValue, [Description]
-                              From tblUserPermissions Where UserID = 2157
-                            """)
+        self.cursor.execute("Insert Into tblUserPermissions Select 6380, %s, AreaID, PermissionValue, [Description] From tblUserPermissions Where UserID = 2157", (id))
         if self.cursor.rowcount == 18:
             print("Permissions updated")
             self.connection.commit()
@@ -83,7 +79,7 @@ class Connection:
             return None
         else:
             self.make_connection(database="Qsmacker")
-            self.cursor.execute(f"SELECT * FROM RTUBatch WHERE JobID = {job_id} ORDER BY insertDate DESC")
+            self.cursor.execute("SELECT * FROM RTUBatch WHERE JobID = %s ORDER BY insertDate DESC", (job_id))
             batches = self.cursor.fetchall()
             if batches == None:
                 print("No batches found")
@@ -98,20 +94,11 @@ class Connection:
             return None
         else:
             self.make_connection(database="Qsmacker")
-            self.cursor.execute(f"SELECT distinct count(*) as 'Machines' FROM RTUBatch WHERE JobID = {job_id}")
+            self.cursor.execute("SELECT distinct count(*) as 'Machines' FROM RTUBatch WHERE JobID = %s", (job_id))
             machineCount = self.cursor.fetchall()
             self.close_connection()
             self.make_connection(database="Qsmacker")
-            self.cursor.execute(f"""
-                                select count(j.Description) as 'Commands'
-                                from QSmacker..Job j
-                                inner join QSmacker..RTUBatch b on j.ID = b.JobId
-                                inner join QSmacker..Command c on b.ID = c.RTUBatchId
-                                where c.CommandStatusId = 7
-                                and j.JobStatusId = 1
-                                and b.BatchStatusId = 1
-                                and j.id = {job_id}
-                                """)
+            self.cursor.execute(f"select count(j.Description) as 'Commands' from QSmacker..Job j inner join QSmacker..RTUBatch b on j.ID = b.JobId inner join QSmacker..Command c on b.ID = c.RTUBatchId where c.CommandStatusId = 7 and j.JobStatusId = 1 and b.BatchStatusId = 1 and j.id = %s", (job_id))
             commandCount = self.cursor.fetchall()
             if machineCount == None:
                 print("No batches found")
@@ -128,7 +115,7 @@ class Connection:
             return None
         else:
             self.make_connection(database="Qsmacker")
-            self.cursor.execute(f"SELECT * FROM Job WHERE Description like '{jobname}'")
+            self.cursor.execute("SELECT * FROM Job WHERE Description = %s", (jobname))
             job = self.cursor.fetchone()
             print(job)
             if job == None:
@@ -199,9 +186,7 @@ class Connection:
             return "no branch"
         else:
             self.make_connection(database="Realcontrol")
-            self.cursor.execute(f"""select b.ID as 'BranchID', b.BranchName, c.CustomerName from tblBranch b
-                                  inner join tblCustomers c on c.ID = b.CustomerID
-                                  where BranchName = '{branch}'""")
+            self.cursor.execute("select b.ID as 'BranchID', b.BranchName, c.CustomerName from tblBranch b inner join tblCustomers c on c.ID = b.CustomerID where BranchName = %s", (branch))
             branch = [self.cursor.fetchone()]
             print(f"the value of branch is {branch}")
             if branch == [None]:
@@ -250,11 +235,7 @@ class Connection:
             return "no refno"
         else:
             self.make_connection(database="Realcontrol")
-            self.cursor.execute(f"""
-                                select * from tblRTUDetails_AuditExact (nolock)
-                                where IDOriginal = (select ID from tblRTUDetails where RefNo = '{refno}')
-                                order by id desc
-                                """)
+            self.cursor.execute("select * from tblRTUDetails_AuditExact (nolock)where IDOriginal = (select ID from tblRTUDetails where RefNo = %s", (refno))
             rtu = self.cursor.fetchall()
             if rtu == [None]:
                 print("No RTU found")
@@ -269,11 +250,7 @@ class Connection:
             return "no refno"
         else:
             self.make_connection(database="Realcontrol")
-            self.cursor.execute(f"""
-                                select * from tblRTUDetails_AuditExact (nolock)
-                                where IDOriginal = (select ID from tblRTUDetails where SerialNumber = {serialno})
-                                order by id desc
-                                """)
+            self.cursor.execute("select * from tblRTUDetails_AuditExact (nolock) where IDOriginal = (select ID from tblRTUDetails where SerialNumber = %s", (serialno))
             rtu = self.cursor.fetchall()
             if rtu == [None]:
                 print("No RTU found")
@@ -288,11 +265,7 @@ class Connection:
             return "no branch"
         else:
             self.make_connection(database="Realcontrol")
-            self.cursor.execute(f"""
-                                select * from tblBranch_AuditExact
-                                where IDOriginal = (select ID from tblBranch where BranchName = '{branch}')
-                                order by id desc
-                                """)
+            self.cursor.execute("select * from tblBranch_AuditExact where IDOriginal = (select ID from tblBranch where BranchName = %s)", (branch))
             branchResults = self.cursor.fetchall()
             if branchResults == [None]:
                 print("No Branch found")
@@ -307,7 +280,7 @@ class Connection:
             return "no customer"
         else:
             self.make_connection(database="Realcontrol")
-            self.cursor.execute(f"""select * from tblRTUDetails where RefNo like '{customer}'""")
+            self.cursor.execute("select * from tblCustomers where CustomerName = %s", (customer))
             customerResults = self.cursor.fetchall()
             if customerResults == [None]:
                 print("No Customer found")

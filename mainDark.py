@@ -14,10 +14,15 @@ import datetime
 
 #TODO: export to csv button for audit results
 #TODO: for safety, we should reset pages/forms when something is updated or changed in the DB
-#TODO: sanitize inputs for sql queries: https://realpython.com/prevent-python-sql-injection/
-#TODO: sanitize inputs: serialnumber no chars, no spaces, no special chars (check DB), no more than 15 chars, delete last space if there is one
+#TODO:  delete last space if there is one on all inputs
 # https://realpython.com/python-pyqt-qthread/
-#Disable buttons that are not needed until a DB query is done
+#TODO: Disable buttons that are not needed until a DB query is done
+#TODO: Make a notification popup for audits that have no results 
+#TODO: look at concurrency issues with the DB, and how to handle them  https://realpython.com/python-pyqt-qthread/
+#TODO: testing qsmacker batch failing 
+#TODO: get creation date on audits from the audit table instead of auditexact, and append it to row 1 of the audit table
+
+
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -40,14 +45,14 @@ class MainWindow(QMainWindow):
         self.ui.killJobBtn.clicked.connect(lambda: self.kill_qsmacker_job(self.ui.jobIDLabel.text()))
         self.ui.setPermBtn.clicked.connect(lambda: self.update_user_permissions())
         self.ui.branchSearchBtn.clicked.connect(lambda: self.get_default_branch(self.ui.branchSearch.text()))
-        self.ui.auditSearchBtn.clicked.connect(lambda: self.run_audit())
+        self.ui.auditSearchBtn.clicked.connect(lambda: self.select_audit())
         self.ui.addDefaultMachineBtn.clicked.connect(lambda: self.insert_default_machine())
         
         #Connect enter keypresses to lineedits
         self.ui.qsmacker_jobname.returnPressed.connect(lambda: self.get_qsmacker_job(self.ui.qsmacker_jobname.text()))
         self.ui.branchSearch.returnPressed.connect(lambda: self.get_default_branch(self.ui.branchSearch.text()))
         self.ui.qsmacker_email.returnPressed.connect(lambda: self.get_user_compatibility(self.ui.qsmacker_email.text()))
-        self.ui.auditSearchBox.returnPressed.connect(lambda: self.run_audit())
+        self.ui.auditSearchBox.returnPressed.connect(lambda: self.select_audit())
         
         #Connect comboboxes to functions
         self.ui.auditTypeCombo.currentIndexChanged.connect(lambda: self.set_audit_menu())
@@ -70,7 +75,7 @@ class MainWindow(QMainWindow):
         self.popup.setStandardButtons(buttons)
         self.x = self.popup.exec_()
 
-    def run_audit(self):
+    def select_audit(self):
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
             self.run_audit_refno()
         elif self.ui.auditTypeCombo.currentText == "RTU (by SerialNo)":
@@ -190,6 +195,11 @@ class MainWindow(QMainWindow):
                 self.ui.auditResultsFrame.show()
                 self.ui.auditResultsTable.setRowCount(0)
                 self.ui.auditResultsTable.setColumnCount(5)
+                self.ui.auditResultsTable.setColumnWidth(0, 120)
+                self.ui.auditResultsTable.setColumnWidth(1, 160)
+                self.ui.auditResultsTable.setColumnWidth(2, 140)
+                self.ui.auditResultsTable.setColumnWidth(3, 140)
+                self.ui.auditResultsTable.setColumnWidth(4, 140)
                 self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
                 for row in range(len(result) - 1):
                     current_dict = result[row]
@@ -197,12 +207,13 @@ class MainWindow(QMainWindow):
                     for key, value in current_dict.items():
                         if key in next_dict and value != next_dict[key]:
                             text_value = key
+                            print(text_value)
                             if text_value in keys_to_exclude:
                                 continue
                             if text_value == "CustomerID":
-                                text_value = sql_connection.get_customer_name(value)
+                                text_value = sql_connection.get_customername_by_customerid(value)['CustomerName']
                             if text_value == "RegionID":
-                                text_value = sql_connection.get_region_name(value)
+                                text_value = sql_connection.get_region_name(value)['RegionName']
                             new_value = value
                             previous_value = next_dict[key]
                             date_action = str(current_dict["DateAction"])
@@ -216,7 +227,6 @@ class MainWindow(QMainWindow):
                                 continue
                             else:
                                 row_number = self.ui.auditResultsTable.rowCount() 
-                                self.ui.auditResultsTable.insertRow(row_number)
                                 d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
                                 self.ui.auditResultsTable.insertRow(row_number)
                                 self.ui.auditResultsTable.setItem(row_number, 2, QtWidgets.QTableWidgetItem(text_value))
@@ -227,19 +237,57 @@ class MainWindow(QMainWindow):
                                 self.ui.auditResultsTable.show()
 
     def run_audit_customer(self):
+        keys_to_exclude = ["DateAction", "ID", "ColumnsUpdated", "UserID"]
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "Customer":
             result = sql_connection.audit_customer(self.ui.auditSearchBox.text())
+            print(result)
             if result == "no results":
                 self.create_popup("No results found", "No results found for that Customer, please check the Customer and try again", QMessageBox.Warning, QMessageBox.Ok)
             else:
                 self.ui.auditResultsFrame.show()
                 self.ui.auditResultsTable.setRowCount(1)
                 self.ui.auditResultsTable.setColumnCount(4)
-                self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "CustomerName", "BranchName"])
-                for row in range(len(result)):
-                    for column in range(2):
-                        self.ui.auditResultsTable.setItem(row, column, QtWidgets.QTableWidgetItem(str(result[row][column])))
+                self.ui.auditResultsTable.setColumnWidth(0, 120)
+                self.ui.auditResultsTable.setColumnWidth(1, 160)
+                self.ui.auditResultsTable.setColumnWidth(2, 140)
+                self.ui.auditResultsTable.setColumnWidth(3, 140)
+                self.ui.auditResultsTable.setColumnWidth(4, 140)
+                self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
+                for row in range(len(result) - 1):
+                    current_dict = result[row]
+                    next_dict = result[row + 1]
+                    for key, value in current_dict.items():
+                        if key in next_dict and value != next_dict[key]:
+                            text_value = key
+                            print(text_value)
+                            if text_value in keys_to_exclude:
+                                continue
+                            if text_value == "CustomerID":
+                                text_value = sql_connection.get_customername_by_customerid(value)['CustomerName']
+                            if text_value == "RegionID":
+                                text_value = sql_connection.get_region_name(value)['RegionName']
+                            new_value = value
+                            previous_value = next_dict[key]
+                            date_action = str(current_dict["DateAction"])
+                            for user in self.rts_users:
+                                if user['id'] == current_dict["UserID"]:
+                                    user = user['email']
+                                    break
+                            else:
+                                user = "User Email Unknown, ID is: " + str(current_dict["UserID"])
+                            if text_value == "":
+                                continue
+                            else:
+                                row_number = self.ui.auditResultsTable.rowCount() 
+                                d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
+                                self.ui.auditResultsTable.insertRow(row_number)
+                                self.ui.auditResultsTable.setItem(row_number, 2, QtWidgets.QTableWidgetItem(text_value))
+                                self.ui.auditResultsTable.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(new_value)))
+                                self.ui.auditResultsTable.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
+                                self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
+                                self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
+                                self.ui.auditResultsTable.show()
 
     def run_audit_user(self):
         sql_connection = sql.Connection()
@@ -258,11 +306,12 @@ class MainWindow(QMainWindow):
 
     def set_audit_menu(self):
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
-
             self.ui.auditTypeLabel.setText("Enter RefNo: ")
             self.ui.auditSearchBox.setPlaceholderText("RefNo...")
         if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
+            self.ui.auditSearchBox.clear()
             self.ui.auditTypeLabel.setText("Enter SerialNo: ")
+            self.ui.auditSearchBox.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("[0-9]{0,14}")))
             self.ui.auditSearchBox.setPlaceholderText("SerialNo...")
         if self.ui.auditTypeCombo.currentText() == "Branch":
             self.ui.auditTypeLabel.setText("Enter Branch Name: ")
@@ -285,7 +334,6 @@ class MainWindow(QMainWindow):
             self.create_popup("Default Machine Added", "Default machine added successfully", QMessageBox.Information, QMessageBox.Ok)
             self.get_default_branch(branch_name)
             return True
-
     
     def get_default_branch(self, branch_name):
         sql_connection = sql.Connection()
@@ -312,7 +360,6 @@ class MainWindow(QMainWindow):
             self.ui.customerNameLabel.setText(str(branch[0]['CustomerName']))
             del branch
 
-    
     def update_user_permissions(self):
         user_id = self.ui.userIDLabel.text()
         user_email = self.ui.qsmacker_email.text()
@@ -335,7 +382,6 @@ class MainWindow(QMainWindow):
         #create focus on notification, and make it hold focus until it is closed
         self.ui.notificaitonTitle.setText(notification)
         self.ui.notificationBody.setText(notificationBody)
-
 
     def get_user_compatibility(self, user_id):
         isValid = True
@@ -364,7 +410,6 @@ class MainWindow(QMainWindow):
                 self.ui.setPermBtn.setEnabled(False)
                 self.ui.permissionsLabel.setText("True")
                 self.create_popup("User has permissions already", "User has permissions already, please contact the IT department to update permissions", QMessageBox.Critical, QMessageBox.Ok)
-
 
     def get_qsmacker_job(self, job_name):
         sql_connection = sql.Connection()
