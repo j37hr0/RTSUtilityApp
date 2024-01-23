@@ -231,7 +231,7 @@ class Connection:
     def audit_rtu(self, identifier, type):
         if identifier == "":
             print(f"No {type} provided")
-            return "no {type}"
+            return "no refno"
         else:
             if type == "refno":
                 self.make_connection(database="Realcontrol")
@@ -241,7 +241,7 @@ class Connection:
                 self.make_connection(database="Realcontrol")
                 self.cursor.execute("select * from tblRTUDetails_AuditExact (nolock) where IDOriginal = (select ID from tblRTUDetails where SerialNumber = %s) order by id desc", (identifier))
                 rtu = self.cursor.fetchall()
-            if rtu == [None]:
+            if rtu == []:
                 print("No RTU found")
                 return "no refno"
             else:
@@ -254,9 +254,9 @@ class Connection:
             return "no branch"
         else:
             self.make_connection(database="Realcontrol")
-            self.cursor.execute("select * from tblBranch_AuditExact where IDOriginal = (select ID from tblBranch where BranchName = %s)", (branch))
+            self.cursor.execute("select * from tblBranch_AuditExact where IDOriginal = (select ID from tblBranch where BranchName = %s) order by id desc", (branch))
             branchResults = self.cursor.fetchall()
-            if branchResults == [None]:
+            if branchResults == []:
                 print("No Branch found")
                 return "no branch"
             else:
@@ -269,9 +269,9 @@ class Connection:
             return "no customer"
         else:
             self.make_connection(database="Realcontrol")
-            self.cursor.execute("select * from tblCustomers_auditexact where CustomerName = %s", (customer))
+            self.cursor.execute("select * from tblCustomers_auditexact where CustomerName = %s order by id desc", (customer))
             customerResults = self.cursor.fetchall()
-            if customerResults == [None]:
+            if customerResults == []:
                 print("No Customer found")
                 return "no customer"
             else:
@@ -286,7 +286,7 @@ class Connection:
             self.make_connection(database="Realcontrol")
             self.cursor.execute("select * from tblUsers_auditExact where IDOriginal = (select ID from tblusers where email = %s) order by id desc", (email))
             userResults = self.cursor.fetchall()
-            if userResults == [None]:
+            if userResults == []:
                 print("No User found")
                 return "no user"
             else:

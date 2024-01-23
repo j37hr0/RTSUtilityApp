@@ -50,6 +50,11 @@ class Ui_MainWindow(object):
 "}\n"
 "#headerContainer{\n"
 "    background-color: #343b47;\n"
+"}\n"
+"QMessageBox QLabel{\n"
+"    background-color: #343b47;\n"
+"    color: white;\n"
+"    borer-radius: 3px;\n"
 "}")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -491,7 +496,11 @@ class Ui_MainWindow(object):
 "background-color: grey;\n"
 "color: black;\n"
 "}\n"
-"")
+"QMessageBox{\n"
+"    background-color: #343b47;\n"
+"    color: white;\n"
+"    borer-radius: 3px;\n"
+"}")
         self.mainPages.setObjectName("mainPages")
         self.homePage = QtWidgets.QWidget()
         self.homePage.setStyleSheet("background-color: #343b47;")
@@ -596,6 +605,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_17.addWidget(self.defaultBranchFrame)
         self.mainPages.addWidget(self.defaultMacBranchPage)
         self.auditPage = QtWidgets.QWidget()
+        self.auditPage.setStyleSheet("QMessageBox{\n"
+"    background-color: #343b47;\n"
+"    color: white;\n"
+"    borer-radius: 3px;\n"
+"}")
         self.auditPage.setObjectName("auditPage")
         self.frame_17 = QtWidgets.QFrame(self.auditPage)
         self.frame_17.setGeometry(QtCore.QRect(9, 9, 300, 182))
@@ -906,7 +920,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.helpMenuPages.setCurrentIndex(0)
-        self.mainPages.setCurrentIndex(2)
+        self.mainPages.setCurrentIndex(3)
         self.profileMenuPages.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 

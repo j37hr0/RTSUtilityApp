@@ -49,6 +49,11 @@ background-color: #1f232a;
 }
 #headerContainer{
 	background-color: #343b47;
+}
+QMessageBox QLabel{
+	background-color: #343b47;
+	color: white;
+	borer-radius: 3px;
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -958,10 +963,14 @@ QTableWidget{
 background-color: grey;
 color: black;
 }
-</string>
+QMessageBox{
+	background-color: #343b47;
+	color: white;
+	borer-radius: 3px;
+}</string>
                </property>
                <property name="currentIndex">
-                <number>0</number>
+                <number>3</number>
                </property>
                <widget class="QWidget" name="homePage">
                 <property name="styleSheet">
@@ -1255,6 +1264,13 @@ color: black;
                 </layout>
                </widget>
                <widget class="QWidget" name="auditPage">
+                <property name="styleSheet">
+                 <string notr="true">QMessageBox{
+	background-color: #343b47;
+	color: white;
+	borer-radius: 3px;
+}</string>
+                </property>
                 <widget class="QFrame" name="frame_17">
                  <property name="geometry">
                   <rect>

@@ -13,11 +13,7 @@ import os
 import datetime
 
 #TODO: export to csv button for audit results
-#TODO:  delete last space if there is one on all inputs
-#^^ This seems to be included in the SQL library, but needs to be tested more
 #TODO: Disable buttons that are not needed until a DB query is done
-#TODO: Make a notification popup for audits that have no results
-#TODO: Convert popups to custom widget notifications
 #TODO: look at concurrency issues with the DB, and how to handle them  https://realpython.com/python-pyqt-qthread/
 #TODO: testing qsmacker batch failing 
 #TODO: add admin alerting for qsmacker batch failing, default machine being add, qsmacker permissions being updated
@@ -38,8 +34,8 @@ class MainWindow(QMainWindow):
         self.ui.loginBtn.clicked.connect(lambda: self.ui.centerMenuContainer.slideMenu())
         self.ui.closeBtnCenter.clicked.connect(lambda: self.ui.centerMenuContainer.collapseMenu())
         self.ui.elipsesBtn.clicked.connect(lambda: self.ui.rightMenuContainer.slideMenu())
-        self.ui.profileBtn.clicked.connect(lambda: self.refresh())
-        #self.ui.profileBtn.clicked.connect(lambda: self.ui.rightMenuContainer.slideMenu())
+        #self.ui.profileBtn.clicked.connect(lambda: self.refresh())
+        self.ui.profileBtn.clicked.connect(lambda: self.ui.rightMenuContainer.slideMenu())
         self.ui.closeRightBtn.clicked.connect(lambda: self.ui.rightMenuContainer.collapseMenu())
         self.ui.closeNotificationBtn.clicked.connect(lambda: self.ui.popupNotificationContainer.collapseMenu())
         self.ui.userSearchBtn.clicked.connect(lambda: self.get_user_compatibility(self.ui.qsmacker_email.text()))
@@ -158,19 +154,20 @@ class MainWindow(QMainWindow):
                                     new_value = sql.Connection().get_customername_by_customerid(newID)["CustomerName"]
                                 elif text_value == "BranchID":
                                     oldID = previous_value
+                                    print(previous_value)
                                     newID = new_value
                                     new_value = sql.Connection().get_branchname_by_branchid(newID)["BranchName"]
                                     previous_value = sql.Connection().get_branchname_by_branchid(oldID)["BranchName"]
                                 elif text_value == "RegionID":
                                     newID = new_value
                                     oldID = previous_value
-                                    previous_value = sql.Connection().get_regionname_by_regionid(oldID)["RegionName"]
-                                    new_value = sql.Connection().get_regionname_by_regionid(newID)["RegionName"]
+                                    previous_value = sql.Connection().get_regionname_by_regionid(oldID)["Description"]
+                                    new_value = sql.Connection().get_regionname_by_regionid(newID)["Description"]
                                 elif text_value == "AgentID":
                                     newID = new_value
                                     oldID = previous_value
-                                    previous_value = sql.Connection().get_agentname_by_agentid(oldID)["AgentName"]
-                                    new_value = sql.Connection().get_agentname_by_agentid(newID)["AgentName"]
+                                    previous_value = sql.Connection().get_agentname_by_agentid(oldID)["Description"]
+                                    new_value = sql.Connection().get_agentname_by_agentid(newID)["Description"]
                                 row_number = self.ui.auditResultsTable.rowCount()
                                 self.ui.auditResultsTable.insertRow(row_number) 
                                 d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
@@ -194,6 +191,9 @@ class MainWindow(QMainWindow):
         self.ui.auditResultsTable.show()
 
     def run_audit_dual(self):
+        if self.ui.auditSearchBox.text() == "":
+            self.create_popup("No input", "Please enter a value to search for", QMessageBox.Warning, QMessageBox.Ok)
+            return
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
             type = "refno"
@@ -201,7 +201,7 @@ class MainWindow(QMainWindow):
             type = "serialno"
         result = sql_connection.audit_rtu(identifier=self.ui.auditSearchBox.text(), type=type)
         if result == "no refno":
-            self.create_popup(f"No results found", "No results found for that {type}, please check the {type} and try again", QMessageBox.Warning, QMessageBox.Ok)
+            self.create_popup(f"No results found", f"No results found for that {type}, please check the {type} and try again", QMessageBox.Warning, QMessageBox.Ok)
         else:
             keys_to_exclude = ["DateAction", "UserID", "SocketID", "DateAndTimeServiced", "ID", "IpPublic", "ColumnsUpdated"]
             # print(result)
@@ -210,6 +210,9 @@ class MainWindow(QMainWindow):
             self.handle_result(result, keys_to_exclude, audit_type="RTU")
 
     def run_audit_branch(self):
+        if self.ui.auditSearchBox.text() == "":
+            self.create_popup("No input", "Please enter a value to search for", QMessageBox.Warning, QMessageBox.Ok)
+            return
         self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "Branch":
@@ -227,14 +230,14 @@ class MainWindow(QMainWindow):
                                 user = user['email']
                                 break
                         else:
-                            user = "User Email Unknown, ID is: " + str(current_dict["UserID"])
+                            user = "User Email Unknown, ID is: " + str(result["UserID"])
                         if text_value == "":
                             continue
                         else:
                             row_number = self.ui.auditResultsTable.rowCount() 
                             d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
                             self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)])
-            if result == "no results":
+            if result == "no branch":
                 self.create_popup("No results found", "No results found for that Branch, please check the Branch and try again", QMessageBox.Warning, QMessageBox.Ok)
             else:
                 keys_to_exclude = ["DateAction", "ID", "ColumnsUpdated", "UserID"]
@@ -242,6 +245,9 @@ class MainWindow(QMainWindow):
                 self.handle_result(result, keys_to_exclude, audit_type="Branch")
 
     def run_audit_customer(self):
+        if self.ui.auditSearchBox.text() == "":
+            self.create_popup("No input", "Please enter a value to search for", QMessageBox.Warning, QMessageBox.Ok)
+            return
         self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
         keys_to_exclude = ["DateAction", "ID", "ColumnsUpdated", "UserID"]
         sql_connection = sql.Connection()
@@ -260,7 +266,7 @@ class MainWindow(QMainWindow):
                                 user = user['email']
                                 break
                         else:
-                            user = "User Email Unknown, ID is: " + str(current_dict["UserID"])
+                            user = "User Email Unknown, ID is: " + str(result["UserID"])
                         if text_value == "":
                             pass
                         else:
@@ -275,10 +281,13 @@ class MainWindow(QMainWindow):
                 self.handle_result(result, keys_to_exclude, audit_type="Customer")
 
     def run_audit_user(self):
+        if self.ui.auditSearchBox.text() == "":
+            self.create_popup("No input", "Please enter a value to search for", QMessageBox.Warning, QMessageBox.Ok)
+            return
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "User":
             result = sql_connection.audit_user(self.ui.auditSearchBox.text())
-            if result == "no results":
+            if result == "no user":
                 self.create_popup("No results found", "No results found for that User, please check the User and try again", QMessageBox.Warning, QMessageBox.Ok)
             else:
                 keys_to_exclude = ["DateAction", "ID", "ColumnsUpdated", "UserID"]
@@ -368,9 +377,13 @@ class MainWindow(QMainWindow):
             return result
 
     def set_notification(self, notification, notificationBody):
-        #create focus on notification, and make it hold focus until it is closed
+        # Create focus on notification, and make it hold focus until it is closed
+        self.ui.popupNotificationContainer.show()
+        self.ui.popupNotificationContainer.raise_()
+        self.ui.popupNotificationContainer.activateWindow()
         self.ui.notificaitonTitle.setText(notification)
         self.ui.notificationBody.setText(notificationBody)
+        self.ui.notificationBtn.click()
 
     def get_user_compatibility(self, user_id):
         isValid = True
