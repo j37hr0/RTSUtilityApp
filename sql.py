@@ -138,6 +138,7 @@ class Connection:
             
 
             #Failed codes order: Command, Batch, Job
+    
     def fail_job(self, job_id, CommandFail = 4, BatchFail = 4, JobFail = 3):
         if job_id == "":
             print("No job id provided")
@@ -179,7 +180,6 @@ class Connection:
             self.close_connection()
             return True
         
-
     def find_branch_default_machine_status(self, branch):
         if branch == "":
             print("No branch provided")
@@ -201,7 +201,6 @@ class Connection:
                 branch.append(defaultMachine)
                 print(branch)
                 return branch
-
 
     def insert_default_machine_sql(self, branchID):
         self.make_connection(database="Realcontrol")
@@ -229,6 +228,27 @@ class Connection:
                             """)
         return True
     
+    def audit_rtu(self, identifier, type):
+        if identifier == "":
+            print(f"No {type} provided")
+            return "no {type}"
+        else:
+            if type == "refno":
+                self.make_connection(database="Realcontrol")
+                self.cursor.execute("select * from tblRTUDetails_AuditExact (nolock)where IDOriginal = (select ID from tblRTUDetails where RefNo = %s) order by id desc", (identifier))
+                rtu = self.cursor.fetchall()
+            if type == "serialno":
+                self.make_connection(database="Realcontrol")
+                self.cursor.execute("select * from tblRTUDetails_AuditExact (nolock) where IDOriginal = (select ID from tblRTUDetails where SerialNumber = %s) order by id desc", (identifier))
+                rtu = self.cursor.fetchall()
+            if rtu == [None]:
+                print("No RTU found")
+                return "no refno"
+            else:
+                self.close_connection()
+                return rtu
+
+
     def audit_rtu_by_refno(self, refno):
         if refno == "":
             print("No refno provided")

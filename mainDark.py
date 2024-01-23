@@ -77,9 +77,9 @@ class MainWindow(QMainWindow):
 
     def select_audit(self):
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
-            self.run_audit_refno()
+            self.run_audit_dual()
         elif self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
-            self.run_audit_serial()
+            self.run_audit_dual()
         elif self.ui.auditTypeCombo.currentText() == "Branch":
             self.run_audit_branch()
         elif self.ui.auditTypeCombo.currentText() == "Customer":
@@ -87,13 +87,15 @@ class MainWindow(QMainWindow):
         elif self.ui.auditTypeCombo.currentText() == "User":
             self.run_audit_user()
 
-    def run_audit_refno(self):
+    def run_audit_dual(self):
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
-            result = sql_connection.audit_rtu_by_refno(self.ui.auditSearchBox.text())
-            #print(result)
+            type = "refno"
+        if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
+            type = "serialno"
+        result = sql_connection.audit_rtu(identifier=self.ui.auditSearchBox.text(), type=type)
         if result == "no refno":
-            self.create_popup("No results found", "No results found for that SerialNo, please check the SerialNo and try again", QMessageBox.Warning, QMessageBox.Ok)
+            self.create_popup(f"No results found", "No results found for that {type}, please check the {type} and try again", QMessageBox.Warning, QMessageBox.Ok)
         else:
             keys_to_exclude = ["DateAction", "UserID", "SocketID", "DateAndTimeServiced", "ID", "IpPublic", "ColumnsUpdated"]
             # print(result)
@@ -137,57 +139,7 @@ class MainWindow(QMainWindow):
                             self.ui.auditResultsTable.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
                             self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
                             self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
-    
-    def run_audit_serial(self):
-        sql_connection = sql.Connection()
-        if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
-            result = sql_connection.audit_rtu_by_serialno(self.ui.auditSearchBox.text())
-            print(result)
-        if result == "no refno":
-            self.create_popup("No results found", "No results found for that SerialNo, please check the SerialNo and try again", QMessageBox.Warning, QMessageBox.Ok)
-        else:
-            keys_to_exclude = ["DateAction", "UserID", "SocketID", "DateAndTimeServiced", "ID", "IpPublic", "ColumnsUpdated"]
-            # print(result)
-            self.ui.auditResultsFrame.show()
-            self.ui.auditResultsTable.setRowCount(0)
-            self.ui.auditResultsTable.setColumnCount(5)
-            self.ui.auditResultsTable.setColumnWidth(0, 120)
-            self.ui.auditResultsTable.setColumnWidth(1, 150)
-            self.ui.auditResultsTable.setColumnWidth(2, 120)
-            self.ui.auditResultsTable.setColumnWidth(3, 140)
-            self.ui.auditResultsTable.setColumnWidth(4, 140)
-            self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
-            # Compare dictionaries and append necessary values to auditResultsTable
-            for row in range(len(result) - 1):
-                current_dict = result[row]
-                next_dict = result[row + 1]
-                for key, value in current_dict.items():
-                    if key in next_dict and value != next_dict[key]:
-                        text_value = key
-                        if text_value in keys_to_exclude:
-                            continue
-                        new_value = value
-                        previous_value = next_dict[key]
-                        date_action = str(current_dict["DateAction"])
-                        if text_value == "UserAction" and previous_value == 1:
-                            text_value = "Machine Created"
-                        for user in self.rts_users:
-                            if user['id'] == current_dict["UserID"]:
-                                user = user['email']
-                                break
-                        else:
-                            user = "User Email Unknown, ID is: " + str(current_dict["UserID"])
-                        if text_value == "":
-                            continue
-                        else:
-                            row_number = self.ui.auditResultsTable.rowCount() 
-                            d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
-                            self.ui.auditResultsTable.insertRow(row_number)
-                            self.ui.auditResultsTable.setItem(row_number, 2, QtWidgets.QTableWidgetItem(text_value))
-                            self.ui.auditResultsTable.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(new_value)))
-                            self.ui.auditResultsTable.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
-                            self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
-                            self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
+
 
     def run_audit_branch(self):
         sql_connection = sql.Connection()
