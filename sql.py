@@ -283,8 +283,10 @@ class Connection:
             print("No customer ID provided")
             return "no customer ID"
         else:
+            print("the customer id is: ")
+            print(customerID)
             self.make_connection(database="Realcontrol")
-            self.cursor.execute("select DateAction from tblCustomers_audit where CustomerID = %s and userAction = 1", (customerID))
+            self.cursor.execute("select DateAndTime from tblCustomers_audit where CustomerID = %s and userAction = 1", (customerID))
             customerCreationDate = self.cursor.fetchone()
             if customerCreationDate == None:
                 print("No customer found")
@@ -299,12 +301,16 @@ class Connection:
             return "no customer"
         else:
             self.make_connection(database="Realcontrol")
-            self.cursor.execute("select * from tblCustomers where CustomerName = %s", (customer))
+            self.cursor.execute("select * from tblCustomers_auditexact where CustomerName = %s", (customer))
             customerResults = self.cursor.fetchall()
             if customerResults == [None]:
                 print("No Customer found")
                 return "no customer"
             else:
+                print(customerResults)
+                creationDate = self.get_customer_creation_date(customerResults[0]['ID'])
+                print(creationDate)
+                customerResults.append(creationDate)
                 self.close_connection()
                 return customerResults
             

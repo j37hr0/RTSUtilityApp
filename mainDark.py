@@ -21,7 +21,6 @@ import datetime
 #TODO: look at concurrency issues with the DB, and how to handle them  https://realpython.com/python-pyqt-qthread/
 #TODO: testing qsmacker batch failing 
 #TODO: get creation date on audits from the audit table instead of auditexact, and append it to row 1 of the audit table
-#TODO: make both the refno and serial audit use IDOriginal for searches - maybe a single monoloth function that takes a parameter for the search type
 
 
 class MainWindow(QMainWindow):
@@ -200,7 +199,7 @@ class MainWindow(QMainWindow):
         if self.ui.auditTypeCombo.currentText() == "Customer":
             result = sql_connection.audit_customer(self.ui.auditSearchBox.text())
             print(result)
-            if result == "no results":
+            if result == "no customer":
                 self.create_popup("No results found", "No results found for that Customer, please check the Customer and try again", QMessageBox.Warning, QMessageBox.Ok)
             else:
                 self.ui.auditResultsFrame.show()
@@ -211,9 +210,16 @@ class MainWindow(QMainWindow):
                 self.ui.auditResultsTable.setColumnWidth(2, 140)
                 self.ui.auditResultsTable.setColumnWidth(3, 140)
                 self.ui.auditResultsTable.setColumnWidth(4, 140)
-                self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
+                self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAndTime", "User", "TextValue", "NewValue", "PreviousValue"])
+                # self.ui.auditResultsTable.insertRow(0)
+                # d = datetime.datetime.strptime(str(result[1]["DateAndTime"]), '%Y-%m-%d %H:%M:%S.%f')
+                # self.ui.auditResultsTable.setItem(0, 0, QtWidgets.QTableWidgetItem(result[1]))
+                # self.ui.auditResultsTable.setItem(0, 3, QtWidgets.QTableWidgetItem("Created"))
+                # self.ui.auditResultsTable.setItem(0, 4, QtWidgets.QTableWidgetItem("NA"))
+                # self.ui.auditResultsTable.setItem(0, 2, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
+                # self.ui.auditResultsTable.setItem(0, 1, QtWidgets.QTableWidgetItem(result[0]['UserID']))
                 for row in range(len(result) - 1):
-                    current_dict = result[row]
+                    current_dict = result[0][row]
                     next_dict = result[row + 1]
                     for key, value in current_dict.items():
                         if key in next_dict and value != next_dict[key]:
