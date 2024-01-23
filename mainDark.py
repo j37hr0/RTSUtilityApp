@@ -21,7 +21,6 @@ import datetime
 #TODO: look at concurrency issues with the DB, and how to handle them  https://realpython.com/python-pyqt-qthread/
 #TODO: testing qsmacker batch failing 
 
-
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self)
@@ -85,6 +84,13 @@ class MainWindow(QMainWindow):
         elif self.ui.auditTypeCombo.currentText() == "User":
             self.run_audit_user()
 
+    def setup_columns(self, columnWidths, columnCount, columnHeaders):
+        for column in range(columnCount):
+            self.ui.auditResultsTable.setRowCount(0)
+            self.ui.auditResultsTable.setColumnCount(columnCount)
+            self.ui.auditResultsTable.setColumnWidth(column, columnWidths[column])
+        self.ui.auditResultsTable.setHorizontalHeaderLabels(columnHeaders)
+
     def run_audit_dual(self):
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
@@ -97,16 +103,8 @@ class MainWindow(QMainWindow):
         else:
             keys_to_exclude = ["DateAction", "UserID", "SocketID", "DateAndTimeServiced", "ID", "IpPublic", "ColumnsUpdated"]
             # print(result)
+            self.setup_columns([120, 150, 120, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
             self.ui.auditResultsFrame.show()
-            self.ui.auditResultsTable.setRowCount(0)
-            self.ui.auditResultsTable.setColumnCount(5)
-            self.ui.auditResultsTable.setColumnWidth(0, 120)
-            self.ui.auditResultsTable.setColumnWidth(1, 150)
-            self.ui.auditResultsTable.setColumnWidth(2, 120)
-            self.ui.auditResultsTable.setColumnWidth(3, 140)
-            self.ui.auditResultsTable.setColumnWidth(4, 140)
-            self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
-            # Compare dictionaries and append necessary values to auditResultsTable
             for row in range(len(result) - 1):
                 current_dict = result[row]
                 next_dict = result[row + 1]
@@ -139,14 +137,7 @@ class MainWindow(QMainWindow):
                             self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
 
     def run_audit_branch(self):
-        self.ui.auditResultsTable.setRowCount(0)
-        self.ui.auditResultsTable.setColumnCount(5)
-        self.ui.auditResultsTable.setColumnWidth(0, 120)
-        self.ui.auditResultsTable.setColumnWidth(1, 160)
-        self.ui.auditResultsTable.setColumnWidth(2, 140)
-        self.ui.auditResultsTable.setColumnWidth(3, 140)
-        self.ui.auditResultsTable.setColumnWidth(4, 140)
-        self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
+        self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "Branch":
             result = sql_connection.audit_branch(self.ui.auditSearchBox.text())
@@ -216,14 +207,7 @@ class MainWindow(QMainWindow):
                                 self.ui.auditResultsTable.show()
 
     def run_audit_customer(self):
-        self.ui.auditResultsTable.setRowCount(0)
-        self.ui.auditResultsTable.setColumnCount(5)
-        self.ui.auditResultsTable.setColumnWidth(0, 120)
-        self.ui.auditResultsTable.setColumnWidth(1, 160)
-        self.ui.auditResultsTable.setColumnWidth(2, 140)
-        self.ui.auditResultsTable.setColumnWidth(3, 140)
-        self.ui.auditResultsTable.setColumnWidth(4, 140)
-        self.ui.auditResultsTable.setHorizontalHeaderLabels(["DateAndTime", "User", "TextValue", "NewValue", "PreviousValue"])
+        self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
         keys_to_exclude = ["DateAction", "ID", "ColumnsUpdated", "UserID"]
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "Customer":
