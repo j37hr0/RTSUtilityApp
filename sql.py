@@ -235,7 +235,7 @@ class Connection:
             return "no refno"
         else:
             self.make_connection(database="Realcontrol")
-            self.cursor.execute("select * from tblRTUDetails_AuditExact (nolock)where IDOriginal = (select ID from tblRTUDetails where RefNo = %s", (refno))
+            self.cursor.execute("select * from tblRTUDetails_AuditExact (nolock)where IDOriginal = (select ID from tblRTUDetails where RefNo = %s) order by id desc", (refno))
             rtu = self.cursor.fetchall()
             if rtu == [None]:
                 print("No RTU found")
@@ -250,7 +250,8 @@ class Connection:
             return "no refno"
         else:
             self.make_connection(database="Realcontrol")
-            self.cursor.execute("select * from tblRTUDetails_AuditExact (nolock) where IDOriginal = (select ID from tblRTUDetails where SerialNumber = %s", (serialno))
+            print("getting to sql")
+            self.cursor.execute("select * from tblRTUDetails_AuditExact (nolock) where IDOriginal = (select ID from tblRTUDetails where SerialNumber = %s) order by id desc", (serialno))
             rtu = self.cursor.fetchall()
             if rtu == [None]:
                 print("No RTU found")

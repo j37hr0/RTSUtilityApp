@@ -21,7 +21,7 @@ import datetime
 #TODO: look at concurrency issues with the DB, and how to handle them  https://realpython.com/python-pyqt-qthread/
 #TODO: testing qsmacker batch failing 
 #TODO: get creation date on audits from the audit table instead of auditexact, and append it to row 1 of the audit table
-
+#TODO: make both the refno and serial audit use IDOriginal for searches - maybe a single monoloth function that takes a parameter for the search type
 
 
 class MainWindow(QMainWindow):
@@ -78,7 +78,7 @@ class MainWindow(QMainWindow):
     def select_audit(self):
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
             self.run_audit_refno()
-        elif self.ui.auditTypeCombo.currentText == "RTU (by SerialNo)":
+        elif self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
             self.run_audit_serial()
         elif self.ui.auditTypeCombo.currentText() == "Branch":
             self.run_audit_branch()
@@ -118,6 +118,8 @@ class MainWindow(QMainWindow):
                         new_value = value
                         previous_value = next_dict[key]
                         date_action = str(current_dict["DateAction"])
+                        if text_value == "UserAction" and new_value == 1:
+                            text_value = "Machine Created"
                         for user in self.rts_users:
                             if user['id'] == current_dict["UserID"]:
                                 user = user['email']
@@ -140,6 +142,7 @@ class MainWindow(QMainWindow):
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
             result = sql_connection.audit_rtu_by_serialno(self.ui.auditSearchBox.text())
+            print(result)
         if result == "no refno":
             self.create_popup("No results found", "No results found for that SerialNo, please check the SerialNo and try again", QMessageBox.Warning, QMessageBox.Ok)
         else:
@@ -166,6 +169,8 @@ class MainWindow(QMainWindow):
                         new_value = value
                         previous_value = next_dict[key]
                         date_action = str(current_dict["DateAction"])
+                        if text_value == "UserAction" and previous_value == 1:
+                            text_value = "Machine Created"
                         for user in self.rts_users:
                             if user['id'] == current_dict["UserID"]:
                                 user = user['email']
@@ -188,6 +193,7 @@ class MainWindow(QMainWindow):
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "Branch":
             result = sql_connection.audit_branch(self.ui.auditSearchBox.text())
+            print(result)
             if result == "no results":
                 self.create_popup("No results found", "No results found for that Branch, please check the Branch and try again", QMessageBox.Warning, QMessageBox.Ok)
             else:
@@ -309,9 +315,9 @@ class MainWindow(QMainWindow):
             self.ui.auditTypeLabel.setText("Enter RefNo: ")
             self.ui.auditSearchBox.setPlaceholderText("RefNo...")
         if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
-            self.ui.auditSearchBox.clear()
-            self.ui.auditTypeLabel.setText("Enter SerialNo: ")
+            self.ui.auditSearchBox.setText("")
             self.ui.auditSearchBox.setValidator(QtGui.QRegExpValidator(QtCore.QRegExp("[0-9]{0,14}")))
+            self.ui.auditTypeLabel.setText("Enter SerialNo: ")
             self.ui.auditSearchBox.setPlaceholderText("SerialNo...")
         if self.ui.auditTypeCombo.currentText() == "Branch":
             self.ui.auditTypeLabel.setText("Enter Branch Name: ")
