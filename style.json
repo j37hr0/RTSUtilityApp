@@ -175,7 +175,8 @@
               "qsmackerBatchPageBtn": "qsmackerBatchPage",
               "realcontrolBtn": "rcPage",
               "qsmackerPermPageBtn": "qsmackerPermissionsPage",
-              "auditPageBtn": "auditPage"
+              "auditPageBtn": "auditPage",
+              "defaultMacBranchBtn": "defaultMacBranchPage"
             }
           ]
         }

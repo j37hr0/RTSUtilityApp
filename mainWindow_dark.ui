@@ -671,7 +671,7 @@ QPushButton:hover {
        <property name="bottomMargin">
         <number>100</number>
        </property>
-       <item alignment="Qt::AlignTop">
+       <item>
         <widget class="QWidget" name="headerContainer" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <property name="spacing">
@@ -961,7 +961,7 @@ color: black;
 </string>
                </property>
                <property name="currentIndex">
-                <number>3</number>
+                <number>2</number>
                </property>
                <widget class="QWidget" name="homePage">
                 <property name="styleSheet">
@@ -1056,7 +1056,19 @@ color: black;
                <widget class="QWidget" name="defaultMacBranchPage">
                 <layout class="QHBoxLayout" name="horizontalLayout_17">
                  <item>
-                  <widget class="QFrame" name="frame_16">
+                  <widget class="QFrame" name="defBranchSearchFrame">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>300</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
                    <property name="frameShape">
                     <enum>QFrame::StyledPanel</enum>
                    </property>
@@ -1079,7 +1091,7 @@ color: black;
                    <widget class="QPushButton" name="branchSearchBtn">
                     <property name="geometry">
                      <rect>
-                      <x>100</x>
+                      <x>120</x>
                       <y>50</y>
                       <width>75</width>
                       <height>23</height>
@@ -1094,7 +1106,7 @@ color: black;
                      <rect>
                       <x>0</x>
                       <y>20</y>
-                      <width>151</width>
+                      <width>191</width>
                       <height>20</height>
                      </rect>
                     </property>
@@ -1106,6 +1118,12 @@ color: black;
                  </item>
                  <item>
                   <widget class="QFrame" name="defaultBranchFrame">
+                   <property name="minimumSize">
+                    <size>
+                     <width>700</width>
+                     <height>0</height>
+                    </size>
+                   </property>
                    <property name="frameShape">
                     <enum>QFrame::StyledPanel</enum>
                    </property>
