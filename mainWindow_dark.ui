@@ -1275,17 +1275,17 @@ color: black;
                   </property>
                   <item>
                    <property name="text">
-                    <string>User</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
                     <string>RTU (by RefNo)</string>
                    </property>
                   </item>
                   <item>
                    <property name="text">
                     <string>RTU (by SerialNo)</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>User</string>
                    </property>
                   </item>
                   <item>

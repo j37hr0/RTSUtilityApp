@@ -284,7 +284,7 @@ class Connection:
             return "no email"
         else:
             self.make_connection(database="Realcontrol")
-            self.cursor.execute("select * from tblUsers_auditExact where IDOriginal = (select ID from tblusers where email = %s)", (email))
+            self.cursor.execute("select * from tblUsers_auditExact where IDOriginal = (select ID from tblusers where email = %s) order by id desc", (email))
             userResults = self.cursor.fetchall()
             if userResults == [None]:
                 print("No User found")
@@ -323,6 +323,43 @@ class Connection:
                 self.close_connection()
                 return customer
             
+
+    def get_branchname_by_branchid(self, branchid):
+        if branchid == "":
+            print("No branch id provided")
+            return "no branch id"
+        else:
+            self.make_connection(database="Realcontrol")
+            self.cursor.execute(f"""
+                                select BranchName from tblBranch
+                                where ID = {branchid}
+                                """)
+            branch = self.cursor.fetchone()
+            if branch == None:
+                print("No branch found")
+                return "no branch"
+            else:
+                self.close_connection()
+                return branch
+            
+    def get_agentname_by_agentid(self, agentid):
+        if agentid == "":
+            print("No agent id provided")
+            return "no agent id"
+        else:
+            self.make_connection(database="Realcontrol")
+            self.cursor.execute(f"""
+                                select Description from tblAgents
+                                where ID = {agentid}
+                                """)
+            agent = self.cursor.fetchone()
+            if agent == None:
+                print("No agent found")
+                return "no agent"
+            else:
+                self.close_connection()
+                return agent
+
     def get_regionname_by_regionid(self, regionid):
         if regionid == "":
             print("No region id provided")

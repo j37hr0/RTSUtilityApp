@@ -84,7 +84,8 @@ class MainWindow(QMainWindow):
         elif self.ui.auditTypeCombo.currentText() == "User":
             self.run_audit_user()
 
-    def handle_result(self, results, keys_excluded):
+    def handle_result(self, results, keys_excluded, audit_type):
+        replace_items = ["CustomerID", "BranchID", "RegionID", "AgentID"]
         for row in range(len(results) - 1):
                     current_dict = results[row]
                     next_dict = results[row + 1]
@@ -97,7 +98,7 @@ class MainWindow(QMainWindow):
                             previous_value = next_dict[key]
                             date_action = str(current_dict["DateAction"])
                             if text_value == "UserAction" and new_value == 1:
-                                text_value = "User Created"
+                                text_value = f"{audit_type} Created"
                             for user in self.rts_users:
                                 if user['id'] == current_dict["UserID"]:
                                     user = user['email']
@@ -106,8 +107,32 @@ class MainWindow(QMainWindow):
                                 user = "User Email Unknown, ID is: " + str(current_dict["UserID"])
                             if text_value == "":
                                 continue
+                            if text_value in replace_items:
+                                if text_value == "CustomerID":
+                                    oldID = previous_value
+                                    newID = new_value
+                                    previous_value = sql.Connection().get_customername_by_customerid(oldID)["CustomerName"]
+                                    new_value = sql.Connection().get_customername_by_customerid(newID)["CustomerName"]
+                                elif text_value == "BranchID":
+                                    oldID = previous_value
+                                    newID = new_value
+                                    new_value = sql.Connection().get_branchname_by_branchid(newID)["BranchName"]
+                                    previous_value = sql.Connection().get_branchname_by_branchid(oldID)["BranchName"]
+                                elif text_value == "RegionID":
+                                    newID = new_value
+                                    oldID = previous_value
+                                    previous_value = sql.Connection().get_regionname_by_regionid(oldID)["RegionName"]
+                                    new_value = sql.Connection().get_regionname_by_regionid(newID)["RegionName"]
+                                elif text_value == "AgentID":
+                                    newID = new_value
+                                    oldID = previous_value
+                                    previous_value = sql.Connection().get_agentname_by_agentid(oldID)["AgentName"]
+                                    new_value = sql.Connection().get_agentname_by_agentid(newID)["AgentName"]
+                                row_number = self.ui.auditResultsTable.rowCount()
+                                self.ui.auditResultsTable.insertRow(row_number) 
+                                d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
+                                self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)])
                             else:
-                                print(text_value, user, new_value, previous_value, date_action)
                                 row_number = self.ui.auditResultsTable.rowCount()
                                 self.ui.auditResultsTable.insertRow(row_number) 
                                 d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
@@ -139,7 +164,7 @@ class MainWindow(QMainWindow):
             # print(result)
             self.setup_columns([120, 150, 120, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
             self.ui.auditResultsFrame.show()
-            self.handle_result(result, keys_to_exclude)
+            self.handle_result(result, keys_to_exclude, audit_type="RTU")
 
     def run_audit_branch(self):
         self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
@@ -171,7 +196,7 @@ class MainWindow(QMainWindow):
             else:
                 keys_to_exclude = ["DateAction", "ID", "ColumnsUpdated", "UserID"]
                 self.ui.auditResultsFrame.show()
-                self.handle_result(result, keys_to_exclude)
+                self.handle_result(result, keys_to_exclude, audit_type="Branch")
 
     def run_audit_customer(self):
         self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
@@ -204,7 +229,7 @@ class MainWindow(QMainWindow):
                 self.create_popup("No results found", "No results found for that Customer, please check the Customer and try again", QMessageBox.Warning, QMessageBox.Ok)
             else:
                 self.ui.auditResultsFrame.show()
-                self.handle_result(result, keys_to_exclude)
+                self.handle_result(result, keys_to_exclude, audit_type="Customer")
 
     def run_audit_user(self):
         sql_connection = sql.Connection()
@@ -216,10 +241,11 @@ class MainWindow(QMainWindow):
                 keys_to_exclude = ["DateAction", "ID", "ColumnsUpdated", "UserID"]
                 self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
                 self.ui.auditResultsFrame.show()
-                self.handle_result(result, keys_to_exclude)
+                self.handle_result(result, keys_to_exclude, audit_type="User")
 
     def set_audit_menu(self):
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
+            self.ui.auditSearchBox.setValidator(None)
             self.ui.auditTypeLabel.setText("Enter RefNo: ")
             self.ui.auditSearchBox.setPlaceholderText("RefNo...")
         if self.ui.auditTypeCombo.currentText() == "RTU (by SerialNo)":
@@ -230,13 +256,16 @@ class MainWindow(QMainWindow):
         if self.ui.auditTypeCombo.currentText() == "Branch":
             self.ui.auditTypeLabel.setText("Enter Branch Name: ")
             self.ui.auditSearchBox.setPlaceholderText("Branch Name...")
+            self.ui.auditSearchBox.setValidator(None)
         if self.ui.auditTypeCombo.currentText() == "Customer":
             self.ui.auditTypeLabel.setText("Enter Customer Name: ")
             self.ui.auditSearchBox.setPlaceholderText("Customer Name...")
+            self.ui.auditSearchBox.setValidator(None)
         if self.ui.auditTypeCombo.currentText() == "User":
             self.ui.auditTypeLabel.setText("Enter User Email: ")
             self.ui.auditSearchBox.setPlaceholderText("User Email...")
-    
+            self.ui.auditSearchBox.setValidator(None)
+
     def insert_default_machine(self):
         self.create_popup("Are you sure?", "Are you sure you want to insert a default machine for this branch?", QMessageBox.Question, QMessageBox.Ok | QMessageBox.Cancel)
         if self.x == QMessageBox.Ok:
