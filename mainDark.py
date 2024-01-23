@@ -91,6 +91,11 @@ class MainWindow(QMainWindow):
             self.ui.auditResultsTable.setColumnWidth(column, columnWidths[column])
         self.ui.auditResultsTable.setHorizontalHeaderLabels(columnHeaders)
 
+    def populate_audit_table(self, rowNumber, result):
+        for column in range(len(result)):
+            self.ui.auditResultsTable.setItem(rowNumber, column, QtWidgets.QTableWidgetItem(str(result[column])))
+        self.ui.auditResultsTable.show()
+
     def run_audit_dual(self):
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
@@ -127,19 +132,12 @@ class MainWindow(QMainWindow):
                         if text_value == "":
                             continue
                         else:
-                            row_number = self.ui.auditResultsTable.rowCount() 
+                            print(text_value, user, new_value, previous_value, date_action)
+                            row_number = self.ui.auditResultsTable.rowCount()
+                            self.ui.auditResultsTable.insertRow(row_number) 
                             d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
-                            self.ui.auditResultsTable.insertRow(row_number)
-                            self.ui.auditResultsTable.setItem(row_number, 2, QtWidgets.QTableWidgetItem(text_value))
-                            self.ui.auditResultsTable.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(new_value)))
-                            self.ui.auditResultsTable.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
-                            self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
-                            self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
+                            self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)])
 
-    def populate_audit_table(self, rowNumber, result):
-        for column in range(len(result)):
-            self.ui.auditResultsTable.setItem(rowNumber, column, QtWidgets.QTableWidgetItem(str(result[column])))
-        self.ui.auditResultsTable.show()
 
     def run_audit_branch(self):
         self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
@@ -161,12 +159,11 @@ class MainWindow(QMainWindow):
                         else:
                             user = "User Email Unknown, ID is: " + str(current_dict["UserID"])
                         if text_value == "":
-                            pass
+                            continue
                         else:
                             row_number = self.ui.auditResultsTable.rowCount() 
                             d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
                             self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)])
-
             if result == "no results":
                 self.create_popup("No results found", "No results found for that Branch, please check the Branch and try again", QMessageBox.Warning, QMessageBox.Ok)
             else:
@@ -225,16 +222,10 @@ class MainWindow(QMainWindow):
                         if text_value == "":
                             pass
                         else:
-                            row_number = self.ui.auditResultsTable.rowCount() 
-                            d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
-                            self.ui.auditResultsTable.insertRow(row_number)
-                            self.ui.auditResultsTable.setItem(row_number, 2, QtWidgets.QTableWidgetItem(text_value))
-                            self.ui.auditResultsTable.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(new_value)))
-                            self.ui.auditResultsTable.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
-                            self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
-                            self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
-                            self.ui.auditResultsTable.show()
-            print(len(result))
+                                row_number = self.ui.auditResultsTable.rowCount()
+                                self.ui.auditResultsTable.insertRow(row_number)
+                                d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
+                                self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)])
             if result == "no customer":
                 self.create_popup("No results found", "No results found for that Customer, please check the Customer and try again", QMessageBox.Warning, QMessageBox.Ok)
             else:
@@ -264,15 +255,10 @@ class MainWindow(QMainWindow):
                             if text_value == "":
                                 continue
                             else:
-                                row_number = self.ui.auditResultsTable.rowCount() 
-                                d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
+                                row_number = self.ui.auditResultsTable.rowCount()
                                 self.ui.auditResultsTable.insertRow(row_number)
-                                self.ui.auditResultsTable.setItem(row_number, 2, QtWidgets.QTableWidgetItem(text_value))
-                                self.ui.auditResultsTable.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(new_value)))
-                                self.ui.auditResultsTable.setItem(row_number, 4, QtWidgets.QTableWidgetItem(str(previous_value)))
-                                self.ui.auditResultsTable.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
-                                self.ui.auditResultsTable.setItem(row_number, 1, QtWidgets.QTableWidgetItem(user))
-                                self.ui.auditResultsTable.show()
+                                d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
+                                self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)])
 
     def run_audit_user(self):
         sql_connection = sql.Connection()
@@ -288,6 +274,7 @@ class MainWindow(QMainWindow):
                 for row in range(len(result)):
                     for column in range(2):
                         self.ui.auditResultsTable.setItem(row, column, QtWidgets.QTableWidgetItem(str(result[row][column])))
+
 
     def set_audit_menu(self):
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
