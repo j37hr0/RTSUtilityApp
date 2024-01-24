@@ -139,7 +139,7 @@ class Connection:
 
             #Failed codes order: Command, Batch, Job
     
-    def fail_job(self, job_id, CommandFail = 4, BatchFail = 4, JobFail = 3):
+    def fail_qsmacker_job_sql(self, job_id, CommandFail = 4, BatchFail = 4, JobFail = 3):
         if job_id == "":
             print("No job id provided")
             return None
@@ -322,8 +322,7 @@ class Connection:
             else:
                 self.close_connection()
                 return customer
-            
-
+        
     def get_branchname_by_branchid(self, branchid):
         if branchid == "":
             print("No branch id provided")

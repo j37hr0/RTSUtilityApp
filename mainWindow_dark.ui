@@ -970,7 +970,7 @@ QMessageBox{
 }</string>
                </property>
                <property name="currentIndex">
-                <number>3</number>
+                <number>5</number>
                </property>
                <widget class="QWidget" name="homePage">
                 <property name="styleSheet">
@@ -1675,7 +1675,7 @@ QMessageBox{
                      <rect>
                       <x>10</x>
                       <y>40</y>
-                      <width>171</width>
+                      <width>211</width>
                       <height>20</height>
                      </rect>
                     </property>

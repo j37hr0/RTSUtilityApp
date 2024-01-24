@@ -1,4 +1,4 @@
-import mainUI
+#import mainUI
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QInputDialog, QDialog
@@ -11,13 +11,23 @@ from Custom_Widgets.Widgets import *
 #import Custom_Widgets.Widgets as Widgets
 import os
 import datetime
+import time
 
+
+#TODO: might want refno field in Qsmacker Batch results
 #TODO: export to csv button for audit results
-#TODO: Disable buttons that are not needed until a DB query is done
 #TODO: look at concurrency issues with the DB, and how to handle them  https://realpython.com/python-pyqt-qthread/
 #TODO: testing qsmacker batch failing 
 #TODO: add admin alerting for qsmacker batch failing, default machine being add, qsmacker permissions being updated
 
+# class Worker(QtCore.Qobject):
+#     finished = QtCore.pyqtSignal()
+#     progress = QtCore.pyqtSignal(int)
+#     def run(self):
+#         for i in range(100):
+#             time.sleep(0.1)
+#             self.progress.emit(i)
+#         self.finished.emit()
 
 
 class MainWindow(QMainWindow):
@@ -28,19 +38,19 @@ class MainWindow(QMainWindow):
         loadJsonStyle(self, self.ui)
         self.show()
         self.ui.mainPages.setCurrentIndex(0)
+        
         #Connect buttons to functions
         self.ui.settingsBtn.clicked.connect(lambda: self.ui.centerMenuContainer.slideMenu())
         self.ui.helpBtn.clicked.connect(lambda: self.ui.centerMenuContainer.slideMenu())
         self.ui.loginBtn.clicked.connect(lambda: self.ui.centerMenuContainer.slideMenu())
         self.ui.closeBtnCenter.clicked.connect(lambda: self.ui.centerMenuContainer.collapseMenu())
         self.ui.elipsesBtn.clicked.connect(lambda: self.ui.rightMenuContainer.slideMenu())
-        #self.ui.profileBtn.clicked.connect(lambda: self.refresh())
         self.ui.profileBtn.clicked.connect(lambda: self.ui.rightMenuContainer.slideMenu())
         self.ui.closeRightBtn.clicked.connect(lambda: self.ui.rightMenuContainer.collapseMenu())
         self.ui.closeNotificationBtn.clicked.connect(lambda: self.ui.popupNotificationContainer.collapseMenu())
         self.ui.userSearchBtn.clicked.connect(lambda: self.get_user_compatibility(self.ui.qsmacker_email.text()))
         self.ui.findJobBtn.clicked.connect(lambda: self.get_qsmacker_job(self.ui.qsmacker_jobname.text()))
-        self.ui.killJobBtn.clicked.connect(lambda: self.kill_qsmacker_job(self.ui.jobIDLabel.text()))
+        self.ui.killJobBtn.clicked.connect(lambda: self.fail_qsmacker_job(self.ui.jobIDLabel.text()))
         self.ui.setPermBtn.clicked.connect(lambda: self.update_user_permissions())
         self.ui.branchSearchBtn.clicked.connect(lambda: self.get_default_branch(self.ui.branchSearch.text()))
         self.ui.auditSearchBtn.clicked.connect(lambda: self.select_audit())
@@ -66,7 +76,7 @@ class MainWindow(QMainWindow):
         self.rts_users = sql.Connection().get_rts_users()
 
     def refresh(self):
-        self.ui.mainPages.setCurrentIndex(0)
+        #self.ui.mainPages.setCurrentIndex(0)
         self.rts_users = sql.Connection().get_rts_users()
         self.ui.centerMenuContainer.collapseMenu()
         self.ui.rightMenuContainer.collapseMenu()
@@ -109,6 +119,7 @@ class MainWindow(QMainWindow):
         self.popup.setText(text)
         self.popup.setIcon(icon)
         self.popup.setStandardButtons(buttons)
+        self.popup.setStyleSheet("background-color: #343b47;" "color: rgb(255, 255, 255);")    
         self.x = self.popup.exec_()
 
     def select_audit(self):
@@ -171,28 +182,35 @@ class MainWindow(QMainWindow):
                                 row_number = self.ui.auditResultsTable.rowCount()
                                 self.ui.auditResultsTable.insertRow(row_number) 
                                 d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
-                                self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)])
+                                self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)], "auditResultsTable")
+                                self.ui.auditSearchBtn.show()
                             else:
                                 row_number = self.ui.auditResultsTable.rowCount()
                                 self.ui.auditResultsTable.insertRow(row_number) 
                                 d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
-                                self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)])
-    
-    def setup_columns(self, columnWidths, columnCount, columnHeaders):
-        for column in range(columnCount):
-            self.ui.auditResultsTable.setRowCount(0)
-            self.ui.auditResultsTable.setColumnCount(columnCount)
-            self.ui.auditResultsTable.setColumnWidth(column, columnWidths[column])
-        self.ui.auditResultsTable.setHorizontalHeaderLabels(columnHeaders)
+                                self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)], "auditResultsTable")
+                                self.ui.auditSearchBtn.show()
 
-    def populate_audit_table(self, rowNumber, result):
+    def setup_columns(self, columnWidths, columnCount, columnHeaders, widgetName):
+        widget = getattr(self.ui, widgetName)
+        for column in range(columnCount):
+            widget.setRowCount(0)
+            widget.setColumnCount(columnCount)
+            widget.setColumnWidth(column, columnWidths[column])
+        widget.setHorizontalHeaderLabels(columnHeaders)
+
+    def populate_audit_table(self, rowNumber, result, widgetName):
+        widget = getattr(self.ui, widgetName)
         for column in range(len(result)):
-            self.ui.auditResultsTable.setItem(rowNumber, column, QtWidgets.QTableWidgetItem(str(result[column])))
-        self.ui.auditResultsTable.show()
+            widget.setItem(rowNumber, column, QtWidgets.QTableWidgetItem(str(result[column])))
+        widget.show()
 
     def run_audit_dual(self):
+        self.ui.auditSearchBtn.hide()
+        app.processEvents()
         if self.ui.auditSearchBox.text() == "":
             self.create_popup("No input", "Please enter a value to search for", QMessageBox.Warning, QMessageBox.Ok)
+            self.ui.auditSearchBtn.show()
             return
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
@@ -202,14 +220,18 @@ class MainWindow(QMainWindow):
         result = sql_connection.audit_rtu(identifier=self.ui.auditSearchBox.text(), type=type)
         if result == "no refno":
             self.create_popup(f"No results found", f"No results found for that {type}, please check the {type} and try again", QMessageBox.Warning, QMessageBox.Ok)
+            self.ui.auditSearchBtn.show()
         else:
             keys_to_exclude = ["DateAction", "UserID", "SocketID", "DateAndTimeServiced", "ID", "IpPublic", "ColumnsUpdated"]
             # print(result)
-            self.setup_columns([120, 150, 120, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
+            self.setup_columns([120, 150, 120, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"], "auditResultsTable")
             self.ui.auditResultsFrame.show()
             self.handle_result(result, keys_to_exclude, audit_type="RTU")
+            self.ui.auditSearchBtn.show()
 
     def run_audit_branch(self):
+        self.ui.auditSearchBtn.hide()
+        app.processEvents()
         if self.ui.auditSearchBox.text() == "":
             self.create_popup("No input", "Please enter a value to search for", QMessageBox.Warning, QMessageBox.Ok)
             return
@@ -236,19 +258,25 @@ class MainWindow(QMainWindow):
                         else:
                             row_number = self.ui.auditResultsTable.rowCount() 
                             d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
-                            self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)])
+                            self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)], "auditResultsTable")
+                            self.ui.auditSearchBtn.show()
             if result == "no branch":
                 self.create_popup("No results found", "No results found for that Branch, please check the Branch and try again", QMessageBox.Warning, QMessageBox.Ok)
+                self.ui.auditSearchBtn.show()
             else:
                 keys_to_exclude = ["DateAction", "ID", "ColumnsUpdated", "UserID"]
                 self.ui.auditResultsFrame.show()
                 self.handle_result(result, keys_to_exclude, audit_type="Branch")
+                self.ui.auditSearchBtn.show()
 
     def run_audit_customer(self):
+        self.ui.auditSearchBtn.hide()
+        app.processEvents()
         if self.ui.auditSearchBox.text() == "":
             self.create_popup("No input", "Please enter a value to search for", QMessageBox.Warning, QMessageBox.Ok)
+            self.ui.auditSearchBtn.show()
             return
-        self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
+        self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"], "auditResultsTable")
         keys_to_exclude = ["DateAction", "ID", "ColumnsUpdated", "UserID"]
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "Customer":
@@ -274,13 +302,18 @@ class MainWindow(QMainWindow):
                                 self.ui.auditResultsTable.insertRow(row_number)
                                 d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
                                 self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)])
+                                self.ui.auditSearchBtn.show()
             if result == "no customer":
                 self.create_popup("No results found", "No results found for that Customer, please check the Customer and try again", QMessageBox.Warning, QMessageBox.Ok)
+                self.ui.auditSearchBtn.show()
             else:
                 self.ui.auditResultsFrame.show()
                 self.handle_result(result, keys_to_exclude, audit_type="Customer")
+                self.ui.auditSearchBtn.show()
 
     def run_audit_user(self):
+        self.ui.auditSearchBtn.hide()
+        app.processEvents()
         if self.ui.auditSearchBox.text() == "":
             self.create_popup("No input", "Please enter a value to search for", QMessageBox.Warning, QMessageBox.Ok)
             return
@@ -289,11 +322,13 @@ class MainWindow(QMainWindow):
             result = sql_connection.audit_user(self.ui.auditSearchBox.text())
             if result == "no user":
                 self.create_popup("No results found", "No results found for that User, please check the User and try again", QMessageBox.Warning, QMessageBox.Ok)
+                self.ui.auditSearchBtn.show()
             else:
                 keys_to_exclude = ["DateAction", "ID", "ColumnsUpdated", "UserID"]
-                self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
+                self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"], "auditResultsTable")
                 self.ui.auditResultsFrame.show()
                 self.handle_result(result, keys_to_exclude, audit_type="User")
+                self.ui.auditSearchBtn.show()
 
     def set_audit_menu(self):
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
@@ -319,6 +354,8 @@ class MainWindow(QMainWindow):
             self.ui.auditSearchBox.setValidator(None)
 
     def insert_default_machine(self):
+        self.ui.addDefaultMachineBtn.hide()
+        app.processEvents()
         self.create_popup("Are you sure?", "Are you sure you want to insert a default machine for this branch?", QMessageBox.Question, QMessageBox.Ok | QMessageBox.Cancel)
         if self.x == QMessageBox.Ok:
             sql_connection = sql.Connection()
@@ -329,13 +366,17 @@ class MainWindow(QMainWindow):
             self.create_popup("Default Machine Added", "Default machine added successfully", QMessageBox.Information, QMessageBox.Ok)
             self.get_default_branch(branch_name)
             self.refresh()
+            self.ui.auditPageBtn.show()
             return True
     
     def get_default_branch(self, branch_name):
+        self.ui.branchSearchBtn.hide()
+        app.processEvents()
         sql_connection = sql.Connection()
         branch = sql_connection.find_branch_default_machine_status(branch_name)
         if branch == "no branch":
             self.create_popup("No branch found", "No branch found with that name, please check the name and try again", QMessageBox.Warning, QMessageBox.Ok)
+            self.ui.branchSearchBtn.show()
             del branch
         elif branch[1]['HasDefaultMachine'] == 1:
             self.ui.defaultBranchFrame.show()
@@ -344,19 +385,23 @@ class MainWindow(QMainWindow):
             self.ui.branchIDLabel.setText(str(branch[0]['BranchID']))
             self.ui.branchNameLabel.setText(str(branch[0]['BranchName']))
             self.ui.customerNameLabel.setText(str(branch[0]['CustomerName']))
+            self.ui.branchSearchBtn.show()
             del branch
         elif branch[1]['HasDefaultMachine'] == 0:
             ##There is some bug here where if you have searched for a previous branch that has a default machine, 
             ##and then one that DOESN'T have a default machine, the add default machine button will not appear
-            self.ui.addDefaultMachineBtn.setEnabled(True)
+            self.ui.addDefaultMachineBtn.show()
             self.ui.defaultBranchFrame.show()
             self.ui.hasDefaultMachineLabel.setText("False")
             self.ui.branchIDLabel.setText(str(branch[0]['BranchID']))
             self.ui.branchNameLabel.setText(str(branch[0]['BranchName']))
             self.ui.customerNameLabel.setText(str(branch[0]['CustomerName']))
+            self.ui.branchSearchBtn.show()
             del branch
 
     def update_user_permissions(self):
+        self.ui.setPermBtn.hide()
+        app.processEvents()
         user_id = self.ui.userIDLabel.text()
         user_email = self.ui.qsmacker_email.text()
         self.create_popup("Are you sure?", "Are you sure you want to update the permissions for this user?", QMessageBox.Question, QMessageBox.Yes | QMessageBox.Cancel)
@@ -365,7 +410,7 @@ class MainWindow(QMainWindow):
             result = sql_connection.update_permissions(user_id)
             if result:
                 self.ui.permissionsLabel.setText("True")
-                self.ui.setPermBtn.setEnabled(False)
+                self.ui.setPermBtn.hide()
                 self.create_popup("Permissions Updated", "Permissions updated successfully", QMessageBox.Information, QMessageBox.Ok)
                 email = alerting.EmailAlerts()
                 email.recieverEmail.append(user_email)
@@ -386,6 +431,8 @@ class MainWindow(QMainWindow):
         self.ui.notificationBtn.click()
 
     def get_user_compatibility(self, user_id):
+        self.ui.userSearchBtn.hide()
+        app.processEvents()
         isValid = True
         sql_connection = sql.Connection()
         use_email = sql_connection.find_user(self.ui.qsmacker_email.text())
@@ -407,13 +454,18 @@ class MainWindow(QMainWindow):
             if not permissions:
                 self.ui.qsmackerUserFrame.show()
                 self.ui.permissionsLabel.setText("False")
-                self.ui.setPermBtn.setEnabled(True)
+                self.ui.setPermBtn.show()
             else:
-                self.ui.setPermBtn.setEnabled(False)
+                self.ui.setPermBtn.show()
                 self.ui.permissionsLabel.setText("True")
                 self.create_popup("User has permissions already", "User has permissions already, please contact the IT department to update permissions", QMessageBox.Critical, QMessageBox.Ok)
+                self.refresh()
+        self.ui.userSearchBtn.show()
 
     def get_qsmacker_job(self, job_name):
+        ##TODO: remove the trailing spaces from job names, this looks like a fuzzy lookup
+        self.ui.findJobBtn.hide()
+        app.processEvents()
         sql_connection = sql.Connection()
         jobName = self.ui.qsmacker_jobname.text()
         job = sql_connection.find_job(jobName)
@@ -421,6 +473,7 @@ class MainWindow(QMainWindow):
         print(job)
         if job == "no job":
             self.create_popup("No job found", "No job found with that name, please check the name and try again", QMessageBox.Warning, QMessageBox.Ok)
+            self.ui.findJobBtn.show()
         elif job != "no job":
             self.ui.batchStatusFrame.show()
             counts = sql_connection.get_totals(job[0])
@@ -437,10 +490,11 @@ class MainWindow(QMainWindow):
             self.ui.batch_list.clear()
             self.ui.batch_list.show()
             self.ui.batch_list.setRowCount(0)
-            self.ui.batch_list.setColumnCount(5)
-            self.ui.batch_list.setColumnWidth(2, 150)
-            self.ui.batch_list.setColumnWidth(3, 120)
-            self.ui.batch_list.setHorizontalHeaderLabels(["JobID", "SerialNo", "Description", "InsertDate", "BatchStatusId"])
+            # self.ui.batch_list.setColumnCount(5)
+            # self.ui.batch_list.setColumnWidth(2, 150)
+            # self.ui.batch_list.setColumnWidth(3, 120)
+            # self.ui.batch_list.setHorizontalHeaderLabels(["JobID", "SerialNo", "Description", "InsertDate", "BatchStatusId"])
+            self.setup_columns([50, 150, 150, 120, 120], 5, ["JobID", "SerialNo", "Description", "InsertDate", "BatchStatusId"], "batch_list")
             status_mapping = {
                 1: "Added",
                 2: "Loaded",
@@ -453,18 +507,44 @@ class MainWindow(QMainWindow):
             for number in range(len(job[4])):
                 batch_status_id = job[4][number]['BatchStatusId']
                 jobStatusTranslated = status_mapping.get(batch_status_id, "Unknown")
-                if jobStatusTranslated == "Added" or jobStatusTranslated == "Loaded":
-                    self.ui.killJobBtn.setEnabled(True)
-                    self.ui.killJobBtn.show()
+                self.ui.killJobBtn.setEnabled(True)
+                self.ui.killJobBtn.show()
+                # if jobStatusTranslated == "Added" or jobStatusTranslated == "Loaded":
+                #     self.ui.killJobBtn.setEnabled(True)
+                #     self.ui.killJobBtn.show()
                 row_number = self.ui.batch_list.rowCount()
+                ##Use the class method to produce the audit results here
                 self.ui.batch_list.insertRow(row_number)
                 d = datetime.datetime.strptime(str(job[4][number]['insertDate']), '%Y-%m-%d %H:%M:%S.%f')
-                self.ui.batch_list.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(job[4][number]['JobId'])))
-                self.ui.batch_list.setItem(row_number, 1, QtWidgets.QTableWidgetItem(str(job[4][number]['serialNumber'])))
-                self.ui.batch_list.setItem(row_number, 2, QtWidgets.QTableWidgetItem(str(job[4][number]['Description'])))
-                self.ui.batch_list.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
-                self.ui.batch_list.setItem(row_number, 4, QtWidgets.QTableWidgetItem(jobStatusTranslated))
+                self.populate_audit_table(row_number, [str(job[4][number]['JobId']), str(job[4][number]['serialNumber']), str(job[4][number]['Description']), str(d.strftime('%Y-%m-%d %H:%M:%S')), jobStatusTranslated], "batch_list")
+                # self.ui.batch_list.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(job[4][number]['JobId'])))
+                # self.ui.batch_list.setItem(row_number, 1, QtWidgets.QTableWidgetItem(str(job[4][number]['serialNumber'])))
+                # self.ui.batch_list.setItem(row_number, 2, QtWidgets.QTableWidgetItem(str(job[4][number]['Description'])))
+                # self.ui.batch_list.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
+                # self.ui.batch_list.setItem(row_number, 4, QtWidgets.QTableWidgetItem(jobStatusTranslated))
+                self.ui.findJobBtn.show()
 
+    def fail_qsmacker_job(self, job_id):
+        self.ui.killJobBtn.hide()
+        app.processEvents()
+        self.create_popup("Are you sure?", "Are you sure you want to kill this job?", QMessageBox.Question, QMessageBox.Yes | QMessageBox.Cancel)
+        if self.x == QMessageBox.Yes:
+            sql_connection = sql.Connection()
+            job_name = self.ui.qsmacker_jobname.text()
+            #RESTORE THE JOB HERE VVV
+            #sql_connection.fail_qsmacker_job_sql(job_id, CommandFail=3, BatchFail=3, JobFail=2)
+            #FAIL THE JOB HERE VVV
+            #sql_connection.fail_qsmacker_job_sql(job_id)
+            self.create_popup("Job Failed", "Job failed successfully", QMessageBox.Information, QMessageBox.Ok)
+            self.refresh()
+            self.ui.mainPages.setCurrentIndex(5)
+            self.ui.qsmacker_jobname.setText(job_name)
+            self.ui.auditPageBtn.click()
+            self.ui.auditPageBtn.show()
+            #app.processEvents()
+            return True
+        elif self.x == QMessageBox.Cancel:
+            self.ui.killJobBtn.show()
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
