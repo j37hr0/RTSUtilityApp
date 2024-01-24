@@ -642,6 +642,9 @@ class Ui_MainWindow(object):
         self.auditSearchBox = QtWidgets.QLineEdit(self.frame_17)
         self.auditSearchBox.setGeometry(QtCore.QRect(20, 100, 191, 20))
         self.auditSearchBox.setObjectName("auditSearchBox")
+        self.downloadAuditBtn = QtWidgets.QPushButton(self.frame_17)
+        self.downloadAuditBtn.setGeometry(QtCore.QRect(200, 30, 101, 23))
+        self.downloadAuditBtn.setObjectName("downloadAuditBtn")
         self.auditResultsFrame = QtWidgets.QFrame(self.auditPage)
         self.auditResultsFrame.setGeometry(QtCore.QRect(315, 9, 745, 182))
         self.auditResultsFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -927,7 +930,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.helpMenuPages.setCurrentIndex(0)
-        self.mainPages.setCurrentIndex(5)
+        self.mainPages.setCurrentIndex(3)
         self.profileMenuPages.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -976,6 +979,7 @@ class Ui_MainWindow(object):
         self.auditTypeLabel.setText(_translate("MainWindow", "Enter Refno: "))
         self.auditSearchBtn.setText(_translate("MainWindow", "Search"))
         self.auditSearchBox.setPlaceholderText(_translate("MainWindow", "RefNo..."))
+        self.downloadAuditBtn.setText(_translate("MainWindow", "Download Results"))
         self.qsmackerPermPageBtn.setText(_translate("MainWindow", "Qsmacker Permissions Update"))
         self.qsmackerBatchPageBtn.setText(_translate("MainWindow", "Check Qsmacker Batch Status"))
         self.label_13.setText(_translate("MainWindow", "Job Name (exact):"))

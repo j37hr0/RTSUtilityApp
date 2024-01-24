@@ -970,7 +970,7 @@ QMessageBox{
 }</string>
                </property>
                <property name="currentIndex">
-                <number>5</number>
+                <number>3</number>
                </property>
                <widget class="QWidget" name="homePage">
                 <property name="styleSheet">
@@ -1383,6 +1383,19 @@ QMessageBox{
                   </property>
                   <property name="placeholderText">
                    <string>RefNo...</string>
+                  </property>
+                 </widget>
+                 <widget class="QPushButton" name="downloadAuditBtn">
+                  <property name="geometry">
+                   <rect>
+                    <x>200</x>
+                    <y>30</y>
+                    <width>101</width>
+                    <height>23</height>
+                   </rect>
+                  </property>
+                  <property name="text">
+                   <string>Download Results</string>
                   </property>
                  </widget>
                 </widget>

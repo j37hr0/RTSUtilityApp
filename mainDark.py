@@ -12,9 +12,11 @@ from Custom_Widgets.Widgets import *
 import os
 import datetime
 import time
+import csv
 
 
 #TODO: export to csv button for audit results
+#^^^ The above is done, but needs more testing and optmisiation. The button needs to be hidden again after switching tabs
 #TODO: look at concurrency issues with the DB, and how to handle them  https://realpython.com/python-pyqt-qthread/
 
 
@@ -53,7 +55,9 @@ class MainWindow(QMainWindow):
         self.ui.branchSearchBtn.clicked.connect(lambda: self.get_default_branch(self.ui.branchSearch.text()))
         self.ui.auditSearchBtn.clicked.connect(lambda: self.select_audit())
         self.ui.addDefaultMachineBtn.clicked.connect(lambda: self.insert_default_machine())
-        
+        self.ui.downloadAuditBtn.clicked.connect(lambda: self.handle_save_audit("auditResultsTable"))
+
+
         #Connect enter keypresses to lineedits
         self.ui.qsmacker_jobname.returnPressed.connect(lambda: self.get_qsmacker_job(self.ui.qsmacker_jobname.text()))
         self.ui.branchSearch.returnPressed.connect(lambda: self.get_default_branch(self.ui.branchSearch.text()))
@@ -69,9 +73,23 @@ class MainWindow(QMainWindow):
         self.ui.defaultBranchFrame.hide()
         self.ui.auditResultsFrame.hide()
         self.ui.killJobBtn.hide()
-        
+        self.ui.downloadAuditBtn.hide()
+
+
         #populate rts_users to compare audits against
         self.rts_users = sql.Connection().get_rts_users()
+
+    def handle_save_audit(self, widgetName):
+        widget = getattr(self.ui, widgetName)
+        path, ok = QFileDialog.getSaveFileName(self, "Save File", os.getenv("HOME"), "CSV (*.csv)")
+        if ok:
+            columns = range(widget.columnCount())
+            header = [widget.horizontalHeaderItem(column).text() for column in columns]
+            with open(path, 'w') as csvfile:
+                writer = csv.writer(csvfile,dialect='excel', delimiter=',')
+                writer.writerow(header)
+                for row in range(widget.rowCount()):
+                    writer.writerow([widget.item(row, column).text() for column in columns])
 
     def refresh(self):
         self.ui.mainPages.setCurrentIndex(0)
@@ -226,6 +244,7 @@ class MainWindow(QMainWindow):
             self.ui.auditResultsFrame.show()
             self.handle_result(result, keys_to_exclude, audit_type="RTU")
             self.ui.auditSearchBtn.show()
+            self.ui.downloadAuditBtn.show()
 
     def run_audit_branch(self):
         self.ui.auditSearchBtn.hide()
@@ -266,6 +285,7 @@ class MainWindow(QMainWindow):
                 self.ui.auditResultsFrame.show()
                 self.handle_result(result, keys_to_exclude, audit_type="Branch")
                 self.ui.auditSearchBtn.show()
+                self.ui.downloadAuditBtn.show()
 
     def run_audit_customer(self):
         self.ui.auditSearchBtn.hide()
@@ -308,6 +328,7 @@ class MainWindow(QMainWindow):
                 self.ui.auditResultsFrame.show()
                 self.handle_result(result, keys_to_exclude, audit_type="Customer")
                 self.ui.auditSearchBtn.show()
+                self.ui.downloadAuditBtn.show()
 
     def run_audit_user(self):
         self.ui.auditSearchBtn.hide()
@@ -327,6 +348,7 @@ class MainWindow(QMainWindow):
                 self.ui.auditResultsFrame.show()
                 self.handle_result(result, keys_to_exclude, audit_type="User")
                 self.ui.auditSearchBtn.show()
+                self.ui.downloadAuditBtn.show()
 
     def set_audit_menu(self):
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
