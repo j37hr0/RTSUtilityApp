@@ -16,7 +16,6 @@ import time
 
 #TODO: export to csv button for audit results
 #TODO: look at concurrency issues with the DB, and how to handle them  https://realpython.com/python-pyqt-qthread/
-#TODO: add admin alerting for qsmacker batch failing, default machine being add, qsmacker permissions being updated
 
 
 # class Worker(QtCore.Qobject):
@@ -366,6 +365,8 @@ class MainWindow(QMainWindow):
             self.get_default_branch(branch_name)
             self.refresh()
             self.ui.auditPageBtn.show()
+            alerting = alerting.EmailAlerts()
+            alerting.send_email("Default Machine Added", f"Default machine added for branch {branch_name}")
             return True
     
     def get_default_branch(self, branch_name):
@@ -480,6 +481,7 @@ class MainWindow(QMainWindow):
             self.ui.qsmacker_jobname.setText(str(job[1]))
             self.ui.totalMachinesLabel.setText(str(counts[0]['Machines']))
             self.ui.totalCommandsLabel.setText(str(counts[1]['Commands']))
+            self.ui.userLabelQsmackerJob.setText(str(job[2]))
             if job[3] == 1:
                 self.ui.jobStatusLabel.setText("Added")
             elif job[3] == 2:
@@ -503,20 +505,21 @@ class MainWindow(QMainWindow):
                 batch_status_id = job[4][number]['BatchStatusId']
                 jobStatusTranslated = status_mapping.get(batch_status_id, "Unknown")
                 #THE BELOW IS FOR DEVING PURPOSES ONLY
-                # self.ui.killJobBtn.setEnabled(True)
-                # self.ui.killJobBtn.show()
-                if jobStatusTranslated == "Added" or jobStatusTranslated == "Loaded":
-                    self.ui.killJobBtn.setEnabled(True)
-                    self.ui.killJobBtn.show()
+                self.ui.killJobBtn.setEnabled(True)
+                self.ui.killJobBtn.show()
+                # if jobStatusTranslated == "Added" or jobStatusTranslated == "Loaded":
+                #     self.ui.killJobBtn.setEnabled(True)
+                #     self.ui.killJobBtn.show()
                 row_number = self.ui.batch_list.rowCount()
                 self.ui.batch_list.insertRow(row_number)
                 d = datetime.datetime.strptime(str(job[4][number]['insertDate']), '%Y-%m-%d %H:%M:%S.%f')
                 self.populate_audit_table(row_number, [str(job[4][number]['JobId']), str(job[4][number]['serialNumber']), str(job[4][number]['refNo']), str(job[4][number]['Description']), str(d.strftime('%Y-%m-%d %H:%M:%S')), jobStatusTranslated], "batch_list")
                 self.ui.findJobBtn.show()
 
-    def fail_qsmacker_job(self, job_id, userEmail):
+    def fail_qsmacker_job(self, job_id):
         self.ui.killJobBtn.hide()
         app.processEvents()
+        user_email = self.ui.userLabelQsmackerJob.text()
         self.create_popup("Are you sure?", "Are you sure you want to kill this job?", QMessageBox.Question, QMessageBox.Yes | QMessageBox.Cancel)
         if self.x == QMessageBox.Yes:
             sql_connection = sql.Connection()
@@ -532,8 +535,8 @@ class MainWindow(QMainWindow):
             self.ui.auditPageBtn.click()
             self.ui.auditPageBtn.show()
             alert = alerting.EmailAlerts()
-            alert.recieverEmail.append("jethro.cotton3@gmail.com")
-            alert.send_email("Qsmacker Job Manually Failed", f"Qsmacker job failed with job id {job_id} and job name {job_name}")
+            alert.recieverEmail.append(user_email)
+            alert.send_email("Qsmacker Job Manually Failed", f"Qsmacker job from {user_email} with job name {job_name} has been manually failed.")
             return True
         elif self.x == QMessageBox.Cancel:
             self.ui.killJobBtn.show()

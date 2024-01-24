@@ -1669,6 +1669,32 @@ QMessageBox{
                       <string/>
                      </property>
                     </widget>
+                    <widget class="QLabel" name="label_24">
+                     <property name="geometry">
+                      <rect>
+                       <x>10</x>
+                       <y>130</y>
+                       <width>31</width>
+                       <height>16</height>
+                      </rect>
+                     </property>
+                     <property name="text">
+                      <string>User:</string>
+                     </property>
+                    </widget>
+                    <widget class="QLabel" name="userLabelQsmackerJob">
+                     <property name="geometry">
+                      <rect>
+                       <x>40</x>
+                       <y>130</y>
+                       <width>101</width>
+                       <height>16</height>
+                      </rect>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
                    </widget>
                    <widget class="QLineEdit" name="qsmacker_jobname">
                     <property name="geometry">
