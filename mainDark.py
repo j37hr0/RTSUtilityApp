@@ -14,11 +14,10 @@ import datetime
 import time
 
 
-#TODO: might want refno field in Qsmacker Batch results
 #TODO: export to csv button for audit results
 #TODO: look at concurrency issues with the DB, and how to handle them  https://realpython.com/python-pyqt-qthread/
-#TODO: testing qsmacker batch failing 
 #TODO: add admin alerting for qsmacker batch failing, default machine being add, qsmacker permissions being updated
+
 
 # class Worker(QtCore.Qobject):
 #     finished = QtCore.pyqtSignal()
@@ -76,7 +75,7 @@ class MainWindow(QMainWindow):
         self.rts_users = sql.Connection().get_rts_users()
 
     def refresh(self):
-        #self.ui.mainPages.setCurrentIndex(0)
+        self.ui.mainPages.setCurrentIndex(0)
         self.rts_users = sql.Connection().get_rts_users()
         self.ui.centerMenuContainer.collapseMenu()
         self.ui.rightMenuContainer.collapseMenu()
@@ -490,11 +489,7 @@ class MainWindow(QMainWindow):
             self.ui.batch_list.clear()
             self.ui.batch_list.show()
             self.ui.batch_list.setRowCount(0)
-            # self.ui.batch_list.setColumnCount(5)
-            # self.ui.batch_list.setColumnWidth(2, 150)
-            # self.ui.batch_list.setColumnWidth(3, 120)
-            # self.ui.batch_list.setHorizontalHeaderLabels(["JobID", "SerialNo", "Description", "InsertDate", "BatchStatusId"])
-            self.setup_columns([50, 150, 150, 120, 120], 5, ["JobID", "SerialNo", "Description", "InsertDate", "BatchStatusId"], "batch_list")
+            self.setup_columns([50, 60, 100, 180, 120, 80], 6, ["JobID", "SerialNo", "RefNo", "Description", "InsertDate", "BatchStatusId"], "batch_list")
             status_mapping = {
                 1: "Added",
                 2: "Loaded",
@@ -507,24 +502,19 @@ class MainWindow(QMainWindow):
             for number in range(len(job[4])):
                 batch_status_id = job[4][number]['BatchStatusId']
                 jobStatusTranslated = status_mapping.get(batch_status_id, "Unknown")
-                self.ui.killJobBtn.setEnabled(True)
-                self.ui.killJobBtn.show()
-                # if jobStatusTranslated == "Added" or jobStatusTranslated == "Loaded":
-                #     self.ui.killJobBtn.setEnabled(True)
-                #     self.ui.killJobBtn.show()
+                #THE BELOW IS FOR DEVING PURPOSES ONLY
+                # self.ui.killJobBtn.setEnabled(True)
+                # self.ui.killJobBtn.show()
+                if jobStatusTranslated == "Added" or jobStatusTranslated == "Loaded":
+                    self.ui.killJobBtn.setEnabled(True)
+                    self.ui.killJobBtn.show()
                 row_number = self.ui.batch_list.rowCount()
-                ##Use the class method to produce the audit results here
                 self.ui.batch_list.insertRow(row_number)
                 d = datetime.datetime.strptime(str(job[4][number]['insertDate']), '%Y-%m-%d %H:%M:%S.%f')
-                self.populate_audit_table(row_number, [str(job[4][number]['JobId']), str(job[4][number]['serialNumber']), str(job[4][number]['Description']), str(d.strftime('%Y-%m-%d %H:%M:%S')), jobStatusTranslated], "batch_list")
-                # self.ui.batch_list.setItem(row_number, 0, QtWidgets.QTableWidgetItem(str(job[4][number]['JobId'])))
-                # self.ui.batch_list.setItem(row_number, 1, QtWidgets.QTableWidgetItem(str(job[4][number]['serialNumber'])))
-                # self.ui.batch_list.setItem(row_number, 2, QtWidgets.QTableWidgetItem(str(job[4][number]['Description'])))
-                # self.ui.batch_list.setItem(row_number, 3, QtWidgets.QTableWidgetItem(str(d.strftime('%Y-%m-%d %H:%M:%S'))))
-                # self.ui.batch_list.setItem(row_number, 4, QtWidgets.QTableWidgetItem(jobStatusTranslated))
+                self.populate_audit_table(row_number, [str(job[4][number]['JobId']), str(job[4][number]['serialNumber']), str(job[4][number]['refNo']), str(job[4][number]['Description']), str(d.strftime('%Y-%m-%d %H:%M:%S')), jobStatusTranslated], "batch_list")
                 self.ui.findJobBtn.show()
 
-    def fail_qsmacker_job(self, job_id):
+    def fail_qsmacker_job(self, job_id, userEmail):
         self.ui.killJobBtn.hide()
         app.processEvents()
         self.create_popup("Are you sure?", "Are you sure you want to kill this job?", QMessageBox.Question, QMessageBox.Yes | QMessageBox.Cancel)
@@ -541,7 +531,9 @@ class MainWindow(QMainWindow):
             self.ui.qsmacker_jobname.setText(job_name)
             self.ui.auditPageBtn.click()
             self.ui.auditPageBtn.show()
-            #app.processEvents()
+            alert = alerting.EmailAlerts()
+            alert.recieverEmail.append("jethro.cotton3@gmail.com")
+            alert.send_email("Qsmacker Job Manually Failed", f"Qsmacker job failed with job id {job_id} and job name {job_name}")
             return True
         elif self.x == QMessageBox.Cancel:
             self.ui.killJobBtn.show()

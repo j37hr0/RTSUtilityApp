@@ -124,6 +124,7 @@ class Connection:
             else:
                 job = [job['id'], job['Description'], job['Email'], job['JobStatusId']]
                 batches = self.get_batches(job[0])
+                print(batches)
                 removeKeys = ['id', 'jobid', 'BatchTypeId', 'currentBatch', 'removedFromQueue','userId', 'hasChildBatch','parentBatchId'] 
                 for key in removeKeys:
                     for batch in batches:
@@ -133,6 +134,7 @@ class Connection:
                     return None
                 else:
                     job.append(batches)
+                print(job)
                 self.close_connection()
                 return job
             
