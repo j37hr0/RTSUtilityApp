@@ -1,6 +1,8 @@
 from decouple import config
 import pymssql
 import sys
+import datetime
+
 
 #TODO: refactor connection class methods into inherited classes for each app function
 
@@ -18,9 +20,9 @@ class Connection:
         self.connection = None
         self.cursor = None
 
-    def make_connection(self, database=db):
-        self.connection = pymssql.connect(server, user, passwd, database)
-        self.cursor = self.connection.cursor(as_dict=True)
+    def make_connection(self, database=db, asDict=True):
+        self.connection = pymssql.connect(server, user, passwd, database, as_dict=asDict)
+        self.cursor = self.connection.cursor()
 
     def close_connection(self):
         self.connection.close()
@@ -378,3 +380,29 @@ class Connection:
             else:
                 self.close_connection()
                 return region
+            
+    def update_historical_by_refno(self, refno):
+        if refno == "":
+            print("No refno provided")
+            return "no refno"
+        else:
+            current_date = datetime.date.today()
+            self.make_connection(database="Realcontrol", asDict=False)
+            self.cursor.callproc('Admin_RenameHistoricalRefNoToNewRefNoBySerialNumber_Batched', (3023, refno, '2010-01-01', str(current_date), 1000, 0))
+            # result = self.cursor.execute(f"""
+            #                             exec Admin_RenameHistoricalRefNoToNewRefNoBySerialNumber_Batched 3023, '{refno}', '2010-01-01', '{current_date}', 1000, 0
+            #                             """)
+            # result = self.cursor.execute(f"""
+            #                             DROP TABLE IF EXISTS #TempTableHistoricalUpdate
+            #                             CREATE TABLE #TempTableHistoricalUpdate (result varchar(MAX))
+            #                             INSERT INTO #TempTableHistoricalUpdate (result)
+            #                             exec Admin_RenameHistoricalRefNoToNewRefNoBySerialNumber_Batched 3023, '{refno}', '2010-01-01', '{current_date}', 1000, 0
+            #                             SELECT result from #TempTableHistoricalUpdate
+            #                             DROP TABLE #TempTableHistoricalUpdate
+
+            #                             """)
+            result = self.cursor.fetchall()
+            print(result)
+            self.connection.commit()
+            self.close_connection()
+            return result

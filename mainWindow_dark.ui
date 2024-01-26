@@ -970,7 +970,7 @@ QMessageBox{
 }</string>
                </property>
                <property name="currentIndex">
-                <number>3</number>
+                <number>2</number>
                </property>
                <widget class="QWidget" name="homePage">
                 <property name="styleSheet">
@@ -1020,7 +1020,7 @@ QMessageBox{
                      </widget>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="pushButton_3">
+                     <widget class="QPushButton" name="updateHistMenuBtn">
                       <property name="minimumSize">
                        <size>
                         <width>250</width>
@@ -1028,7 +1028,7 @@ QMessageBox{
                        </size>
                       </property>
                       <property name="text">
-                       <string>Some Other Button Function</string>
+                       <string>Update Historical (by RefNo)</string>
                       </property>
                      </widget>
                     </item>
@@ -1058,6 +1058,92 @@ QMessageBox{
                      </widget>
                     </item>
                    </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="updateHistoricalPage">
+                <layout class="QHBoxLayout" name="horizontalLayout_18">
+                 <item>
+                  <widget class="QFrame" name="frame_18">
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <widget class="QLabel" name="label_25">
+                    <property name="geometry">
+                     <rect>
+                      <x>30</x>
+                      <y>30</y>
+                      <width>121</width>
+                      <height>16</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string>Machine Refno (new): </string>
+                    </property>
+                   </widget>
+                   <widget class="QLineEdit" name="updateHistoricalLine">
+                    <property name="geometry">
+                     <rect>
+                      <x>30</x>
+                      <y>50</y>
+                      <width>171</width>
+                      <height>20</height>
+                     </rect>
+                    </property>
+                   </widget>
+                   <widget class="QPushButton" name="updateHistoricalBtn">
+                    <property name="geometry">
+                     <rect>
+                      <x>130</x>
+                      <y>80</y>
+                      <width>75</width>
+                      <height>23</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string>Update</string>
+                    </property>
+                   </widget>
+                   <widget class="QLabel" name="label_26">
+                    <property name="geometry">
+                     <rect>
+                      <x>310</x>
+                      <y>30</y>
+                      <width>81</width>
+                      <height>16</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string>Updated Rows: </string>
+                    </property>
+                   </widget>
+                   <widget class="QLabel" name="rowsLabel">
+                    <property name="geometry">
+                     <rect>
+                      <x>400</x>
+                      <y>30</y>
+                      <width>71</width>
+                      <height>16</height>
+                     </rect>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QFrame" name="frame_19">
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
                   </widget>
                  </item>
                 </layout>

@@ -176,7 +176,8 @@
               "realcontrolBtn": "rcPage",
               "qsmackerPermPageBtn": "qsmackerPermissionsPage",
               "auditPageBtn": "auditPage",
-              "defaultMacBranchBtn": "defaultMacBranchPage"
+              "defaultMacBranchBtn": "defaultMacBranchPage",
+              "updateHistMenuBtn": "updateHistoricalPage"
             }
           ]
         }

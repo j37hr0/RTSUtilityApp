@@ -1,4 +1,4 @@
-#import mainUI
+import mainUI
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QInputDialog, QDialog
@@ -15,9 +15,13 @@ import time
 import csv
 
 
+#TODO: Create a section for updating historical 
+#The above is done, but needs to be tested, and buttons hidden and unhidden after refresh()
 #TODO: export to csv button for audit results
 #^^^ The above is done, but needs more testing and optmisiation. The button needs to be hidden again after switching tabs
 #TODO: look at concurrency issues with the DB, and how to handle them  https://realpython.com/python-pyqt-qthread/
+#TODO: refno audit exists, but no data
+#TODO: branch audit broken 
 
 
 # class Worker(QtCore.Qobject):
@@ -56,7 +60,7 @@ class MainWindow(QMainWindow):
         self.ui.auditSearchBtn.clicked.connect(lambda: self.select_audit())
         self.ui.addDefaultMachineBtn.clicked.connect(lambda: self.insert_default_machine())
         self.ui.downloadAuditBtn.clicked.connect(lambda: self.handle_save_audit("auditResultsTable"))
-
+        self.ui.updateHistoricalBtn.clicked.connect(lambda: self.update_historical())
 
         #Connect enter keypresses to lineedits
         self.ui.qsmacker_jobname.returnPressed.connect(lambda: self.get_qsmacker_job(self.ui.qsmacker_jobname.text()))
@@ -562,6 +566,25 @@ class MainWindow(QMainWindow):
             return True
         elif self.x == QMessageBox.Cancel:
             self.ui.killJobBtn.show()
+
+    def update_historical(self):
+        self.ui.updateHistoricalBtn.hide()
+        refno = self.ui.updateHistoricalLine.text()
+        app.processEvents()
+        self.create_popup("Are you sure?", "Are you sure you want to update the historical data?", QMessageBox.Question, QMessageBox.Yes | QMessageBox.Cancel)
+        if self.x == QMessageBox.Yes:
+            sql_connection = sql.Connection()
+            result = sql_connection.update_historical_by_refno(refno)
+            value = result[0][0]
+            print(value)
+            if value != "SerialNumber not Found":
+                self.create_popup(f"Historical Updated", f"Historical updated successfully, row count: {value}", QMessageBox.Information, QMessageBox.Ok)
+                self.refresh()
+                return True
+            if value == "SerialNumber not Found":
+                self.create_popup(f"Historical not updated", f"Historical not updated, error: {value}. If it persists, please contact IT", QMessageBox.Critical, QMessageBox.Ok)
+                self.refresh()
+                return False  
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
