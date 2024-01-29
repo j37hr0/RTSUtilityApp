@@ -15,13 +15,9 @@ import time
 import csv
 
 
-#TODO: Create a section for updating historical 
-#The above is done, but needs to be tested, and buttons hidden and unhidden after refresh()
-#TODO: export to csv button for audit results
-#^^^ The above is done, but needs more testing and optmisiation. The button needs to be hidden again after switching tabs
+
+
 #TODO: look at concurrency issues with the DB, and how to handle them  https://realpython.com/python-pyqt-qthread/
-#TODO: refno audit exists, but no data
-#TODO: branch audit broken 
 
 
 # class Worker(QtCore.Qobject):
@@ -96,6 +92,8 @@ class MainWindow(QMainWindow):
                     writer.writerow([widget.item(row, column).text() for column in columns])
 
     def refresh(self):
+        self.ui.updateHistoricalBtn.show()
+        self.ui.updateHistoricalLine.setText("")
         self.ui.mainPages.setCurrentIndex(0)
         self.rts_users = sql.Connection().get_rts_users()
         self.ui.centerMenuContainer.collapseMenu()
@@ -204,13 +202,21 @@ class MainWindow(QMainWindow):
                                 d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
                                 self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)], "auditResultsTable")
                                 self.ui.auditSearchBtn.show()
+                                self.ui.downloadAuditBtn.show()
                             else:
                                 row_number = self.ui.auditResultsTable.rowCount()
                                 self.ui.auditResultsTable.insertRow(row_number) 
                                 d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
                                 self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)], "auditResultsTable")
                                 self.ui.auditSearchBtn.show()
-
+                                self.ui.downloadAuditBtn.show()
+        if self.ui.auditResultsTable.item(0, 0) == None:
+            self.ui.auditResultsFrame.hide()
+            self.ui.downloadAuditBtn.hide()
+            self.ui.auditSearchBtn.show()
+            self.create_popup("No results found", f"{audit_type} was found, but no important changes exist in the DB.", QMessageBox.Warning, QMessageBox.Ok)
+            return
+                    
     def setup_columns(self, columnWidths, columnCount, columnHeaders, widgetName):
         widget = getattr(self.ui, widgetName)
         for column in range(columnCount):
@@ -248,7 +254,6 @@ class MainWindow(QMainWindow):
             self.ui.auditResultsFrame.show()
             self.handle_result(result, keys_to_exclude, audit_type="RTU")
             self.ui.auditSearchBtn.show()
-            self.ui.downloadAuditBtn.show()
 
     def run_audit_branch(self):
         self.ui.auditSearchBtn.hide()
@@ -256,7 +261,7 @@ class MainWindow(QMainWindow):
         if self.ui.auditSearchBox.text() == "":
             self.create_popup("No input", "Please enter a value to search for", QMessageBox.Warning, QMessageBox.Ok)
             return
-        self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"])
+        self.setup_columns([120, 160, 140, 140, 140], 5, ["DateAction", "User", "TextValue", "NewValue", "PreviousValue"], "auditResultsTable")
         sql_connection = sql.Connection()
         if self.ui.auditTypeCombo.currentText() == "Branch":
             result = sql_connection.audit_branch(self.ui.auditSearchBox.text())
@@ -289,7 +294,6 @@ class MainWindow(QMainWindow):
                 self.ui.auditResultsFrame.show()
                 self.handle_result(result, keys_to_exclude, audit_type="Branch")
                 self.ui.auditSearchBtn.show()
-                self.ui.downloadAuditBtn.show()
 
     def run_audit_customer(self):
         self.ui.auditSearchBtn.hide()
@@ -332,7 +336,6 @@ class MainWindow(QMainWindow):
                 self.ui.auditResultsFrame.show()
                 self.handle_result(result, keys_to_exclude, audit_type="Customer")
                 self.ui.auditSearchBtn.show()
-                self.ui.downloadAuditBtn.show()
 
     def run_audit_user(self):
         self.ui.auditSearchBtn.hide()
@@ -352,7 +355,6 @@ class MainWindow(QMainWindow):
                 self.ui.auditResultsFrame.show()
                 self.handle_result(result, keys_to_exclude, audit_type="User")
                 self.ui.auditSearchBtn.show()
-                self.ui.downloadAuditBtn.show()
 
     def set_audit_menu(self):
         if self.ui.auditTypeCombo.currentText() == "RTU (by RefNo)":
