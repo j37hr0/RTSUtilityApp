@@ -1,4 +1,3 @@
-import mainUI
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QInputDialog, QDialog
@@ -8,13 +7,9 @@ import alerting
 from qsmackerJobsearch import Ui_Dialog as Ui_Dialog2
 import mainWindow_dark
 from Custom_Widgets.Widgets import *
-#import Custom_Widgets.Widgets as Widgets
 import os
 import datetime
-import time
 import csv
-
-
 
 
 #TODO: look at concurrency issues with the DB, and how to handle them  https://realpython.com/python-pyqt-qthread/

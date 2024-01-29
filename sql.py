@@ -1,6 +1,5 @@
 from decouple import config
 import pymssql
-import sys
 import datetime
 
 
@@ -60,8 +59,6 @@ class Connection:
                 return None
             
 
-    #7639 for prod, 6380 for dev jethro
-    #1241 for prod, 2157 for dev user perms
     def update_permissions(self, id):
         self.make_connection()
         self.cursor.execute("Insert Into tblUserPermissions Select 6380, %s, AreaID, PermissionValue, [Description] From tblUserPermissions Where UserID = 2157", (id))
@@ -389,18 +386,6 @@ class Connection:
             current_date = datetime.date.today()
             self.make_connection(database="Realcontrol", asDict=False)
             self.cursor.callproc('Admin_RenameHistoricalRefNoToNewRefNoBySerialNumber_Batched', (3023, refno, '2010-01-01', str(current_date), 1000, 0))
-            # result = self.cursor.execute(f"""
-            #                             exec Admin_RenameHistoricalRefNoToNewRefNoBySerialNumber_Batched 3023, '{refno}', '2010-01-01', '{current_date}', 1000, 0
-            #                             """)
-            # result = self.cursor.execute(f"""
-            #                             DROP TABLE IF EXISTS #TempTableHistoricalUpdate
-            #                             CREATE TABLE #TempTableHistoricalUpdate (result varchar(MAX))
-            #                             INSERT INTO #TempTableHistoricalUpdate (result)
-            #                             exec Admin_RenameHistoricalRefNoToNewRefNoBySerialNumber_Batched 3023, '{refno}', '2010-01-01', '{current_date}', 1000, 0
-            #                             SELECT result from #TempTableHistoricalUpdate
-            #                             DROP TABLE #TempTableHistoricalUpdate
-
-            #                             """)
             result = self.cursor.fetchall()
             print(result)
             self.connection.commit()
