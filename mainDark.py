@@ -1,10 +1,8 @@
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QInputDialog, QDialog
-#from qsmackerpermissions import Ui_Dialog
 import sql
 import alerting
-#from qsmackerJobsearch import Ui_Dialog as Ui_Dialog2
 import mainWindow_dark
 from Custom_Widgets.Widgets import *
 import os
