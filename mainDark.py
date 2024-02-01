@@ -11,7 +11,7 @@ import csv
 
 
 #TODO: look at concurrency issues with the DB, and how to handle them  https://realpython.com/python-pyqt-qthread/
-
+#TODO: retest all the audit pages after refactoring the time parsing with a try/catch
 
 # class Worker(QtCore.Qobject):
 #     finished = QtCore.pyqtSignal()
@@ -192,15 +192,21 @@ class MainWindow(QMainWindow):
                                     new_value = sql.Connection().get_agentname_by_agentid(newID)["Description"]
                                 row_number = self.ui.auditResultsTable.rowCount()
                                 self.ui.auditResultsTable.insertRow(row_number) 
-                                d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
+                                try: 
+                                    d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
+                                except ValueError:
+                                    d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S')
                                 self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)], "auditResultsTable")
                                 self.ui.auditSearchBtn.show()
                                 self.ui.downloadAuditBtn.show()
                             else:
                                 row_number = self.ui.auditResultsTable.rowCount()
-                                self.ui.auditResultsTable.insertRow(row_number) 
-                                d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
-                                self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)], "auditResultsTable")
+                                self.ui.auditResultsTable.insertRow(row_number)
+                                try: 
+                                    d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
+                                except ValueError:
+                                    d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S')
+                                self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S.%f')), user, text_value, str(new_value), str(previous_value)], "auditResultsTable")
                                 self.ui.auditSearchBtn.show()
                                 self.ui.downloadAuditBtn.show()
         if self.ui.auditResultsTable.item(0, 0) == None:
@@ -276,7 +282,10 @@ class MainWindow(QMainWindow):
                             continue
                         else:
                             row_number = self.ui.auditResultsTable.rowCount() 
-                            d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
+                            try: 
+                                d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
+                            except ValueError:
+                                d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S')
                             self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)], "auditResultsTable")
                             self.ui.auditSearchBtn.show()
             if result == "no branch":
@@ -319,7 +328,10 @@ class MainWindow(QMainWindow):
                         else:
                                 row_number = self.ui.auditResultsTable.rowCount()
                                 self.ui.auditResultsTable.insertRow(row_number)
-                                d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
+                                try: 
+                                    d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
+                                except ValueError:
+                                    d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S')
                                 self.populate_audit_table(row_number, [str(d.strftime('%Y-%m-%d %H:%M:%S')), user, text_value, str(new_value), str(previous_value)])
                                 self.ui.auditSearchBtn.show()
             if result == "no customer":
@@ -533,7 +545,10 @@ class MainWindow(QMainWindow):
                 #     self.ui.killJobBtn.show()
                 row_number = self.ui.batch_list.rowCount()
                 self.ui.batch_list.insertRow(row_number)
-                d = datetime.datetime.strptime(str(job[4][number]['insertDate']), '%Y-%m-%d %H:%M:%S.%f')
+                try: 
+                    d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
+                except ValueError:
+                    d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S')
                 self.populate_audit_table(row_number, [str(job[4][number]['JobId']), str(job[4][number]['serialNumber']), str(job[4][number]['refNo']), str(job[4][number]['Description']), str(d.strftime('%Y-%m-%d %H:%M:%S')), jobStatusTranslated], "batch_list")
                 self.ui.findJobBtn.show()
 
