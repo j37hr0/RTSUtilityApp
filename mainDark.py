@@ -508,6 +508,7 @@ class MainWindow(QMainWindow):
             self.create_popup("No job found", "No job found with that name, please check the name and try again", QMessageBox.Warning, QMessageBox.Ok)
             self.ui.findJobBtn.show()
         elif job != "no job":
+            #date_action = str(job[4])
             self.ui.batchStatusFrame.show()
             counts = sql_connection.get_totals(job[0])
             self.ui.jobIDLabel.setText(str(job[0]))
@@ -534,8 +535,9 @@ class MainWindow(QMainWindow):
                 6: "Manual User Failed",
                 7: "Failed - lost comms"
             }
-            for number in range(len(job[4])):
-                batch_status_id = job[4][number]['BatchStatusId']
+            print("the batch status ID we're getting is " + str(job[5]))
+            for number in range(0, len(job[5])):
+                batch_status_id = job[5][number]['BatchStatusId']
                 jobStatusTranslated = status_mapping.get(batch_status_id, "Unknown")
                 #THE BELOW IS FOR DEVING PURPOSES ONLY
                 self.ui.killJobBtn.setEnabled(True)
@@ -545,11 +547,12 @@ class MainWindow(QMainWindow):
                 #     self.ui.killJobBtn.show()
                 row_number = self.ui.batch_list.rowCount()
                 self.ui.batch_list.insertRow(row_number)
+                date_action = job[4]
                 try: 
                     d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S.%f')
                 except ValueError:
                     d = datetime.datetime.strptime(str(date_action), '%Y-%m-%d %H:%M:%S')
-                self.populate_audit_table(row_number, [str(job[4][number]['JobId']), str(job[4][number]['serialNumber']), str(job[4][number]['refNo']), str(job[4][number]['Description']), str(d.strftime('%Y-%m-%d %H:%M:%S')), jobStatusTranslated], "batch_list")
+                self.populate_audit_table(row_number, [str(job[5][number]['JobId']), str(job[5][number]['serialNumber']), str(job[5][number]['refNo']), str(job[5][number]['Description']), str(d.strftime('%Y-%m-%d %H:%M:%S')), jobStatusTranslated], "batch_list")
                 self.ui.findJobBtn.show()
 
     def fail_qsmacker_job(self, job_id):
